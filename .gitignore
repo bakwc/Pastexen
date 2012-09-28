@@ -21,3 +21,5 @@ binary/*
 *.user
 
 *.ini
+
+*build*
