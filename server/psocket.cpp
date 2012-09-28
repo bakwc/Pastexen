@@ -1,20 +1,7 @@
 #include "psocket.h"
 #include <QStringList>
+#include "utils.h"
 
-
-void saveToFile(const QByteArray& data, const QString& type) {
-    qDebug() << "File type:" << type << "Data:" << data;
-}
-
-QString getValue(const QString& data, const QString& key)
-{
-    int start = data.indexOf(key);
-
-    QString res = data.mid(start + key.length() + 1);
-    res = res.left(res.indexOf("\n"));
-
-    return res;
-}
 
 pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     QObject(0), _socket(socket), _packetSize(0)
@@ -36,7 +23,7 @@ void pSocket::onDataReceived()
     auto data = _socket->readAll();
     if (_packetSize == 0) {
         int n = data.indexOf("\n\n");
-        auto header = data.left(n);
+        QByteArray header = data.left(n);
         QString content = data.mid(n+2);
         _buffer += content;
         _packetSize = getValue(header, "size").toInt();
@@ -49,14 +36,4 @@ void pSocket::onDataReceived()
     if (_buffer.size() == _packetSize) {
         saveToFile(_buffer, _fileType);
     }
-}
-
-void pSocket::onDisconnected()
-{
-    QString str = _buffer;
-
-
-
-
-    deleteLater();
 }

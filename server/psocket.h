@@ -16,7 +16,6 @@ signals:
     
 public slots:
     void onDataReceived();
-    void onDisconnected();
 
 private:
     QByteArray  _buffer;
