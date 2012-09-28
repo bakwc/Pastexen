@@ -5,11 +5,12 @@
 #include <QByteArray>
 
 
-class pSocket : public QTcpSocket
+class pSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit pSocket(QThread* thread, QObject *parent = 0);
+    explicit pSocket(QTcpSocket *socket, QThread* thread);
+    ~pSocket();
     
 signals:
     
@@ -18,7 +19,10 @@ public slots:
     void onDisconnected();
 
 private:
-    QByteArray _buffer;
+    QByteArray  _buffer;
+    QTcpSocket  *_socket;
+    quint32     _packetSize;
+    QString     _fileType;
 };
 
 #endif // PSOCKET_H

@@ -9,3 +9,5 @@ SOURCES += \
 HEADERS += \
     pserver.h \
     psocket.h
+
+QMAKE_CXXFLAGS += -std=c++0x
