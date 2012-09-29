@@ -3,6 +3,7 @@
 #include <QByteArray>
 #include <QStringList>
 #include <QHostAddress>
+#include "pthreadpool.h"
 #include "psocket.h"
 
 pServer::pServer(QObject *parent) :
@@ -15,9 +16,5 @@ pServer::pServer(QObject *parent) :
 
 void pServer::onConnection()
 {
-    pSocket *socket = new pSocket(server.nextPendingConnection(), this->thread());
-
-//    pSocket *pS = new pSocket(this->thread());
-
-    qDebug("new connection");
+    pSocket *socket = new pSocket(server.nextPendingConnection(), pThreadPool::getThread());
 }

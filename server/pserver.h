@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTcpServer>
 
+class pThreadPool;
+
 class pServer : public QObject
 {
     Q_OBJECT
@@ -16,8 +18,7 @@ public slots:
     void onConnection();
 
 private:
-    QTcpServer server;
-    
+    QTcpServer  server;
 };
 
 #endif // PSERVER_H

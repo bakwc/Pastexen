@@ -22,7 +22,7 @@ QString randName(int count) {
 
 
 void saveToFile(const QByteArray& data, const QString& type) {
-    qDebug() << "File type:" << type << "Data:" << data;
+//    qDebug() << "File type:" << type << "Data:" << data;
 
     QString filename;
     filename += randName(6) + type;
