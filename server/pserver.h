@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpServer>
+#include "psetting.h"
 
 class pThreadPool;
 

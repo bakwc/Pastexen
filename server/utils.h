@@ -3,7 +3,7 @@
 
 #include <QFile>
 #include <QDateTime>
-#include <QtAlgorithms>
+#include <QMap>
 
 QString randName(int count) {
     QString str;
@@ -21,11 +21,11 @@ QString randName(int count) {
 }
 
 
-void saveToFile(const QByteArray& data, const QString& type) {
-//    qDebug() << "File type:" << type << "Data:" << data;
+void saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL) {
+    QString filename(types[type]);
+    filename += '/' + randName(fnL) + '.' + type;
 
-    QString filename;
-    filename += randName(6) + type;
+    qDebug() << filename;
 
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly)) {

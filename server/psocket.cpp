@@ -2,6 +2,7 @@
 #include <QStringList>
 #include "utils.h"
 #include <QTime>
+#include "psetting.h"
 
 #ifdef TIME_DEBUG
 QTime* debugTime = 0;
@@ -26,8 +27,6 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
 
 pSocket::~pSocket()
 {
-    delete _socket;
-
     qDebug() << "Disconnect";
 #ifdef TIME_DEBUG
     qDebug() << 0.001*debugTime->elapsed();
@@ -50,6 +49,6 @@ void pSocket::onDataReceived()
 
 //    qDebug() << "buffer size" << _buffer.size() << _packetSize;
     if (_buffer.size() == _packetSize) {
-        saveToFile(_buffer, _fileType);
+        saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
     }
 }
