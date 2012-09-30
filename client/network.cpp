@@ -5,58 +5,34 @@
 #include <QDate>
 #include <QTime>
 #include <QtTest/QTest>
+#include <QHostAddress>
 #include "network.h"
+#include "utils.h"
 
 Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
     _settings(settings)
 {
-    _httpConnection = new QHttp(this);
-    connect(_httpConnection, SIGNAL(done(bool)), SLOT(httpDone(bool)));
-
-    #ifndef QT_NO_OPENSSL
-    QObject::connect(_httpConnection, SIGNAL(sslErrors(QList<QSslError>)),
-                     SLOT(onSslErrors(QList<QSslError>)));
-    #else
-    qDebug() << "SSL not supported!";
-    exit(1);
-    #endif
+    connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
 }
 
 void Network::upload(const QString &filename)
 {
-    auto auth = getAuth();
+    qDebug() << Q_FUNC_INFO;
     auto data = readFile(filename);
-    auto dir = getDir();
 
-    createDir(dir);
+    _socket.connectToHost(QHostAddress::LocalHost, 9876);
+    _socket.waitForConnected();
 
-    QString imgName=QString("%1_%2.png")
-            .arg(QDate::currentDate().toString("yyyy-MM-dd"))
-            .arg(QTime::currentTime().toString("HH:mm:ss"));
-
-    QHttpRequestHeader header(QString("PUT %1%2 HTTP/1.1").arg(dir).arg(imgName));
-    header.setValue("Host", "webdav.yandex.ru");
-    header.addValue("Accept", "*/*");
-    header.addValue("Authorization", QString("Basic %1").arg(auth));
-    header.addValue("Expect", "100-continue");
-    header.setContentType("application/binary");
-    header.setContentLength(data.length());
-
-    _ready=false;
-    _httpConnection->setHost(QString("webdav.yandex.ru"), QHttp::ConnectionModeHttps, 443);
-    _httpConnection->request(header, data);
-    while (!_ready) QTest::qWait(200);
-
-    shareFile(QString("%1%2").arg(dir).arg(imgName));
-}
-
-QString Network::getAuth()
-{
-    auto login = _settings->value("general/login", DEFAULT_LOGIN).toString();
-    auto pass = _settings->value("general/password", DEFAULT_PASS).toString();
-    auto auth = QString("%1:%2").arg(login).arg(pass);
-    return auth.toLocal8Bit().toBase64();
+    QByteArray arr;
+    arr.append("proto=pastexen\n");
+    arr.append("version=1.0\n");
+    arr.append("type=png\n");
+    arr.append(QString("size=%1\n\n").arg(data.size()));
+    arr.append(data);
+    _socket.write(arr);
+    qDebug() << "Data size: " << arr.size();
+    qDebug() << "Upload started!";
 }
 
 QByteArray Network::readFile(const QString &fileName)
@@ -70,51 +46,9 @@ QByteArray Network::readFile(const QString &fileName)
     return file.readAll();
 }
 
-void Network::httpDone(bool isError)
+void Network::onDataReceived()
 {
-    if (isError)
-        qDebug() << "Error: " << _httpConnection->errorString();
-    else
-    {
-        QHttpResponseHeader resp=_httpConnection->lastResponse();
-        QString location = resp.value("location");
-        if (location.size()>0)
-            emit linkReceived(location);
-    }
-    _ready=true;
-}
-
-void Network::onSslErrors(QList<QSslError>)
-{
-    qDebug() << "SSL Errors!";
-}
-
-void Network::createDir(const QString& dir)
-{
-    if (dir=="/") return;
-    auto auth = getAuth();
-    QHttpRequestHeader header(QString("MKCOL %1 HTTP/1.1").arg(dir));
-    header.setValue("Host", "webdav.yandex.ru");
-    header.addValue("Accept", "*/*");
-    header.addValue("Authorization", QString("Basic %1").arg(auth));
-
-    _ready=false;
-    _httpConnection->setHost(QString("webdav.yandex.ru"), QHttp::ConnectionModeHttps, 443);
-    _httpConnection->request(header);
-    while (!_ready) QTest::qWait(200);
-}
-
-void Network::shareFile(const QString& file)
-{
-    auto auth = getAuth();
-
-    QHttpRequestHeader header(QString("POST %1?publish HTTP/1.1").arg(file));
-    header.setValue("Host", "webdav.yandex.ru");
-    header.addValue("Accept", "*/*");
-    header.addValue("Authorization", QString("Basic %1").arg(auth));
-
-    _ready=false;
-    _httpConnection->setHost(QString("webdav.yandex.ru"), QHttp::ConnectionModeHttps, 443);
-    _httpConnection->request(header);
-    while (!_ready) QTest::qWait(200);
+    const QByteArray arr = _socket.readAll();
+    const QString link = getValue(arr, "url");
+    emit linkReceived(link);
 }

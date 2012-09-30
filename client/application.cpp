@@ -81,6 +81,7 @@ Application::~Application()
 
 void Application::init()
 {
+    qDebug() << Q_FUNC_INFO;
     _trayIcon->show();
     QFile file(SETTINGS_FILE);
     if (!file.exists())

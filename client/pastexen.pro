@@ -26,7 +26,8 @@ HEADERS  += \
     configwidget.h \
     network.h \
     defines.h \
-    imageselectwidget.h
+    imageselectwidget.h \
+    utils.h
 
 RESOURCES += \
     resources.qrc

@@ -22,6 +22,9 @@ private:
     QTcpSocket  *_socket;
     quint32     _packetSize;
     QString     _fileType;
+
+private:
+    void sendLink(const QString& link);
 };
 
 #endif // PSOCKET_H

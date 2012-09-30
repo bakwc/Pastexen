@@ -17,6 +17,8 @@ pSetting::pSetting(const QString &filename) :
     QStringList _sourceTypes= _set.value("source_types", QStringList() << "c" << "cpp" << "txt" << "py").toStringList();
     QString     _imageDir   = _set.value("image_dir", "imageDir/").toString();
     QString     _sourceDir  = _set.value("source_dir", "sourceDir/").toString();
+    _imageLinkPrefix = _set.value("image_link_prefix", "").toString();
+    _sourceLinkPrefix = _set.value("source_link_prefix", "").toString();
 
     for(const QString& key : _imageTypes) {
         _types.insert(key, _imageDir);

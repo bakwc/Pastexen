@@ -22,3 +22,9 @@ binary/*
 
 
 *build*
+
+config.ini
+client/debug*
+client/release*
+pastexenImages/*
+server/debug*

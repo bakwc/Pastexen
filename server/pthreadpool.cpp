@@ -20,7 +20,7 @@ QThread *pThreadPool::getThread()
     if (index == _threads.size())
         index = 0;
 
-    return _threads[index];
+    return _threads[index++];
 }
 
 pThreadPool *pThreadPool::instanse(int threadCount)

@@ -33,22 +33,42 @@ pSocket::~pSocket()
 #endif
 }
 
-void pSocket::onDataReceived()
+void pSocket::sendLink(const QString& link)
 {
+    QByteArray arr;
+    arr.append("proto=pastexen\n");
+    arr.append("version=1.0\n");
+    arr.append("url=");
+    arr.append(link);
+    arr.append("\n\n");
+    _socket->write(arr);
+}
+
+void pSocket::onDataReceived()
+try {
     auto data = _socket->readAll();
+
     if (_packetSize == 0) {
         int n = data.indexOf("\n\n");
         QByteArray header = data.left(n);
-        QString content = data.mid(n+2);
-        _buffer += content;
+        qDebug() << "Data size: " << data.size();
+        auto content = data.mid(n+2);
+        qDebug() << "Content size()" << content.size();
+        _buffer = content;
         _packetSize = getValue(header, "size").toInt();
         _fileType = getValue(header, "type");
     } else {
         _buffer += data;
     }
 
-//    qDebug() << "buffer size" << _buffer.size() << _packetSize;
+    qDebug() << "buffer size" << _buffer.size();
+    qDebug() << "packet size" << _packetSize;
     if (_buffer.size() == _packetSize) {
-        saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
+        const QString filename = saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
+        sendLink(pSetting::imageLinkPrefix() + filename);
     }
+}
+catch (std::exception& e)
+{
+    qDebug() << "Error occured: " << e.what();
 }

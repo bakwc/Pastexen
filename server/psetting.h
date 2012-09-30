@@ -16,7 +16,8 @@ public:
     static int                 threads() { return inst()->_threads; }
     static int                 fileNameLenght() { return inst()->_fileNameLength; }
     static const QMap<QString, QString>& types() { return inst()->_types; }
-
+    static const QString&      imageLinkPrefix() { return inst()->_imageLinkPrefix; }
+    static const QString&      sourceLinkPrefix() { return inst()->_sourceLinkPrefix; }
 
 private:
     QSettings   _set;
@@ -27,6 +28,8 @@ private:
     int             _threads;
     int             _fileNameLength;
     QMap<QString, QString>  _types;
+    QString         _imageLinkPrefix;
+    QString         _sourceLinkPrefix;
 
     static pSetting* inst() { return pThis; }
 };

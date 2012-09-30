@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include <QHttp>
+#include <QTcpSocket>
 #include <QSslError>
 #include <QSettings>
 #include "defines.h"
@@ -17,19 +17,13 @@ public:
 signals:
     void linkReceived(const QString &link);
 private slots:
-    void httpDone(bool isError);
-    void onSslErrors(QList<QSslError>);
+    void onDataReceived();
 private:
-    QString getAuth();
     QByteArray readFile(const QString& fileName);
-    inline QString getDir() { return _settings->value("general/directory", DEFAULT_DIR).toString(); }
-    void createDir(const QString& dir);
-    void shareFile(const QString& file);
 private:
-    QHttp *_httpConnection;
     QSettings *_settings;
-    qint32 _stage;
     bool _ready;
+    QTcpSocket _socket;
 };
 
 #endif // NETWORK_H

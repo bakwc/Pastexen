@@ -1,9 +1,10 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <QFile>
 #include <QDateTime>
 #include <QMap>
+
+#include <stdexcept>
 
 QString randName(int count) {
     QString str;
@@ -21,18 +22,20 @@ QString randName(int count) {
 }
 
 
-void saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL) {
-    QString filename(types[type]);
-    filename += '/' + randName(fnL) + '.' + type;
+QString saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL) {
+    QString path(types[type]);
+    const QString filename = randName(fnL) + '.' + type;
+    path += '/' + filename;
 
-    qDebug() << filename;
+    qDebug() << path;
 
-    QFile file(filename);
+    QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
-        return;
+        throw std::runtime_error("Cannot create file");
     }
 
     file.write(data);
+    return filename;
 }
 
 QString getValue(const QString& data, const QString& key)
@@ -45,4 +48,3 @@ QString getValue(const QString& data, const QString& key)
     return res;
 }
 
-#endif // UTILS_H
