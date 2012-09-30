@@ -20,13 +20,21 @@ pSetting::pSetting(const QString &filename) :
     _imageLinkPrefix = _set.value("image_link_prefix", "").toString();
     _sourceLinkPrefix = _set.value("source_link_prefix", "").toString();
 
-    for(const QString& key : _imageTypes) {
-        _types.insert(key, _imageDir);
+    for (auto i = _imageTypes.begin(); i != _imageTypes.end(); i++) {
+       _types.insert(*i, _imageDir);
     }
 
-    for(const QString& key : _sourceTypes) {
-        _types.insert(key, _sourceDir);
+    for (auto i = _sourceTypes.begin(); i != _sourceTypes.end(); i++) {
+       _types.insert(*i, _sourceDir);
     }
+
+    //for(const QString& key : _imageTypes) {
+    //    _types.insert(key, _imageDir);
+    //}
+
+    //for(const QString& key : _sourceTypes) {
+    //    _types.insert(key, _sourceDir);
+    //}
 
     pThis = this;
 
