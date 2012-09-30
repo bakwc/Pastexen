@@ -20,6 +20,5 @@ release/*
 binary/*
 *.user
 
-*.ini
 
 *build*
