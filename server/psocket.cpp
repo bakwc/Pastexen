@@ -33,6 +33,7 @@ pSocket::~pSocket()
 #endif
 }
 
+
 void pSocket::sendLink(const QString& link)
 {
     QByteArray arr;
@@ -43,6 +44,7 @@ void pSocket::sendLink(const QString& link)
     arr.append("\n\n");
     _socket->write(arr);
 }
+
 
 void pSocket::onDataReceived()
 try {
@@ -66,9 +68,10 @@ try {
     if (_buffer.size() == _packetSize) {
         const QString filename = saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
         sendLink(pSetting::imageLinkPrefix() + filename);
+        qDebug() << filename;
+
+        _packetSize = 0;
     }
-}
-catch (std::exception& e)
-{
+} catch (std::exception& e) {
     qDebug() << "Error occured: " << e.what();
 }
