@@ -5,6 +5,7 @@
 #include <QHostAddress>
 #include "pthreadpool.h"
 #include "psocket.h"
+#include "psaver.h"
 
 pServer::pServer(QObject *parent):
     QObject(parent)
@@ -16,5 +17,5 @@ pServer::pServer(QObject *parent):
 
 void pServer::onConnection()
 {
-    pSocket *socket = new pSocket(server.nextPendingConnection(), pThreadPool::getThread());
+    /*pSocket *socket = */new pSocket(server.nextPendingConnection(), pThreadPool::getThread());
 }

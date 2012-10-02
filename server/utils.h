@@ -3,47 +3,57 @@
 #include <QFile>
 #include <QDateTime>
 #include <QMap>
+#include <QMutex>
 
-#include <stdexcept>
+//#include <stdexcept>
 
-QString randName(int count)
-{
-    QString str;
+//QString randName(int count)
+//{
+//    QString str;
 
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
+//    static const char alphanum[] =
+//        "0123456789"
+//        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//        "abcdefghijklmnopqrstuvwxyz";
 
-    qsrand(time(NULL));
-    for (int i = 0; i < count; ++i) {
-        str += alphanum[qrand() % (sizeof(alphanum) - 1)];
-    }
+//    qsrand(time(NULL));
+//    for (int i = 0; i < count; ++i) {
+//        str += alphanum[qrand() % (sizeof(alphanum) - 1)];
+//    }
 
-    return str;
-}
+//    return str;
+//}
 
 
-QString saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL)
-{
-    int i = 10;
-    QFile file;
-    QString filename;
-    QString path(types[type]);
+//QString saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL)
+//{
+//    static QMutex mutex;
+//    mutex.lock();
 
-    do {
-        filename = randName(fnL) + '.' + type;
-        path += '/' + filename;
-        file.setFileName(path);
-    } while(file.exists() && --i);
+//    int i = 10;
+//    QFile file;
+//    QString filename;
+//    QString typeFolder(types[type]);
 
-    if (!file.open(QIODevice::WriteOnly)) {
-        throw std::runtime_error("Cannot create file");
-    }
+//    do {
+//        filename = randName(fnL) + '.' + type;
+//        const QString path = typeFolder + filename;
+//        file.setFileName(path);
 
-    file.write(data);
-    return filename;
-}
+//        qDebug() << path;
+
+//    } while(file.exists() && --i);
+
+//    if (!file.open(QIODevice::WriteOnly)) {
+//        throw std::runtime_error("Cannot create file");
+//    }
+
+//    file.write(data);
+
+//    mutex.unlock();
+
+//    return filename;
+//}
 
 QString getValue(const QString& data, const QString& key)
 {

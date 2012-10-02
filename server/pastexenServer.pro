@@ -6,14 +6,16 @@ SOURCES += \
     pserver.cpp \
     psocket.cpp \
     pthreadpool.cpp \
-    psetting.cpp
+    psetting.cpp \
+    psaver.cpp
 
 HEADERS += \
     pserver.h \
     psocket.h \
     utils.h \
     pthreadpool.h \
-    psetting.h
+    psetting.h \
+    psaver.h
 
 QMAKE_CXXFLAGS += -std=c++0x
 

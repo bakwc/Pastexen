@@ -13,6 +13,7 @@ public:
     ~pSocket();
     
 signals:
+    void saveFile(const QByteArray& data, const QString& type);
     
 public slots:
     void onDataReceived();

@@ -3,6 +3,7 @@
 #include "pserver.h"
 #include "pthreadpool.h"
 #include "psetting.h"
+#include "psaver.h"
 #include <cstdlib>
 #include <ctime>
 
@@ -11,6 +12,7 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     pSetting setting("../serverSettings.ini");
+    pSaver  saver;
 
     pThreadPool::instanse(pSetting::threads());
     pServer     server;
