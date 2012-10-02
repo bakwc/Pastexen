@@ -8,7 +8,6 @@
 
 int main(int argc, char** argv)
 {
-//    qsrand(time(NULL));
     QCoreApplication app(argc, argv);
 
     pSetting setting("../serverSettings.ini");
@@ -18,4 +17,3 @@ int main(int argc, char** argv)
 
     app.exec();
 }
-

@@ -53,9 +53,9 @@ try {
     if (_packetSize == 0) {
         int n = data.indexOf("\n\n");
         QByteArray header = data.left(n);
-        qDebug() << "Data size: " << data.size();
+//        qDebug() << "Data size: " << data.size();
         auto content = data.mid(n+2);
-        qDebug() << "Content size()" << content.size();
+//        qDebug() << "Content size()" << content.size();
         _buffer = content;
         _packetSize = getValue(header, "size").toInt();
         _fileType = getValue(header, "type");
@@ -63,14 +63,13 @@ try {
         _buffer += data;
     }
 
-    qDebug() << "buffer size" << _buffer.size();
-    qDebug() << "packet size" << _packetSize;
+//    qDebug() << "buffer size" << _buffer.size();
+//    qDebug() << "packet size" << _packetSize;
     if (_buffer.size() == _packetSize) {
         const QString filename = saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
         sendLink(pSetting::imageLinkPrefix() + filename);
-        qDebug() << filename;
-
         _packetSize = 0;
+        qDebug() << filename;
     }
 } catch (std::exception& e) {
     qDebug() << "Error occured: " << e.what();

@@ -6,7 +6,8 @@
 
 #include <stdexcept>
 
-QString randName(int count) {
+QString randName(int count)
+{
     QString str;
 
     static const char alphanum[] =
@@ -14,6 +15,7 @@ QString randName(int count) {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
+    qsrand(time(NULL));
     for (int i = 0; i < count; ++i) {
         str += alphanum[qrand() % (sizeof(alphanum) - 1)];
     }
@@ -22,14 +24,19 @@ QString randName(int count) {
 }
 
 
-QString saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL) {
+QString saveToFile(const QByteArray& data, const QString& type, const QMap<QString, QString>& types, int fnL)
+{
+    int i = 10;
+    QFile file;
+    QString filename;
     QString path(types[type]);
-    const QString filename = randName(fnL) + '.' + type;
-    path += '/' + filename;
 
-    qDebug() << path;
+    do {
+        filename = randName(fnL) + '.' + type;
+        path += '/' + filename;
+        file.setFileName(path);
+    } while(file.exists() && --i);
 
-    QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         throw std::runtime_error("Cannot create file");
     }
