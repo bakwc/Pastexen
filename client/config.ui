@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
-    <height>176</height>
+    <width>308</width>
+    <height>151</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,8 +24,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>121</height>
+     <width>291</width>
+     <height>91</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -35,34 +35,59 @@
     <property name="verticalSpacing">
      <number>4</number>
     </property>
-    <item row="1" column="0">
-     <widget class="QLabel" name="labelPassword">
-      <property name="text">
-       <string>Password:</string>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="comboImageType">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
+      <item>
+       <property name="text">
+        <string>png</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>jpg</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="editPass"/>
+     <widget class="QComboBox" name="comboSourcesType">
+      <property name="editable">
+       <bool>false</bool>
+      </property>
+      <item>
+       <property name="text">
+        <string extracomment="txt">Plain text</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string extracomment="cpp">C++</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string extracomment="pas">Pascal</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string extracomment="py">Python</string>
+       </property>
+      </item>
+     </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="editLogin"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label">
+    <item row="1" column="0">
+     <widget class="QLabel" name="labelPassword">
       <property name="text">
-       <string>Screenshot directory:</string>
+       <string>Language:</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="editDir"/>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="labelLogin">
@@ -70,7 +95,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="text">
-       <string>Login:</string>
+       <string>Image type</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -78,9 +103,9 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QCheckBox" name="checkBoxPublish">
+     <widget class="QCheckBox" name="checkBoxLangDialogShow">
       <property name="text">
-       <string>Publish screenshot</string>
+       <string>Show language select dialog</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -93,7 +118,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>130</y>
+     <y>100</y>
      <width>261</width>
      <height>41</height>
     </rect>

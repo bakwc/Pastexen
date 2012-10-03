@@ -18,7 +18,7 @@ void ConfigWidget::init()
     QIcon icon(":/icons/yascreens.png");
     this->setWindowIcon(icon);
 
-    auto login = _settings->value("general/login", DEFAULT_LOGIN).toString();
+    /*auto login = _settings->value("general/login", DEFAULT_LOGIN).toString();
     auto pass = _settings->value("general/password", DEFAULT_PASS).toString();
     auto dir = _settings->value("general/directory", DEFAULT_DIR).toString();
     auto publish = _settings->value("general/publish", DEFAULT_PUBLISH).toBool();
@@ -26,7 +26,7 @@ void ConfigWidget::init()
     _ui->editLogin->setText(login);
     _ui->editPass->setText(pass);
     _ui->editDir->setText(dir);
-    _ui->checkBoxPublish->setChecked(publish);
+    _ui->checkBoxPublish->setChecked(publish);*/
 }
 
 
@@ -38,19 +38,9 @@ void ConfigWidget::closeEvent(QCloseEvent *event)
 
 void ConfigWidget::applyChanges()
 {
-    QString dir=_ui->editDir->text();
-    if (dir.size()==0)
-        dir="/";
-    if (dir[0]!='/')
-        dir="/"+dir;
-    if (dir[dir.size()-1]!='/')
-        dir=dir+"/";
-    _ui->editDir->setText(dir);
-
-    _settings->setValue("general/login", _ui->editLogin->text());
-    _settings->setValue("general/password", _ui->editPass->text());
-    _settings->setValue("general/directory", dir);
-    _settings->setValue("general/publish", _ui->checkBoxPublish->isChecked());
+    _settings->setValue("general/imagetype", _ui->comboImageType->itemData(_ui->comboImageType->currentIndex()).toString());
+    _settings->setValue("general/sourcetype", _ui->comboSourcesType->itemData(_ui->comboSourcesType->currentIndex()).toString());
+    _settings->setValue("general/showsourcedialog", _ui->checkBoxLangDialogShow->isChecked());
     _settings->sync();
     this->hide();
 }
