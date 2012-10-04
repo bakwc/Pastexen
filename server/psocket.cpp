@@ -13,11 +13,12 @@ QTime* debugTime = 0;
 pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     QObject(0), _socket(socket), _packetSize(0)
 {
-    connect(_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
-    connect(_socket, SIGNAL(disconnected()), SLOT(deleteLater()));
+    connect(_socket, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
+    connect(_socket, SIGNAL(disconnected()), this, SLOT(deleteLater()));
+    connect(_socket, SIGNAL(disconnected()), _socket, SLOT(deleteLater()));
 //    connect(this, SIGNAL(saveFile(QByteArray,QString)), pSaver::inst(), SLOT(save(QByteArray,QString)));
 
-    _socket->setParent(this);
+//    _socket->setParent(this);
     moveToThread(thread);
 
 #ifdef TIME_DEBUG
@@ -31,7 +32,7 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
 pSocket::~pSocket()
 {
     qDebug() << "Disconnect";
-
+//    delete _socket;
 //    disconnect();
 #ifdef TIME_DEBUG
     qDebug() << 0.001*debugTime->elapsed();
@@ -80,6 +81,8 @@ void pSocket::onDataReceived()
         // but i think it
         QMetaObject::invokeMethod(pSaver::inst(), "save",
                                   Q_ARG(QByteArray, data), Q_ARG(QString, _fileType));
+
+//        pSaver::inst()->save(data, _fileType);
 
     }
 }

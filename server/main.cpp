@@ -11,10 +11,10 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
-    pSetting setting("../serverSettings.ini");
-    pSaver  saver;
+    pSetting    setting("../serverSettings.ini");
+    pSaver      saver;
+    pThreadPool pool(pSetting::threads());
 
-    pThreadPool::instanse(pSetting::threads());
     pServer     server;
 
     app.exec();

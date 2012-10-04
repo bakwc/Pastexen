@@ -13,9 +13,11 @@ pServer::pServer(QObject *parent):
     connect(&server, SIGNAL(newConnection()), this, SLOT(onConnection()));
 
     server.listen(pSetting::host(), pSetting::port());
+
+    qDebug("Server started");
 }
 
 void pServer::onConnection()
 {
-    /*pSocket *socket = */new pSocket(server.nextPendingConnection(), pThreadPool::getThread());
+    /*pSocket *socket = */new pSocket(server.nextPendingConnection(), pThreadPool::getNextThread());
 }

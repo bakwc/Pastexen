@@ -11,10 +11,9 @@ class pThreadPool : public QObject
     Q_OBJECT
 
 public:
-    static QThread* getThread();
-    static pThreadPool* instanse(int threadCount = QThread::idealThreadCount());
+    static QThread* getNextThread();
+    static pThreadPool* inst() { return _inst; }
 
-protected:
     pThreadPool(int tCount, QObject *parent = 0);
 
 signals:
@@ -22,9 +21,10 @@ signals:
 public slots:
 
 private:
-    static QVector<QThread*>    _threads;
-    static int index;
+    QVector<QThread*>    _threads;
+    int index;
     static pThreadPool *_inst;
+
 };
 
 #endif // PTHREADPOOL_H
