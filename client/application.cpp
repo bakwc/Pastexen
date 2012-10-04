@@ -71,11 +71,11 @@ Application::~Application()
     delete _configUi;
 }
 
-void Application::init()
+void Application::init(const QFile &file)
 {
     qDebug() << Q_FUNC_INFO;
     _trayIcon->show();
-    QFile file(SETTINGS_FILE);
+
     if (!file.exists())
         _configWidget->show();
 }

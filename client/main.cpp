@@ -13,6 +13,6 @@ int main(int argc, char *argv[])
         ShowWindow(hwnd, 0);               // For hiding console in windows
     #endif
     Application app(argc, argv);
-    app.init();
+    app.init(QFile());
     return app.exec();
 }
