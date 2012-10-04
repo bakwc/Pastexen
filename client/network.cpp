@@ -21,7 +21,7 @@ void Network::upload(const QString &filename)
     qDebug() << Q_FUNC_INFO;
     auto data = readFile(filename);
 
-    _socket.connectToHost(QHostAddress::LocalHost, 9876);
+    _socket.connectToHost(QHostAddress("193.169.33.254"), 9876);
     _socket.waitForConnected();
 
     QByteArray arr;

@@ -12,19 +12,11 @@
 #include "ui_config.h"
 #include "defines.h"
 
-/*
-#define _WIN32_WINNT 0x0500
-#include <windows.h>
-HWND WINAPI GetConsoleWindow(void);
-*/
+
 
 Application::Application(int argc, char *argv[]):
     QxtApplication(argc, argv)
 {
-    /*
-    HWND hwnd = GetConsoleWindow();
-    ShowWindow(hwnd, 0);
-    */
 
     _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat);
     _settings->setParent(this);                                                         // Settings
@@ -136,5 +128,5 @@ void Application::linkAvaliable(const QString &link)
 void Application::aboutDialog()
 {
     QMessageBox::information(NULL, APP_NAME,
-       tr("Utility for easy screenshot making and uploading to yandex.disc"));
+       tr("Utility for easy screenshots and code sharing"));
 }
