@@ -38,18 +38,8 @@
     <item row="0" column="1">
      <widget class="QComboBox" name="comboImageType">
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
-      <item>
-       <property name="text">
-        <string>png</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>jpg</string>
-       </property>
-      </item>
      </widget>
     </item>
     <item row="1" column="1">
@@ -57,26 +47,6 @@
       <property name="editable">
        <bool>false</bool>
       </property>
-      <item>
-       <property name="text">
-        <string extracomment="txt">Plain text</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string extracomment="cpp">C++</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string extracomment="pas">Pascal</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string extracomment="py">Python</string>
-       </property>
-      </item>
      </widget>
     </item>
     <item row="1" column="0">

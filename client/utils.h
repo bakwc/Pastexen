@@ -1,5 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <QString>
 
@@ -13,4 +12,3 @@ QString getValue(const QString& data, const QString& key)
     return res;
 }
 
-#endif // UTILS_H

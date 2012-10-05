@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'config.ui'
 **
-** Created: Wed 3. Oct 08:33:30 2012
+** Created: Fri 5. Oct 21:10:35 2012
 **      by: Qt User Interface Compiler version 4.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -109,7 +109,7 @@ public:
 
         retranslateUi(Form);
 
-        comboImageType->setCurrentIndex(0);
+        comboImageType->setCurrentIndex(-1);
 
 
         QMetaObject::connectSlotsByName(Form);
@@ -117,18 +117,6 @@ public:
 
     void retranslateUi(QWidget *Form)
     {
-        comboImageType->clear();
-        comboImageType->insertItems(0, QStringList()
-         << QApplication::translate("Form", "png", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("Form", "jpg", 0, QApplication::UnicodeUTF8)
-        );
-        comboSourcesType->clear();
-        comboSourcesType->insertItems(0, QStringList()
-         << QApplication::translate("Form", "Plain text", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("Form", "C++", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("Form", "Pascal", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("Form", "Python", 0, QApplication::UnicodeUTF8)
-        );
         labelPassword->setText(QApplication::translate("Form", "Language:", 0, QApplication::UnicodeUTF8));
         labelLogin->setText(QApplication::translate("Form", "Image type", 0, QApplication::UnicodeUTF8));
         checkBoxLangDialogShow->setText(QApplication::translate("Form", "Show language select dialog", 0, QApplication::UnicodeUTF8));

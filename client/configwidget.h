@@ -16,6 +16,8 @@ public:
 public slots:
     void applyChanges();
 private:
+    void showTypes();
+private:
     Ui::Form *_ui;
     QSettings *_settings;
 };

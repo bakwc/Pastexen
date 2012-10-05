@@ -18,15 +18,33 @@ void ConfigWidget::init()
     QIcon icon(":/icons/yascreens.png");
     this->setWindowIcon(icon);
 
-    /*auto login = _settings->value("general/login", DEFAULT_LOGIN).toString();
-    auto pass = _settings->value("general/password", DEFAULT_PASS).toString();
-    auto dir = _settings->value("general/directory", DEFAULT_DIR).toString();
-    auto publish = _settings->value("general/publish", DEFAULT_PUBLISH).toBool();
+    showTypes();
 
-    _ui->editLogin->setText(login);
-    _ui->editPass->setText(pass);
-    _ui->editDir->setText(dir);
-    _ui->checkBoxPublish->setChecked(publish);*/
+    auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
+
+    int imgIndex = _ui->comboImageType->findData(imagetype);
+    if (imgIndex != -1) {
+        _ui->comboImageType->setCurrentIndex(imgIndex);
+    }
+
+    int srcIndex = _ui->comboSourcesType->findData(sourcestype);
+    if (srcIndex != -1) {
+        _ui->comboSourcesType->setCurrentIndex(srcIndex);
+    }
+
+    _ui->checkBoxLangDialogShow->setChecked(showsourcedialog);
+}
+
+void ConfigWidget::showTypes()
+{
+    _ui->comboImageType->addItem("Jpg", QString("jpg"));
+    _ui->comboImageType->addItem("PNG", QString("png"));
+
+    _ui->comboSourcesType->addItem("Plain text", QString("txt"));
+    _ui->comboSourcesType->addItem("C++", QString("cpp"));
+    _ui->comboSourcesType->addItem("Pascal", QString("pas"));
 }
 
 
