@@ -28,3 +28,4 @@ client/debug*
 client/release*
 pastexenImages/*
 server/debug*
+speedserver/debug*
