@@ -18,7 +18,7 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
 //    connect(_socket, SIGNAL(disconnected()), _socket, SLOT(deleteLater()));
     connect(this, SIGNAL(saveFile(QByteArray,QString,QString)), pSaver::inst(), SLOT(save(QByteArray,QString,QString)));
 
-//    _socket->setParent(this);
+    _socket->setParent(this);
     moveToThread(thread);
 
     qDebug() << "New connection";
