@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QString>
+#include <QTcpSocket>
 #include <QByteArray>
 
 class pSaver : public QThread
@@ -13,9 +14,10 @@ public:
     static pSaver* inst() { return pThis; }
 
 signals:
-    
+    void fileName(QString str);
+
 public slots:
-    void save(const QByteArray& data, const QString &type);
+    void save(const QByteArray& data, const QString &type, const QString &filename);
 
 private:
     static pSaver  *pThis;

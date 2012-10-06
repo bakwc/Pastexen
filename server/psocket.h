@@ -13,10 +13,11 @@ public:
     ~pSocket();
     
 signals:
-    void saveFile(const QByteArray& data, const QString& type);
+    void saveFile(const QByteArray& data, const QString& type, const QString& filename);
     
 public slots:
     void onDataReceived();
+    void sendLink(const QString& link);
 
 private:
     QByteArray  _buffer;
@@ -25,7 +26,7 @@ private:
     QString     _fileType;
 
 private:
-    void sendLink(const QString& link);
+    QString randName(int count);
 };
 
 #endif // PSOCKET_H
