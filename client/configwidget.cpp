@@ -39,12 +39,12 @@ void ConfigWidget::init()
 
 void ConfigWidget::showTypes()
 {
-    _ui->comboImageType->addItem("Jpg", QString("jpg"));
+    _ui->comboImageType->addItem("JPG", QString("jpg"));
     _ui->comboImageType->addItem("PNG", QString("png"));
 
-    _ui->comboSourcesType->addItem("Plain text", QString("txt"));
-    _ui->comboSourcesType->addItem("C++", QString("cpp"));
-    _ui->comboSourcesType->addItem("Pascal", QString("pas"));
+    _ui->comboSourcesType->addItem(tr("Plain text"), QString("txt"));
+    _ui->comboSourcesType->addItem(tr("C++"), QString("cpp"));
+    _ui->comboSourcesType->addItem(tr("Pascal"), QString("pas"));
 }
 
 

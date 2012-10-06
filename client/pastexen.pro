@@ -4,10 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network testlib
+CONFIG   -= console
+QT       += core gui network
 
 CONFIG  += qxt
-CONFIG  -= console
+
+QXT     -= console
 QXT     += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

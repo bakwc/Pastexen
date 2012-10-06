@@ -13,11 +13,9 @@
 #include "defines.h"
 
 
-
 Application::Application(int argc, char *argv[]):
     QxtApplication(argc, argv)
 {
-
     _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat);
     _settings->setParent(this);                                                         // Settings
 
@@ -29,10 +27,30 @@ Application::Application(int argc, char *argv[]):
     connect(_configUi->cancelButton, SIGNAL(clicked()), _configWidget, SLOT(hide()));
     connect(_configUi->applyButton, SIGNAL(clicked()), _configWidget, SLOT(applyChanges()));    // Config window
 
+    _shortcutScreenFull = new QxtGlobalShortcut;
+    QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processScreenshotFull()));
+    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
+    if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
+        qDebug() << "Error activating hotkey:" << fullHotkey;          // Shortcut for full screen
+
+    _shortcutScreenPart = new QxtGlobalShortcut;
+    QObject::connect(_shortcutScreenPart, SIGNAL(activated()), SLOT(processScreenshotPart()));
+    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
+    if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
+        qDebug() << "Error activating hotkey:" << partHotkey;        // Shortcut for part of the screen
+
+    _shortcutScreenFull = new QxtGlobalShortcut;
+    QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processCodeShare()));
+    QString codeHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_CODE).toString();
+    if (!_shortcutScreenFull->setShortcut(QKeySequence(codeHotkey)))
+        qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
+
+
     _trayIconMenu = new QMenu;
     _trayIconMenu->addAction(tr("About"), this, SLOT(aboutDialog()));
-    _trayIconMenu->addAction(tr("Full s-shot (%2)").arg(DEFAULT_HOTKEY_FULL), this, SLOT(processScreenshotFull()));
-    _trayIconMenu->addAction(tr("Half s-shot (%1)").arg(DEFAULT_HOTKEY_PART), this, SLOT(processScreenshotPart()));
+    _trayIconMenu->addAction(tr("Text share (%1)").arg(codeHotkey), this, SLOT(processCodeShare()));
+    _trayIconMenu->addAction(tr("Full s-shot (%1)").arg(fullHotkey), this, SLOT(processScreenshotFull()));
+    _trayIconMenu->addAction(tr("Half s-shot (%1)").arg(partHotkey), this, SLOT(processScreenshotPart()));
     _trayIconMenu->addAction(tr("Configure"), _configWidget, SLOT(show()));
     _trayIconMenu->addSeparator();
     _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
@@ -42,18 +60,6 @@ Application::Application(int argc, char *argv[]):
     connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
     _trayIcon->setContextMenu(_trayIconMenu);                                   // Tray icon
-
-    _shortcutScreenFull = new QxtGlobalShortcut;
-    QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processScreenshotFull()));
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-    if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
-        qDebug("Error activating hotkey..");                                        // Shortcut for full screen
-
-    _shortcutScreenPart = new QxtGlobalShortcut;
-    QObject::connect(_shortcutScreenPart, SIGNAL(activated()), SLOT(processScreenshotPart()));
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-    if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
-        qDebug("Error activating hotkey..");                                        // Shortcut for part of the screen
 
     _network = new Network(_settings, this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
@@ -83,26 +89,31 @@ void Application::init(const QFile &file)
 void Application::processScreenshot(bool isFullScreen)
 {
     QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-
-    if (!isFullScreen)
-    {
+    if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
         if (!imageSelectDialog.exec())
             return;
     }
 
     QTemporaryFile tempFile;
-    if (!tempFile.open())
-    {
+    if (!tempFile.open()) {
         qDebug() << "Error opening temporary file!";
         return;
     }
     tempFile.close();
-
-    pixmap.save(tempFile.fileName(),"png");
-
-    _network->upload(tempFile.fileName());
+    auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    pixmap.save(tempFile.fileName(), imagetype.toAscii().constData());
+    _network->uploadFile(tempFile.fileName(), imagetype);
 }
+
+void Application::processCodeShare()
+{
+    qDebug() << "Sharing screenshot!";
+    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    auto text = QApplication::clipboard()->text();
+    _network->upload(text.toUtf8(),sourcestype);
+}
+
 
 void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &button)
 {
@@ -122,7 +133,7 @@ void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &butto
 void Application::linkAvaliable(const QString &link)
 {
     QApplication::clipboard()->setText(link);
-    _trayIcon->showMessage(tr("Done!"), tr("Screenshot uploaded!"), QSystemTrayIcon::Information, 6500);
+    _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
 }
 
 void Application::aboutDialog()

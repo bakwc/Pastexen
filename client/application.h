@@ -20,6 +20,7 @@ public:
 private slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
+    void processCodeShare();
     void trayIconClicked(const QSystemTrayIcon::ActivationReason &button);
     void linkAvaliable(const QString &link);
     void aboutDialog();
@@ -31,6 +32,7 @@ private:
     QMenu *_trayIconMenu;
     QxtGlobalShortcut *_shortcutScreenFull;
     QxtGlobalShortcut *_shortcutScreenPart;
+    QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     Ui::Form *_configUi;
     QSettings *_settings;

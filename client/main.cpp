@@ -9,8 +9,8 @@
 int main(int argc, char *argv[])
 {
     #if defined(Q_OS_WIN)
-        HWND hwnd = GetConsoleWindow();
-        ShowWindow(hwnd, 0);               // For hiding console in windows
+    //    HWND hwnd = GetConsoleWindow();
+    //    ShowWindow(hwnd, 0);               // For hiding console in windows
     #endif
     Application app(argc, argv);
     app.init(QFile());
