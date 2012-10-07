@@ -30,3 +30,4 @@ pastexenImages/*
 server/debug*
 speedserver/debug*
 img/*
+ui_*

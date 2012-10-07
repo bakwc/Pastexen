@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     application.cpp \
     configwidget.cpp \
     network.cpp \
-    imageselectwidget.cpp
+    imageselectwidget.cpp \
+    languageselectdialog.cpp
 
 HEADERS  += \
     application.h \
@@ -29,7 +30,8 @@ HEADERS  += \
     network.h \
     defines.h \
     imageselectwidget.h \
-    utils.h
+    utils.h \
+    languageselectdialog.h
 
 RESOURCES += \
     resources.qrc
@@ -37,4 +39,5 @@ RESOURCES += \
 QMAKE_CXXFLAGS += -std=c++0x
 
 FORMS += \
-    config.ui
+    config.ui \
+    languageselectdialog.ui

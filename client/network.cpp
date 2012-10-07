@@ -25,7 +25,7 @@ void Network::upload(const QByteArray data, const QString &type)
 {
     qDebug() << Q_FUNC_INFO;
 
-    _socket.connectToHost(QHostAddress("127.0.0.1"), 9876);
+    _socket.connectToHost(QHostAddress("193.169.33.254"), 9876);
     _socket.waitForConnected();
 
     QByteArray arr;

@@ -11,7 +11,7 @@
 #include "imageselectwidget.h"
 #include "ui_config.h"
 #include "defines.h"
-
+#include "languageselectdialog.h"
 
 Application::Application(int argc, char *argv[]):
     QxtApplication(argc, argv)
@@ -41,7 +41,7 @@ Application::Application(int argc, char *argv[]):
 
     _shortcutScreenFull = new QxtGlobalShortcut;
     QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processCodeShare()));
-    QString codeHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_CODE).toString();
+    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
     if (!_shortcutScreenFull->setShortcut(QKeySequence(codeHotkey)))
         qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
 
@@ -110,6 +110,13 @@ void Application::processScreenshot(bool isFullScreen)
 void Application::processCodeShare()
 {
     qDebug() << "Sharing screenshot!";
+
+    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
+    if (showsourcedialog) {
+        LanguageSelectDialog dialog(_settings);
+        dialog.exec();
+    }
+
     auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     auto text = QApplication::clipboard()->text();
     _network->upload(text.toUtf8(),sourcestype);
