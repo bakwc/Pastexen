@@ -13,8 +13,7 @@ class Network : public QObject
 public:
     explicit Network(QSettings *settings, QObject *parent = 0);
     void uploadFile(const QString &fileName, const QString &type);
-    void upload(const QByteArray data, const QString &type);
-    void upload(const QString &fileName, const QString &type);
+    void upload(const QByteArray &data, const QString &type);
 signals:
     void linkReceived(const QString &link);
 private slots:
