@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>yascreens.png</file>
+        <file>icon.png</file>
     </qresource>
 </RCC>

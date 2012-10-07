@@ -1,3 +1,5 @@
+#include <QDesktopWidget>
+
 #include "languageselectdialog.h"
 #include "ui_languageselectdialog.h"
 #include "defines.h"
@@ -9,8 +11,11 @@ LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QWidget *parent)
 {
     ui->setupUi(this);
     this->setFixedSize(this->size());
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
+                      QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
+                       this->width(), this->height());
     showTypes();
-
     auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     int srcIndex = ui->comboLanguageType->findData(sourcestype);
     if (srcIndex != -1) {
