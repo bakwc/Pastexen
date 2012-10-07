@@ -15,13 +15,7 @@ Network::Network(QSettings *settings, QObject *parent) :
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
 }
 
-void Network::uploadFile(const QString &fileName, const QString &type)
-{
-    auto data = readFile(fileName);
-    upload(data, type);
-}
-
-void Network::upload(const QByteArray data, const QString &type)
+void Network::upload(const QByteArray& data, const QString &type)
 {
     qDebug() << Q_FUNC_INFO;
 

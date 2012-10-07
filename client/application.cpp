@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QBuffer>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -96,15 +97,14 @@ void Application::processScreenshot(bool isFullScreen)
             return;
     }
 
-    QTemporaryFile tempFile;
-    if (!tempFile.open()) {
-        qDebug() << "Error opening temporary file!";
-        return;
-    }
-    tempFile.close();
     auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
-    pixmap.save(tempFile.fileName(), imagetype.toAscii().constData());
-    _network->uploadFile(tempFile.fileName(), imagetype);
+
+    QByteArray imageBytes;
+    QBuffer buffer(&imageBytes);
+    buffer.open(QFile::WriteOnly);
+    pixmap.save(&buffer, imagetype.toAscii().constData());
+    buffer.close();
+    _network->upload(imageBytes, imagetype);
 }
 
 void Application::processCodeShare()
