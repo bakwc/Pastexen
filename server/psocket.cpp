@@ -22,7 +22,7 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     _socket->setParent(this);
     moveToThread(thread);
 
-    //qDebug() << "New connection";
+    qDebug() << "New connection";
 
 #ifdef TIME_DEBUG
     if (!dTime) {
@@ -34,22 +34,20 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
 
 pSocket::~pSocket()
 {
-    //qDebug() << "Disconnect";
 }
 
 
 void pSocket::sendLink(const QString& link)
 {
     QByteArray arr;
-    const QString str = Settings::imageLinkPrefix() + link;
     arr.append("proto=pastexen\n");
     arr.append("version=1.0\n");
     arr.append("url=");
-    arr.append(str);
+    arr.append(link);
     arr.append("\n\n");
     _socket->write(arr);
 
-    qDebug() << str;
+    qDebug() << link;
 }
 
 
@@ -60,9 +58,7 @@ void pSocket::onDataReceived()
     if (_packetSize == 0) {
         int n = data.indexOf("\n\n");
         QByteArray header = data.left(n);
-//        qDebug() << "Data size: " << data.size();
         auto content = data.mid(n+2);
-//        qDebug() << "Content size()" << content.size();
         _buffer = content;
         _packetSize = getValue(header, "size").toInt();
         _fileType = getValue(header, "type");
@@ -70,17 +66,12 @@ void pSocket::onDataReceived()
         _buffer += data;
     }
 
-//    qDebug() << "buffer size" << _buffer.size();
-//    qDebug() << "packet size" << _packetSize;
     if (_buffer.size() == _packetSize) {
-//        const QString filename = saveToFile(_buffer, _fileType, pSetting::types(), pSetting::fileNameLenght());
-//        sendLink(pSetting::imageLinkPrefix() + filename);
-//        qDebug() << filename;
         _packetSize = 0;
 
         const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
         emit saveFile(data, _fileType, filename);
-        sendLink(filename);
+        sendLink(Settings::prefixes()[_fileType] + filename);
 
 #ifdef TIME_DEBUG
         qDebug() << dTime->elapsed();

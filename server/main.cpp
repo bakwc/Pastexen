@@ -14,8 +14,7 @@ int main(int argc, char** argv)
 
     if (argc < 2) {
         qDebug() << "Usage:\n"
-                 << "pastexenServer \"path to config file\"";
-        return 0;
+                 << "pastexenServer \[config.file\]\n";
     }
 
     Settings    setting(argv[1]);

@@ -6,8 +6,8 @@
 
 pSaver* pSaver::pThis = 0;
 
-pSaver::pSaver(QObject *parent) :
-    QThread(parent)
+pSaver::pSaver() :
+    QThread(0)
 {
     moveToThread(this);
     this->start(QThread::LowPriority);
