@@ -5,6 +5,11 @@
 #include "psaver.h"
 #include <QMetaObject>
 
+#ifdef TIME_DEBUG
+#include <QTime>
+QTime *dTime = 0;
+#endif
+
 
 pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     QObject(0), _socket(socket), _packetSize(0)
@@ -18,6 +23,13 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     moveToThread(thread);
 
     //qDebug() << "New connection";
+
+#ifdef TIME_DEBUG
+    if (!dTime) {
+        dTime = new QTime;
+        dTime->start();
+    }
+#endif
 }
 
 pSocket::~pSocket()
@@ -69,6 +81,10 @@ void pSocket::onDataReceived()
         const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
         emit saveFile(data, _fileType, filename);
         sendLink(filename);
+
+#ifdef TIME_DEBUG
+        qDebug() << dTime->elapsed();
+#endif
     }
 }
 

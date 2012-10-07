@@ -12,7 +12,13 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
-    Settings    setting("../serverSettings.ini");
+    if (argc < 2) {
+        qDebug() << "Usage:\n"
+                 << "pastexenServer \"path to config file\"";
+        return 0;
+    }
+
+    Settings    setting(argv[1]);
     pSaver      saver;
     pThreadPool pool(Settings::threads());
 
