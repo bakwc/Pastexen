@@ -8,6 +8,7 @@ LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QWidget *parent)
     , ui(new Ui::LanguageSelectDialog)
 {
     ui->setupUi(this);
+    this->setFixedSize(this->size());
     showTypes();
 
     auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();

@@ -20,6 +20,6 @@ private slots:
     void on_buttonBox_accepted();
 
 private:
-    Ui::LanguageSelectDialog *ui;
     QSettings *_settings;
+    Ui::LanguageSelectDialog *ui;
 };
