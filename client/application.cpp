@@ -55,7 +55,7 @@ Application::Application(int argc, char *argv[]):
     _trayIconMenu->addSeparator();
     _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
 
-    QIcon icon(":/icons/yascreens.png");
+    QIcon icon(":/icons/icon.png");
     _trayIcon = new QSystemTrayIcon(icon, this);
     connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));

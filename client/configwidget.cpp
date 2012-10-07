@@ -20,7 +20,7 @@ void ConfigWidget::init()
                          .arg(APP_NAME)
                          .arg(tr("Config")));
 
-    QIcon icon(":/icons/yascreens.png");
+    QIcon icon(":/icons/icon.png");
     this->setWindowIcon(icon);
 
     showTypes();
