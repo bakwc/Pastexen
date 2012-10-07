@@ -19,10 +19,12 @@ QMAKE_CXXFLAGS += -std=c++0x
 SOURCES += main.cpp \
     serverprocess.cpp \
     saveprocess.cpp \
-    utils.cpp
+    utils.cpp \
+    psetting.cpp
 
 HEADERS += \
     utils.h \
     serverprocess.h \
     saveprocess.h \
-    qasyncqueue.h
+    qasyncqueue.h \
+    psetting.h

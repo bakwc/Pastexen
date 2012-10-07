@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QSettings>
+#include <QTime>
 #include "pserver.h"
 #include "pthreadpool.h"
 #include "psetting.h"
@@ -11,9 +12,9 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
-    pSetting    setting("../serverSettings.ini");
+    Settings    setting("../serverSettings.ini");
     pSaver      saver;
-    pThreadPool pool(pSetting::threads());
+    pThreadPool pool(Settings::threads());
 
     pServer     server;
 

@@ -4,6 +4,7 @@
 #include <QtNetwork/QTcpSocket>
 
 #include "saveprocess.h"
+#include "psetting.h"
 
 struct Client
 {
@@ -17,14 +18,15 @@ struct Client
     int _packetSize;
     bool _writeEnabled;
     QString _fileType;
+    QString _returnLink;
 };
 
 class ServerProcess : public QRunnable
 {
 public:
-    ServerProcess(FileSaveQueue &saveQueue, LinkReturnQueue &returnQueue);
+    ServerProcess(ClientQueue &saveQueue, ClientQueue &returnQueue);
     void run();
 private:
-    FileSaveQueue &_saveQueue;
-    LinkReturnQueue &_returnQueue;
+    ClientQueue &_saveQueue;
+    ClientQueue &_returnQueue;
 };

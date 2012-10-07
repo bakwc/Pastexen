@@ -22,19 +22,13 @@ Settings::Settings(const QString &filename) :
 
     for (auto i = _imageTypes.begin(); i != _imageTypes.end(); i++) {
        _types.insert(*i, _imageDir);
+       _prefixes.insert(*i, _imageLinkPrefix);
     }
 
     for (auto i = _sourceTypes.begin(); i != _sourceTypes.end(); i++) {
        _types.insert(*i, _sourceDir);
+       _prefixes.insert(*i, _sourceLinkPrefix);
     }
-
-    //for(const QString& key : _imageTypes) {
-    //    _types.insert(key, _imageDir);
-    //}
-
-    //for(const QString& key : _sourceTypes) {
-    //    _types.insert(key, _sourceDir);
-    //}
 
     pThis = this;
 

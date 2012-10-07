@@ -20,7 +20,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& fi
     int i = 10;
     QFile file;
 //    QString filename;
-    QString typeFolder(pSetting::types()[type]);
+    QString typeFolder(Settings::types()[type]);
 
 //        filename = randName(pSetting::fileNameLenght()) + '.' + type;
     const QString path = typeFolder + filename;

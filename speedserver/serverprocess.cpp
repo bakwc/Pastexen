@@ -3,11 +3,12 @@
 #include <QtNetwork/QHostAddress>
 #include <QList>
 #include <QString>
+#include <QTime>
 
 #include "serverprocess.h"
 #include "utils.h"
 
-ServerProcess::ServerProcess(FileSaveQueue &saveQueue, LinkReturnQueue &returnQueue)
+ServerProcess::ServerProcess(ClientQueue &saveQueue, ClientQueue &returnQueue)
     : _saveQueue(saveQueue)
     , _returnQueue(returnQueue)
 {
@@ -20,13 +21,32 @@ void ServerProcess::run()
     server.listen(QHostAddress("0.0.0.0"), 9876);
     qDebug() << "Server started at 0.0.0.0:9876";
 
+    QTime timer;
+    timer.start();
+    int t = 0;
     while (true) {
 
         ///          New connection
         server.waitForNewConnection(0);
         QTcpSocket *socket = server.nextPendingConnection();
-        if (socket != 0) {
+
+        while (socket != 0) {
             clients.push_back(Client(socket));
+            if (t==0) {
+                timer.restart();
+            }
+            socket = server.nextPendingConnection();
+        }
+
+
+        ///         Removing old clients
+        for (auto i = clients.begin(); i != clients.end();) {
+            if (i->_socket->state() == QAbstractSocket::UnconnectedState) {
+                i = clients.erase(i);
+                qDebug() << "Client disconnected";
+            } else {
+                i++;
+            }
         }
 
         ///          Processing clients
@@ -51,13 +71,23 @@ void ServerProcess::run()
                     qDebug() << "Received a file of type" << i->_fileType;
                     i->_writeEnabled = false;
                     _saveQueue.push(&(*i));
-                    i->_packetSize = 0;
                 }
             }
         }
 
-        //TODO: link response queue
+        ///         Returning links to clients
+        while (!_returnQueue.isEmpty()) {
+            Client *client = _returnQueue.pull();
+            qDebug() << "Sending link back:" << client->_returnLink;
 
-        Thread::msleep(1000);
+            QByteArray arr;
+            arr.append("proto=pastexen\n");
+            arr.append("version=1.0\n");
+            arr.append("url=");
+            arr.append(client->_returnLink);
+            arr.append("\n\n");
+            client->_socket->write(arr);
+            client->_socket->disconnectFromHost();
+        }
     }
 }

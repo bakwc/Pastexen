@@ -5,25 +5,22 @@
 #include <QByteArray>
 
 #include "qasyncqueue.h"
+#include "psetting.h"
 
 struct Client;
+struct LinkReturnTask;
 
-struct LinkReturnTask
-{
-    QString _link;
-    int _clientSocketDescriptor;
-};
-
-typedef QAsyncQueue<Client*> FileSaveQueue;
-typedef QAsyncQueue<LinkReturnTask> LinkReturnQueue;
+typedef QAsyncQueue<Client*> ClientQueue;
 
 class SaveProcess : public QRunnable
 {
 public:
-    SaveProcess(FileSaveQueue &saveQueue, LinkReturnQueue &returnQueue);
+    SaveProcess(ClientQueue &saveQueue, ClientQueue &returnQueue);
     void run();
 private:
-    FileSaveQueue &_saveQueue;
-    LinkReturnQueue &_returnQueue;
+    QString getFileName();
+private:
+    ClientQueue &_saveQueue;
+    ClientQueue &_returnQueue;
 };
 

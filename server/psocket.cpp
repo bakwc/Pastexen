@@ -1,14 +1,10 @@
 #include "psocket.h"
 #include <QStringList>
 #include "utils.h"
-#include <QTime>
 #include "psetting.h"
 #include "psaver.h"
 #include <QMetaObject>
 
-#ifdef TIME_DEBUG
-QTime* debugTime = 0;
-#endif
 
 pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     QObject(0), _socket(socket), _packetSize(0)
@@ -21,31 +17,19 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     _socket->setParent(this);
     moveToThread(thread);
 
-    qDebug() << "New connection";
-
-#ifdef TIME_DEBUG
-    if (!debugTime) {
-        debugTime = new QTime;
-        debugTime->start();
-    }
-#endif
+    //qDebug() << "New connection";
 }
 
 pSocket::~pSocket()
 {
-    qDebug() << "Disconnect";
-//    delete _socket;
-//    disconnect();
-#ifdef TIME_DEBUG
-    qDebug() << 0.001*debugTime->elapsed();
-#endif
+    //qDebug() << "Disconnect";
 }
 
 
 void pSocket::sendLink(const QString& link)
 {
     QByteArray arr;
-    const QString str = pSetting::imageLinkPrefix() + link;
+    const QString str = Settings::imageLinkPrefix() + link;
     arr.append("proto=pastexen\n");
     arr.append("version=1.0\n");
     arr.append("url=");
@@ -82,7 +66,7 @@ void pSocket::onDataReceived()
 //        qDebug() << filename;
         _packetSize = 0;
 
-        const QString filename = randName(pSetting::fileNameLenght()) + '.' + _fileType;
+        const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
         emit saveFile(data, _fileType, filename);
         sendLink(filename);
     }
