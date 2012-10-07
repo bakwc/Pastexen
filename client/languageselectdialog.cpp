@@ -9,8 +9,8 @@ LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QWidget *parent)
 {
     ui->setupUi(this);
     this->setFixedSize(this->size());
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
     showTypes();
-
     auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     int srcIndex = ui->comboLanguageType->findData(sourcestype);
     if (srcIndex != -1) {

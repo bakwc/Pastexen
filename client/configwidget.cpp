@@ -1,5 +1,6 @@
 #include "configwidget.h"
 #include <QCloseEvent>
+#include <QDesktopWidget>
 #include "defines.h"
 
 ConfigWidget::ConfigWidget(Ui::Form *ui, QSettings *settings, QWidget *parent)
@@ -7,6 +8,10 @@ ConfigWidget::ConfigWidget(Ui::Form *ui, QSettings *settings, QWidget *parent)
       _ui(ui),
       _settings(settings)
 {
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
+                      QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
+                       this->width(), this->height());
 }
 
 void ConfigWidget::init()
