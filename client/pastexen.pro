@@ -41,3 +41,11 @@ QMAKE_CXXFLAGS += -std=c++0x
 FORMS += \
     config.ui \
     languageselectdialog.ui
+
+INSTALLS += target
+isEmpty(PREFIX) {
+ PREFIX = /usr/local/bin
+}
+target.path=$$PREFIX/
+
+

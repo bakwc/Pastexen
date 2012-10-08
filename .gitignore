@@ -11,7 +11,9 @@
 *.la
 *.a
 
-Makefile*
+client/Makefile*
+server/Makefile*
+speedserver/Makefile*
 
 debug/*
 release/*
@@ -31,3 +33,6 @@ server/debug*
 speedserver/debug*
 img/*
 ui_*
+moc_*.cpp
+qrc_*.cpp
+
