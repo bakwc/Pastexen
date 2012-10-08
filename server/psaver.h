@@ -5,6 +5,8 @@
 #include <QString>
 #include <QTcpSocket>
 #include <QByteArray>
+#include <QSet>
+#include <QHash>
 
 class pSaver : public QThread
 {
@@ -25,6 +27,10 @@ protected:
 private:
     static pSaver  *pThis;
     static QString randName(int count);
+    QSet<QString> _set;
+
+    void findFiles();
+    QStringList unique(const QStringList& list);
 };
 
 #endif // SAVER_H
