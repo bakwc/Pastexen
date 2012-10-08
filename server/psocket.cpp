@@ -4,6 +4,7 @@
 #include "psetting.h"
 #include "psaver.h"
 #include <QMetaObject>
+#include <QCoreApplication>
 
 #ifdef TIME_DEBUG
 #include <QTime>
@@ -17,7 +18,7 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     connect(_socket, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
     connect(_socket, SIGNAL(disconnected()), this, SLOT(deleteLater()));
 //    connect(_socket, SIGNAL(disconnected()), _socket, SLOT(deleteLater()));
-    connect(this, SIGNAL(saveFile(QByteArray,QString,QString)), pSaver::inst(), SLOT(save(QByteArray,QString,QString)));
+    connect(this, SIGNAL(saveFile(QByteArray,QString)), pSaver::inst(), SLOT(save(QByteArray,QString)));
 
     _socket->setParent(this);
     moveToThread(thread);
@@ -47,7 +48,7 @@ void pSocket::sendLink(const QString& link)
     arr.append("\n\n");
     _socket->write(arr);
 
-    qDebug() << link;
+//    qDebug() << Q_FUNC_INFO << link;
 }
 
 
@@ -69,9 +70,12 @@ void pSocket::onDataReceived()
     if (_buffer.size() == _packetSize) {
         _packetSize = 0;
 
-        const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
-        emit saveFile(data, _fileType, filename);
-        sendLink(Settings::prefixes()[_fileType] + filename);
+//        const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
+        emit saveFile(data, _fileType);
+
+//        qApp->postEvent(pSaver::inst(), new SaveEvent(data, _fileType, this));
+
+//        sendLink(Settings::prefixes()[_fileType] + filename);
 
 #ifdef TIME_DEBUG
         qDebug() << dTime->elapsed();
@@ -80,19 +84,12 @@ void pSocket::onDataReceived()
 }
 
 
-QString pSocket::randName(int count)
+void pSocket::customEvent(QEvent *ev)
 {
-    QString str;
+    if (ev->type() == SendLinkEvent::TYPE) {
+        qDebug() << Q_FUNC_INFO << ((SendLinkEvent*)ev)->link();
 
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-
-    qsrand(QTime().msecsTo(QTime::currentTime()));
-    for (int i = 0; i < count; ++i) {
-        str += alphanum[qrand() % (sizeof(alphanum) - 1)];
+        SendLinkEvent *event = (SendLinkEvent*)ev;
+        sendLink(event->link());
     }
-
-    return str;
 }

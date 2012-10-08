@@ -1,4 +1,5 @@
 #include "psetting.h"
+#include <QThread>
 
 Settings* Settings::pThis = 0;
 
@@ -11,7 +12,7 @@ Settings::Settings(const QString &filename) :
 
     _host       = _set.value("host", "0.0.0.0").toString();
     _port       = _set.value("port", 9876).toInt();
-    _threads    = _set.value("threads", 8).toInt();
+    _threads    = _set.value("threads", QThread::idealThreadCount() - 2).toInt();
     _fileNameLength = _set.value("file_name_length", 5).toInt();
     QStringList _imageTypes = _set.value("image_types", QStringList() << "jpg" << "png").toStringList();
     QStringList _sourceTypes= _set.value("source_types", QStringList() << "c" << "cpp" << "txt" << "py").toStringList();
@@ -29,14 +30,6 @@ Settings::Settings(const QString &filename) :
        _types.insert(*i, _sourceDir);
        _prefixes.insert(*i, _sourceLinkPrefix);
     }
-
-    //for(const QString& key : _imageTypes) {
-    //    _types.insert(key, _imageDir);
-    //}
-
-    //for(const QString& key : _sourceTypes) {
-    //    _types.insert(key, _sourceDir);
-    //}
 
     pThis = this;
 

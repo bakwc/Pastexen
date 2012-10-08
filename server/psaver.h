@@ -17,7 +17,10 @@ signals:
     void fileName(QString str);
 
 public slots:
-    void save(const QByteArray& data, const QString &type, const QString &filename);
+    void save(const QByteArray& data, const QString &type);
+
+protected:
+//    void customEvent(QEvent *);
 
 private:
     static pSaver  *pThis;

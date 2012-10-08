@@ -32,5 +32,5 @@ private:
     QString         _imageLinkPrefix;
     QString         _sourceLinkPrefix;
 
-    static Settings* inst() { return pThis; }
+    static const Settings* inst() { return pThis; }
 };
