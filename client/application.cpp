@@ -40,10 +40,10 @@ Application::Application(int argc, char *argv[]):
     if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
         qDebug() << "Error activating hotkey:" << partHotkey;        // Shortcut for part of the screen
 
-    _shortcutScreenFull = new QxtGlobalShortcut;
-    QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processCodeShare()));
+    _shortcutTextShare = new QxtGlobalShortcut;
+    QObject::connect(_shortcutTextShare, SIGNAL(activated()), SLOT(processCodeShare()));
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
-    if (!_shortcutScreenFull->setShortcut(QKeySequence(codeHotkey)))
+    if (!_shortcutTextShare->setShortcut(QKeySequence(codeHotkey)))
         qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
 
 
@@ -110,7 +110,7 @@ void Application::processScreenshot(bool isFullScreen)
 
 void Application::processCodeShare()
 {
-    qDebug() << "Sharing screenshot!";
+    qDebug() << "Sharing code!";
 
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     if (showsourcedialog) {
