@@ -16,7 +16,7 @@ class Application : public QxtApplication
 public:
     Application(int argc, char *argv[]);
     ~Application();
-    void init(const QFile& file);
+    void initialize();
 private slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }

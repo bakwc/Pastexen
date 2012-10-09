@@ -78,10 +78,11 @@ Application::~Application()
     delete _configUi;
 }
 
-void Application::init(const QFile &file)
+void Application::initialize()
 {
     qDebug() << Q_FUNC_INFO;
     _trayIcon->show();
+    QFile file(SETTINGS_FILE);
 
     if (!file.exists())
         _configWidget->show();
@@ -140,6 +141,7 @@ void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &butto
 
 void Application::linkAvaliable(const QString &link)
 {
+    qDebug() << Q_FUNC_INFO;
     QApplication::clipboard()->setText(link);
     _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
 }

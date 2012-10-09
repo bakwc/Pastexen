@@ -3,6 +3,6 @@
 int main(int argc, char *argv[])
 {
     Application app(argc, argv);
-    app.init(QFile());
+    app.initialize();
     return app.exec();
 }
