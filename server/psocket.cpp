@@ -69,9 +69,9 @@ void pSocket::onDataReceived()
 
     if (_buffer.size() == _packetSize) {
         _packetSize = 0;
-
+	qDebug() << Q_FUNC_INFO << " send. Data size:" << data.size();
 //        const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
-        emit saveFile(data, _fileType);
+        emit saveFile(_buffer, _fileType);
 
 //        qApp->postEvent(pSaver::inst(), new SaveEvent(data, _fileType, this));
 

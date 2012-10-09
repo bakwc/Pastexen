@@ -33,7 +33,7 @@ void pSaver::save(const QByteArray &data, const QString& type)
         path = typeFolder + filename;
         file.setFileName(path);
 
-        qDebug() << path;
+    //    qDebug() << path;
 
     } while(_set.contains(path) && --i);
 
@@ -41,7 +41,7 @@ void pSaver::save(const QByteArray &data, const QString& type)
         qDebug() << "Cannot create file:" << file.fileName();
         return;
     }
-
+    qDebug() << "path:" << path << " Data size:" << data.size();
     file.write(data);
 
     qApp->postEvent(sender(), new SendLinkEvent( Settings::prefixes()[type] + filename ));
