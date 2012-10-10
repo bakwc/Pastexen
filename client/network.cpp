@@ -1,10 +1,10 @@
 #include <QHttpRequestHeader>
+#include <QHostInfo>
 #include <QByteArray>
 #include <QFile>
 #include <QDebug>
 #include <QDate>
 #include <QTime>
-#include <QHostAddress>
 #include "network.h"
 #include "utils.h"
 
@@ -12,6 +12,7 @@ Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
     _settings(settings)
 {
+    _serverAddr = QHostInfo::fromName("pastexen.com").addresses().at(0);
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
 }
 
@@ -19,7 +20,7 @@ void Network::upload(const QByteArray& data, const QString &type)
 {
     qDebug() << Q_FUNC_INFO;
 
-    _socket.connectToHost(QHostAddress("193.169.33.254"), 9876);
+    _socket.connectToHost(_serverAddr, 9876);
     _socket.waitForConnected();
 
     QByteArray arr;

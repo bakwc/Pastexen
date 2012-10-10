@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QSslError>
 #include <QSettings>
+#include <QHostAddress>
 #include "defines.h"
 
 class Network : public QObject
@@ -24,4 +25,5 @@ private:
     QSettings *_settings;
     bool _ready;
     QTcpSocket _socket;
+    QHostAddress _serverAddr;
 };
