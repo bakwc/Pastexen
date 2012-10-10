@@ -23,7 +23,9 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     _socket->setParent(this);
     moveToThread(thread);
 
-    qDebug() << "New connection";
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO << "New connection" << socket->localAddress();
+#endif
 
 #ifdef TIME_DEBUG
     if (!dTime) {
@@ -40,6 +42,10 @@ pSocket::~pSocket()
 
 void pSocket::sendLink(const QString& link)
 {
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO;
+#endif
+
     QByteArray arr;
     arr.append("proto=pastexen\n");
     arr.append("version=1.0\n");
@@ -48,12 +54,18 @@ void pSocket::sendLink(const QString& link)
     arr.append("\n\n");
     _socket->write(arr);
 
-//    qDebug() << Q_FUNC_INFO << link;
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO << link;
+#endif
 }
 
 
 void pSocket::onDataReceived()
 {
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO;
+#endif
+
     auto data = _socket->readAll();
 
     if (_packetSize == 0) {
@@ -67,29 +79,47 @@ void pSocket::onDataReceived()
         _buffer += data;
     }
 
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO << "read";
+#endif
+
     if (_buffer.size() == _packetSize) {
+
+#ifdef FUNC_DEBUG
+        qDebug() << Q_FUNC_INFO << "emit";
+#endif
+
         _packetSize = 0;
-	qDebug() << Q_FUNC_INFO << " send. Data size:" << data.size();
-//        const QString filename = randName(Settings::fileNameLenght()) + '.' + _fileType;
         emit saveFile(_buffer, _fileType);
-
-//        qApp->postEvent(pSaver::inst(), new SaveEvent(data, _fileType, this));
-
-//        sendLink(Settings::prefixes()[_fileType] + filename);
 
 #ifdef TIME_DEBUG
         qDebug() << dTime->elapsed();
 #endif
     }
+
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO << "end";
+#endif
 }
 
 
 void pSocket::customEvent(QEvent *ev)
 {
-    if (ev->type() == SendLinkEvent::TYPE) {
-        qDebug() << Q_FUNC_INFO << ((SendLinkEvent*)ev)->link();
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO;
+#endif
 
+    if (ev->type() == SendLinkEvent::TYPE) {
         SendLinkEvent *event = (SendLinkEvent*)ev;
+
+#ifdef FUNC_DEBUG
+        qDebug() << Q_FUNC_INFO << event->link();
+#endif
+
         sendLink(event->link());
     }
+
+#ifdef FUNC_DEBUG
+    qDebug() << Q_FUNC_INFO << "end";
+#endif
 }

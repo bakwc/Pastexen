@@ -64,4 +64,3 @@ QString getValue(const QString& data, const QString& key)
 
     return res;
 }
-

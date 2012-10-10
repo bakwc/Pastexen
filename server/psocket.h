@@ -27,7 +27,7 @@ public slots:
 private:
     QByteArray  _buffer;
     QTcpSocket  *_socket;
-    quint32     _packetSize;
+    int         _packetSize;
     QString     _fileType;
 
 private:

@@ -23,6 +23,10 @@ pSaver::pSaver() :
 
 void pSaver::save(const QByteArray &data, const QString& type)
 {
+#ifdef FUNC_DEBUG
+    qDebug() << "    " << Q_FUNC_INFO;
+#endif
+
     int i = 10;
     QFile file;
     QString filename, path;
@@ -32,19 +36,28 @@ void pSaver::save(const QByteArray &data, const QString& type)
         filename = randName(Settings::fileNameLenght()) + '.' + type;;
         path = typeFolder + filename;
         file.setFileName(path);
-
-    //    qDebug() << path;
-
     } while(_set.contains(path) && --i);
 
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "Cannot create file:" << file.fileName();
         return;
     }
-    qDebug() << "path:" << path << " Data size:" << data.size();
+
+#ifdef FUNC_DEBUG
+    qDebug() << "    "  << Q_FUNC_INFO << "Write: path:" << path << ", size:" << data.size();
+#endif
+
     file.write(data);
 
+#ifdef FUNC_DEBUG
+    qDebug() << "    "  << Q_FUNC_INFO << "postEvent()";
+#endif
+
     qApp->postEvent(sender(), new SendLinkEvent( Settings::prefixes()[type] + filename ));
+
+#ifdef FUNC_DEBUG
+    qDebug() << "    "  << Q_FUNC_INFO << "end";
+#endif
 }
 
 
@@ -93,14 +106,3 @@ QStringList pSaver::unique(const QStringList &list)
 
     return l;
 }
-
-
-//void pSaver::customEvent(QEvent *ev)
-//{
-//    if (ev->type() == SaveEvent::TYPE) {
-////        qDebug() << ((SaveEvent*)ev)->fileType();
-//        SaveEvent *event = (SaveEvent*)ev;
-
-//        save(event->data(), event->fileType(), event->sender());
-//    }
-//}
