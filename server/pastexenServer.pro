@@ -7,7 +7,9 @@ SOURCES += \
     psocket.cpp \
     pthreadpool.cpp \
     psetting.cpp \
-    psaver.cpp
+    psaver.cpp \
+    application.cpp \
+    logger.cpp
 
 HEADERS += \
     pserver.h \
@@ -16,7 +18,8 @@ HEADERS += \
     pthreadpool.h \
     psetting.h \
     psaver.h \
-    logger.h
+    logger.h \
+    application.h
 
 QMAKE_CXXFLAGS += -std=c++0x
 

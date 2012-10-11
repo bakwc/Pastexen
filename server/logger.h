@@ -1,5 +1,4 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#pragma once
 
 #include <QDebug>
 #include <QIODevice>
@@ -15,6 +14,3 @@ private:
     static QIODevice* _io;
 };
 
-QIODevice* Logger::_io = 0;
-
-#endif // LOGGER_H
