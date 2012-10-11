@@ -1,4 +1,4 @@
-QT += network
+QT += core network
 QT -= gui
 
 SOURCES += \
@@ -15,7 +15,8 @@ HEADERS += \
     utils.h \
     pthreadpool.h \
     psetting.h \
-    psaver.h
+    psaver.h \
+    logger.h
 
 QMAKE_CXXFLAGS += -std=c++0x
 
