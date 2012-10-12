@@ -16,11 +16,16 @@ int main(int argc, char** argv)
         return 0;
 
     QString pathToConfig = app.config();
-    QFile file;
-    file.setFileName(app.logFile());
-    file.open(QIODevice::Append);
+//    QFile file;
+//    file.setFileName(app.logFile());
+//    file.open(QIODevice::Append);
 
-    Logger::configure(&file);
+    if (app.logFile().size()) {
+        if (Logger::configure(app.logFile()))
+            qInstallMsgHandler(Logger::logger);
+        else
+            qDebug() << "Log file not been set";
+    }
 
     Settings    setting(pathToConfig);
     pSaver      saver;

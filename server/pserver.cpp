@@ -14,9 +14,11 @@ pServer::pServer(QObject *parent):
 {
     connect(&server, SIGNAL(newConnection()), this, SLOT(onConnection()));
     server.listen(Settings::host(), Settings::port());
-    qDebug("Server started");
 
-    Logger::log() << "\n\nServer started. Time:" << QDateTime::currentDateTime().toString();
+    qDebug() << "\n\nServer started. Time:" << QDateTime::currentDateTime().toString();
+#ifdef FUNC_DEBUG
+    qWarning() << "FuncDebug activated";
+#endif
 }
 
 void pServer::onConnection()

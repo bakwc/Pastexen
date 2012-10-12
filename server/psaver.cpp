@@ -24,7 +24,7 @@ pSaver::pSaver() :
 void pSaver::save(const QByteArray &data, const QString& type)
 {
 #ifdef FUNC_DEBUG
-    qDebug() << "    " << Q_FUNC_INFO;
+    qDebug() << "\n    " << Q_FUNC_INFO;
 #endif
 
     int i = 10;
@@ -39,24 +39,24 @@ void pSaver::save(const QByteArray &data, const QString& type)
     } while(_set.contains(path) && --i);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        qDebug() << "Cannot create file:" << file.fileName();
+        qDebug() << "\nCannot create file:" << file.fileName();
         return;
     }
 
 #ifdef FUNC_DEBUG
-    qDebug() << "    "  << Q_FUNC_INFO << "Write: path:" << path << ", size:" << data.size();
+    qDebug() << "\n    "  << Q_FUNC_INFO << "Write: path:" << path << ", size:" << data.size();
 #endif
 
     file.write(data);
 
 #ifdef FUNC_DEBUG
-    qDebug() << "    "  << Q_FUNC_INFO << "postEvent()";
+    qDebug() << "\n    "  << Q_FUNC_INFO << "postEvent()";
 #endif
 
     qApp->postEvent(sender(), new SendLinkEvent( Settings::prefixes()[type] + filename ));
 
 #ifdef FUNC_DEBUG
-    qDebug() << "    "  << Q_FUNC_INFO << "end";
+    qDebug() << "\n    "  << Q_FUNC_INFO << "end";
 #endif
 }
 
