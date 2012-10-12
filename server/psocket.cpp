@@ -74,7 +74,14 @@ void pSocket::onDataReceived()
         auto content = data.mid(n+2);
         _buffer = content;
         _packetSize = getValue(header, "size").toInt();
+        _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
+
+        if ( !Settings::types().contains(_fileType) ) {
+            qDebug() << "Sender type is not exist. Disconnect" << _socket->localAddress();
+            _socket->disconnectFromHost();
+        }
+
     } else {
         _buffer += data;
     }
