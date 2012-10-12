@@ -4,28 +4,26 @@
 Application::Application(int argc, char **argv) :
     QCoreApplication(argc, argv)
 {
-    /*qDebug() << "args" << */arguments();
+    _args = arguments();
+    _args.removeFirst();
 }
 
 bool Application::parseArgs()
 {
-    QStringList args = arguments();
-    args.removeFirst();
-
-    if (args.size() == 0) {
+    if (_args.size() == 0) {
         usage();
         return true;
     }
 
-    if (args[0] == "-h" || args[0] == "--help") {
+    if (_args[0] == "-h" || _args[0] == "--help") {
         usage();
         return false;
     }
 
-    for (int it = 0; it < args.size(); ++it) {
-        if (args[it] == "-log") {
-            if (++it <= args.size()-1) {
-                _logFile = args[it];
+    for (int it = 0; it < _args.size(); ++it) {
+        if (_args[it] == "-log") {
+            if (++it <= _args.size()-1) {
+                _logFile = _args[it];
             } else {
                 usage();
                 return false;
@@ -34,7 +32,7 @@ bool Application::parseArgs()
         }
 
         if (_config.size() == 0)
-            _config = args[it];
+            _config = _args[it];
         else {
             usage();
             return false;

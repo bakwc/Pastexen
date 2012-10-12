@@ -28,6 +28,8 @@ signals:
 public slots:
 
 private:
+    QStringList _args;
+
     void usage();
 };
 
