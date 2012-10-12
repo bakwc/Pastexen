@@ -24,7 +24,7 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     moveToThread(thread);
 
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO << "New connection" << socket->localAddress();
+    qDebug() << '\n' << Q_FUNC_INFO << "New connection" << socket->localAddress();
 #endif
 
 #ifdef TIME_DEBUG
@@ -43,7 +43,7 @@ pSocket::~pSocket()
 void pSocket::sendLink(const QString& link)
 {
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << '\n' << Q_FUNC_INFO;
 #endif
 
     QByteArray arr;
@@ -55,7 +55,7 @@ void pSocket::sendLink(const QString& link)
     _socket->write(arr);
 
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO << link;
+    qDebug() << '\n' << Q_FUNC_INFO << link;
 #endif
 }
 
@@ -63,7 +63,7 @@ void pSocket::sendLink(const QString& link)
 void pSocket::onDataReceived()
 {
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << '\n' << Q_FUNC_INFO;
 #endif
 
     auto data = _socket->readAll();
@@ -87,13 +87,13 @@ void pSocket::onDataReceived()
     }
 
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO << "read";
+    qDebug() << '\n' << Q_FUNC_INFO << "read";
 #endif
 
     if (_buffer.size() == _packetSize) {
 
 #ifdef FUNC_DEBUG
-        qDebug() << Q_FUNC_INFO << "emit";
+        qDebug() << '\n' << Q_FUNC_INFO << "emit";
 #endif
 
         _packetSize = 0;
@@ -105,7 +105,7 @@ void pSocket::onDataReceived()
     }
 
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO << "end";
+    qDebug() << '\n' << Q_FUNC_INFO << "end";
 #endif
 }
 
@@ -113,20 +113,20 @@ void pSocket::onDataReceived()
 void pSocket::customEvent(QEvent *ev)
 {
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << '\n' << Q_FUNC_INFO;
 #endif
 
     if (ev->type() == SendLinkEvent::TYPE) {
         SendLinkEvent *event = (SendLinkEvent*)ev;
 
 #ifdef FUNC_DEBUG
-        qDebug() << Q_FUNC_INFO << event->link();
+        qDebug() << '\n' << Q_FUNC_INFO << event->link();
 #endif
 
         sendLink(event->link());
     }
 
 #ifdef FUNC_DEBUG
-    qDebug() << Q_FUNC_INFO << "end";
+    qDebug() << '\n' << Q_FUNC_INFO << "end";
 #endif
 }

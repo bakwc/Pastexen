@@ -29,6 +29,7 @@ private:
     QTcpSocket  *_socket;
     int         _packetSize;
     QString     _fileType;
+    QString     _protoVersion;
 
 private:
     QString randName(int count);

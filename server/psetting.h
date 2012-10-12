@@ -18,6 +18,7 @@ public:
     static const QMap<QString, QString>& prefixes() { return inst()->_prefixes; }
     static const QString&      imageLinkPrefix() { return inst()->_imageLinkPrefix; }
     static const QString&      sourceLinkPrefix() { return inst()->_sourceLinkPrefix; }
+    static const QString       settingsFileName() { return inst()->_set.fileName(); }
 
 private:
     QSettings   _set;

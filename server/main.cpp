@@ -1,24 +1,30 @@
-#include <QCoreApplication>
+#include "application.h"
 #include <QSettings>
 #include <QTime>
 #include "pserver.h"
 #include "pthreadpool.h"
 #include "psetting.h"
 #include "psaver.h"
-#include <cstdlib>
-#include <ctime>
+#include "logger.h"
+#include <QFile>
+
 
 int main(int argc, char** argv)
 {
-    QCoreApplication app(argc, argv);
+    Application app(argc, argv);
+    if (!app.parseArgs())
+        return 0;
 
-    QString pathToConfig;
+    QString pathToConfig = app.config();
+//    QFile file;
+//    file.setFileName(app.logFile());
+//    file.open(QIODevice::Append);
 
-    if (argc < 2) {
-        qDebug() << "Usage:\n"
-                 << "pastexenServer [config.file]\n";
-    } else {
-        pathToConfig = argv[1];
+    if (app.logFile().size()) {
+        if (Logger::configure(app.logFile()))
+            qInstallMsgHandler(Logger::logger);
+        else
+            qDebug() << "Log file not been set";
     }
 
     Settings    setting(pathToConfig);

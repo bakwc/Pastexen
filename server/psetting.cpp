@@ -7,7 +7,7 @@ Settings::Settings(const QString &filename) :
     _set(filename, QSettings::IniFormat)
 {
     if (_set.status() != QSettings::NoError) {
-        qDebug() << "Setting file is not exist. Server run with default parameters";
+        qDebug() << "Setting file is not exist. Server run with default parameters\n";
     }
 
     _host       = _set.value("host", "0.0.0.0").toString();
@@ -33,11 +33,11 @@ Settings::Settings(const QString &filename) :
 
     pThis = this;
 
-    qDebug() << "Settings:";
-    qDebug() << " Host:" << host().toString();
-    qDebug() << " Port:" << port();
-    qDebug() << " Threads:" << threads();
-    qDebug() << " File name lenght:" << fileNameLenght();
-    qDebug() << " Types:" << types();
-    qDebug() << " Prefixes:" << prefixes();
+    qDebug() << "\nSettings:"
+             << "\n Host:" << host().toString()
+             << "\n Port:" << port()
+             << "\n Threads:" << threads()
+             << "\n File name lenght:" << fileNameLenght()
+             << "\n Types:" << types()
+             << "\n Prefixes:" << prefixes();
 }
