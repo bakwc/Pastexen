@@ -16,9 +16,6 @@ int main(int argc, char** argv)
         return 0;
 
     QString pathToConfig = app.config();
-//    QFile file;
-//    file.setFileName(app.logFile());
-//    file.open(QIODevice::Append);
 
     if (app.logFile().size()) {
         if (Logger::configure(app.logFile()))
