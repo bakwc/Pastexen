@@ -10,7 +10,7 @@
 #include "configwidget.h"
 #include "network.h"
 
-class Application : public QApplication
+class Application : public QxtApplication
 {
     Q_OBJECT
 public:

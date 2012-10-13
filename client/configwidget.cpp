@@ -1,7 +1,9 @@
 #include "configwidget.h"
 #include <QCloseEvent>
 #include <QDesktopWidget>
+#include "scanhotkeydialog.h"
 #include "defines.h"
+#include <QDebug>
 
 ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
     : QWidget(parent),
@@ -17,6 +19,10 @@ ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
 
     connect(_ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(_ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
+
+    connect(_ui->screenFullButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui->screenPartButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui->shareTextButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -61,9 +67,9 @@ void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString tex
     _ui->comboSourcesType->addItem(tr("C++"), QString("cpp"));
     _ui->comboSourcesType->addItem(tr("Pascal"), QString("pas"));
 
-    _ui->screenFullLine->setText(fullHotkey);
-    _ui->screenPartLine->setText(partHotkey);
-    _ui->shareTextLine->setText(textHotkey);
+    _ui->screenFullButton->setText(fullHotkey);
+    _ui->screenPartButton->setText(partHotkey);
+    _ui->shareTextButton->setText(textHotkey);
 }
 
 
@@ -80,4 +86,14 @@ void ConfigWidget::applyChanges()
     _settings->setValue("general/showsourcedialog", _ui->checkBoxLangDialogShow->isChecked());
     _settings->sync();
     this->hide();
+}
+
+void ConfigWidget::changeHotkey()
+{
+    ScanHotkeyDialog dial(this);
+    dial.setModal(true);
+    if (dial.exec())
+        qDebug() << "ScanHotkeyDialog return true";
+    else
+        qDebug() << "ScanHotkeyDeialog return false";
 }

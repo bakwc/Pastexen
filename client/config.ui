@@ -42,7 +42,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>360</width>
+     <width>361</width>
      <height>211</height>
     </rect>
    </property>
@@ -147,14 +147,26 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="screenPartLine"/>
-    </item>
     <item row="5" column="1">
-     <widget class="QLineEdit" name="screenFullLine"/>
+     <widget class="QPushButton" name="screenFullButton">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QPushButton" name="screenPartButton">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </item>
     <item row="6" column="1">
-     <widget class="QLineEdit" name="shareTextLine"/>
+     <widget class="QPushButton" name="shareTextButton">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

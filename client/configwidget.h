@@ -16,6 +16,7 @@ public:
     void init(QString fullHotkey, QString partHotkey, QString textHotkey);
 public slots:
     void applyChanges();
+    void changeHotkey();
 private:
     void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
 private:

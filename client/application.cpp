@@ -15,7 +15,7 @@
 #include "languageselectdialog.h"
 
 Application::Application(int argc, char *argv[]):
-    QApplication(argc, argv), _configWidget(0), _trayIcon(0), _trayIconMenu(0),
+    QxtApplication(argc, argv), _configWidget(0), _trayIcon(0), _trayIconMenu(0),
     _shortcutScreenFull(0), _shortcutScreenPart(0), _shortcutTextShare(0),
     _network(0), _settings(0)
 {
@@ -28,6 +28,7 @@ Application::~Application()
     _settings->sync();
     delete _shortcutScreenPart;
     delete _shortcutScreenFull;
+    delete _shortcutTextShare;
     delete _trayIconMenu;
 }
 

@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     configwidget.cpp \
     network.cpp \
     imageselectwidget.cpp \
-    languageselectdialog.cpp
+    languageselectdialog.cpp \
+    scanhotkeydialog.cpp
 
 HEADERS  += \
     application.h \
@@ -31,7 +32,8 @@ HEADERS  += \
     defines.h \
     imageselectwidget.h \
     utils.h \
-    languageselectdialog.h
+    languageselectdialog.h \
+    scanhotkeydialog.h
 
 RESOURCES += \
     resources.qrc
