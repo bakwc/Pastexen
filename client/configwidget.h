@@ -10,7 +10,8 @@ class ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ConfigWidget(Ui::Form *ui, QSettings *settings, QWidget *parent = 0);
+    ConfigWidget(QSettings *settings, QWidget *parent = 0);
+    ~ConfigWidget();
     void closeEvent(QCloseEvent *event);
     void init();
 public slots:
@@ -18,7 +19,7 @@ public slots:
 private:
     void showTypes();
 private:
-    Ui::Form *_ui;
+    Ui::ConfigForm *_ui;
     QSettings *_settings;
 };
 

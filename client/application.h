@@ -34,7 +34,6 @@ private:
     QxtGlobalShortcut *_shortcutScreenPart;
     QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
-    Ui::Form *_configUi;
     QSettings *_settings;
 };
 

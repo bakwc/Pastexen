@@ -3,15 +3,27 @@
 #include <QDesktopWidget>
 #include "defines.h"
 
-ConfigWidget::ConfigWidget(Ui::Form *ui, QSettings *settings, QWidget *parent)
+ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
     : QWidget(parent),
-      _ui(ui),
+      _ui(new Ui::ConfigForm),
       _settings(settings)
 {
+    _ui->setupUi(this);
+
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
+
+    connect(_ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(_ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
+
+    init();
+}
+
+ConfigWidget::~ConfigWidget()
+{
+    delete _ui;
 }
 
 void ConfigWidget::init()
