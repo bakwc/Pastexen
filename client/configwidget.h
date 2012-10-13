@@ -13,11 +13,11 @@ public:
     ConfigWidget(QSettings *settings, QWidget *parent = 0);
     ~ConfigWidget();
     void closeEvent(QCloseEvent *event);
-    void init();
+    void init(QString fullHotkey, QString partHotkey, QString textHotkey);
 public slots:
     void applyChanges();
 private:
-    void showTypes();
+    void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
 private:
     Ui::ConfigForm *_ui;
     QSettings *_settings;

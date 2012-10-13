@@ -37,21 +37,24 @@ void Application::pxAppInit()
 
     _configWidget = new ConfigWidget(_settings);
 
+    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
+    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
+    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+
+    _configWidget->init(fullHotkey, partHotkey, codeHotkey);
+
     _shortcutScreenFull = new QxtGlobalShortcut;
     QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processScreenshotFull()));
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
     if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
         qDebug() << "Error activating hotkey:" << fullHotkey;          // Shortcut for full screen
 
     _shortcutScreenPart = new QxtGlobalShortcut;
     QObject::connect(_shortcutScreenPart, SIGNAL(activated()), SLOT(processScreenshotPart()));
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
         qDebug() << "Error activating hotkey:" << partHotkey;        // Shortcut for part of the screen
 
     _shortcutTextShare = new QxtGlobalShortcut;
     QObject::connect(_shortcutTextShare, SIGNAL(activated()), SLOT(processCodeShare()));
-    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
     if (!_shortcutTextShare->setShortcut(QKeySequence(codeHotkey)))
         qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
 

@@ -17,8 +17,6 @@ ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
 
     connect(_ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(_ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
-
-    init();
 }
 
 ConfigWidget::~ConfigWidget()
@@ -26,7 +24,7 @@ ConfigWidget::~ConfigWidget()
     delete _ui;
 }
 
-void ConfigWidget::init()
+void ConfigWidget::init(QString fullHotkey, QString partHotkey, QString textHotkey)
 {
     this->setWindowTitle(QString("%1 - %2")
                          .arg(APP_NAME)
@@ -35,7 +33,7 @@ void ConfigWidget::init()
     QIcon icon(":/icons/icon.png");
     this->setWindowIcon(icon);
 
-    showTypes();
+    showTypes(fullHotkey, partHotkey, textHotkey);
 
     auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
     auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
@@ -54,7 +52,7 @@ void ConfigWidget::init()
     _ui->checkBoxLangDialogShow->setChecked(showsourcedialog);
 }
 
-void ConfigWidget::showTypes()
+void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
 {
     _ui->comboImageType->addItem("JPG", QString("jpg"));
     _ui->comboImageType->addItem("PNG", QString("png"));
@@ -62,6 +60,10 @@ void ConfigWidget::showTypes()
     _ui->comboSourcesType->addItem(tr("Plain text"), QString("txt"));
     _ui->comboSourcesType->addItem(tr("C++"), QString("cpp"));
     _ui->comboSourcesType->addItem(tr("Pascal"), QString("pas"));
+
+    _ui->screenFullLine->setText(fullHotkey);
+    _ui->screenPartLine->setText(partHotkey);
+    _ui->shareTextLine->setText(textHotkey);
 }
 
 
