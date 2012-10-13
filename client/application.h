@@ -10,13 +10,13 @@
 #include "configwidget.h"
 #include "network.h"
 
-class Application : public QxtApplication
+class Application : public QApplication
 {
     Q_OBJECT
 public:
     Application(int argc, char *argv[]);
     ~Application();
-    void initialize();
+    void pxAppInit();
 private slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
