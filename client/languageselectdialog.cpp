@@ -16,7 +16,7 @@ LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QWidget *parent)
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
     showTypes();
-    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     int srcIndex = ui->comboLanguageType->findData(sourcestype);
     if (srcIndex != -1) {
         ui->comboLanguageType->setCurrentIndex(srcIndex);

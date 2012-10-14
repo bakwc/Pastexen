@@ -1,5 +1,4 @@
-#ifndef IMAGESELECTWIDGET_H
-#define IMAGESELECTWIDGET_H
+#pragma once
 
 #include <QDialog>
 #include <QPoint>
@@ -20,5 +19,3 @@ private:
     QPoint _startPoint;
     QPoint _endPoint;
 };
-
-#endif // IMAGESELECTWIDGET_H

@@ -7,28 +7,23 @@
 
 ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
     : QWidget(parent),
-      _ui(new Ui::ConfigForm),
       _settings(settings)
 {
-    _ui->setupUi(this);
+    _ui.setupUi(this);
 
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
 
-    connect(_ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
-    connect(_ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
+    connect(_ui.cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(_ui.applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
 
-    connect(_ui->fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_ui->parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_ui->texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui.fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui.parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui.texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
 }
 
-ConfigWidget::~ConfigWidget()
-{
-    delete _ui;
-}
 
 void ConfigWidget::init(QString fullHotkey, QString partHotkey, QString textHotkey)
 {
@@ -45,31 +40,31 @@ void ConfigWidget::init(QString fullHotkey, QString partHotkey, QString textHotk
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
 
-    int imgIndex = _ui->comboImageType->findData(imagetype);
+    int imgIndex = _ui.comboImageType->findData(imagetype);
     if (imgIndex != -1) {
-        _ui->comboImageType->setCurrentIndex(imgIndex);
+        _ui.comboImageType->setCurrentIndex(imgIndex);
     }
 
-    int srcIndex = _ui->comboSourcesType->findData(sourcestype);
+    int srcIndex = _ui.comboSourcesType->findData(sourcestype);
     if (srcIndex != -1) {
-        _ui->comboSourcesType->setCurrentIndex(srcIndex);
+        _ui.comboSourcesType->setCurrentIndex(srcIndex);
     }
 
-    _ui->checkBoxLangDialogShow->setChecked(showsourcedialog);
+    _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
 }
 
 void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
 {
-    _ui->comboImageType->addItem("JPG", QString("jpg"));
-    _ui->comboImageType->addItem("PNG", QString("png"));
+    _ui.comboImageType->addItem("JPG", QString("jpg"));
+    _ui.comboImageType->addItem("PNG", QString("png"));
 
-    _ui->comboSourcesType->addItem(tr("Plain text"), QString("txt"));
-    _ui->comboSourcesType->addItem(tr("C++"), QString("cpp"));
-    _ui->comboSourcesType->addItem(tr("Pascal"), QString("pas"));
+    _ui.comboSourcesType->addItem(tr("Plain text"), QString("txt"));
+    _ui.comboSourcesType->addItem(tr("C++"), QString("cpp"));
+    _ui.comboSourcesType->addItem(tr("Pascal"), QString("pas"));
 
-    _ui->fullhotkey->setText(fullHotkey);
-    _ui->parthotkey->setText(partHotkey);
-    _ui->texthotkey->setText(textHotkey);
+    _ui.fullhotkey->setText(fullHotkey);
+    _ui.parthotkey->setText(partHotkey);
+    _ui.texthotkey->setText(textHotkey);
 }
 
 
@@ -81,9 +76,10 @@ void ConfigWidget::closeEvent(QCloseEvent *event)
 
 void ConfigWidget::applyChanges()
 {
-    _settings->setValue("general/imagetype", _ui->comboImageType->itemData(_ui->comboImageType->currentIndex()).toString());
-    _settings->setValue("general/sourcetype", _ui->comboSourcesType->itemData(_ui->comboSourcesType->currentIndex()).toString());
-    _settings->setValue("general/showsourcedialog", _ui->checkBoxLangDialogShow->isChecked());
+    emit settingsChanged();
+    _settings->setValue("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
+    _settings->setValue("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
+    _settings->setValue("general/showsourcedialog", _ui.checkBoxLangDialogShow->isChecked());
     _settings->sync();
     this->hide();
 }
@@ -101,8 +97,6 @@ void ConfigWidget::changeHotkey()
             _settings->setValue(settingsKey, dial.key());
 
             b->setText(dial.key());
-
-            emit settingsChanged();
         }
     }
 }

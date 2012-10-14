@@ -14,15 +14,17 @@
 #include "defines.h"
 #include "languageselectdialog.h"
 
-Application::Application(int argc, char *argv[]):
-    QxtApplication(argc, argv), _configWidget(0), _trayIcon(0), _trayIconMenu(0/*new QMenu*/),
-    _shortcutScreenFull(0/*new QxtGlobalShortcut*/), _shortcutScreenPart(0/*new QxtGlobalShortcut*/),
-    _shortcutTextShare(0/*new QxtGlobalShortcut*/), _network(0), _settings(0)
+Application::Application(int argc, char *argv[]) :
+    QApplication(argc, argv)
+    , _configWidget(0)
+    , _trayIcon(0)
+    , _trayIconMenu(0)
+    , _shortcutScreenFull(0)
+    , _shortcutScreenPart(0)
+    , _shortcutTextShare(0)
+    , _network(0)
+    , _settings(0)
 {
-//    _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat, this);
-//    _shortcutScreenFull = new QxtGlobalShortcut;
-//    _shortcutScreenPart = new QxtGlobalShortcut;
-//    _shortcutTextShare  = new QxtGlobalShortcut;
 }
 
 Application::~Application()
@@ -86,7 +88,6 @@ void Application::pxAppInit()
 
     this->setQuitOnLastWindowClosed(false);
 
-    qDebug() << Q_FUNC_INFO;
     _trayIcon->show();
     QFile file(SETTINGS_FILE);
 
@@ -96,23 +97,15 @@ void Application::pxAppInit()
 
 void Application::processScreenshot(bool isFullScreen)
 {
-    qDebug() << Q_FUNC_INFO << 1;
-
     QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
     if (!isFullScreen) {
-        qDebug() << Q_FUNC_INFO << 2;
-
         ImageSelectWidget imageSelectDialog(&pixmap);
-        qDebug() << Q_FUNC_INFO << 3;
-
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);
-        qDebug() << Q_FUNC_INFO << 4;
-
         if (!imageSelectDialog.exec())
             return;
     }
 
-    auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
 
     QByteArray imageBytes;
     QBuffer buffer(&imageBytes);
@@ -124,16 +117,14 @@ void Application::processScreenshot(bool isFullScreen)
 
 void Application::processCodeShare()
 {
-    qDebug() << "Sharing code!";
-
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     if (showsourcedialog) {
         LanguageSelectDialog dialog(_settings);
         dialog.exec();
     }
 
-    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
-    auto text = QApplication::clipboard()->text();
+    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString text = QApplication::clipboard()->text();
     _network->upload(text.toUtf8(),sourcestype);
 }
 
@@ -155,7 +146,6 @@ void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &butto
 
 void Application::linkAvaliable(const QString &link)
 {
-    qDebug() << Q_FUNC_INFO;
     QApplication::clipboard()->setText(link);
     _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
 }

@@ -1,5 +1,4 @@
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QString>
@@ -11,7 +10,6 @@ class ConfigWidget : public QWidget
     Q_OBJECT
 public:
     ConfigWidget(QSettings *settings, QWidget *parent = 0);
-    ~ConfigWidget();
     void closeEvent(QCloseEvent *event);
     void init(QString fullHotkey, QString partHotkey, QString textHotkey);
 
@@ -24,8 +22,6 @@ public slots:
 private:
     void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
 
-    Ui::ConfigForm *_ui;
+    Ui::ConfigForm _ui;
     QSettings *_settings;
 };
-
-#endif // CONFIGWIDGET_H

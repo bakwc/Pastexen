@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 
 #include <QxtGui/QxtApplication>
 #include <QxtGui/QxtGlobalShortcut>
@@ -10,7 +9,7 @@
 #include "configwidget.h"
 #include "network.h"
 
-class Application : public QxtApplication
+class Application : public QApplication
 {
     Q_OBJECT
 public:
@@ -37,5 +36,3 @@ private:
     Network *_network;
     QSettings *_settings;
 };
-
-#endif // APPLICATION_H
