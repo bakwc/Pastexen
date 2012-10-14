@@ -36,8 +36,6 @@ HEADERS  += \
 RESOURCES += \
     resources.qrc
 
-QMAKE_CXXFLAGS += -std=c++0x
-
 FORMS += \
     config.ui \
     languageselectdialog.ui

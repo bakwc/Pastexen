@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 
 #include <QxtGui/QxtApplication>
 #include <QxtGui/QxtGlobalShortcut>
@@ -37,5 +36,3 @@ private:
     Ui::Form *_configUi;
     QSettings *_settings;
 };
-
-#endif // APPLICATION_H

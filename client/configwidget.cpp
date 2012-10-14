@@ -25,8 +25,8 @@ void ConfigWidget::init()
 
     showTypes();
 
-    auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
-    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
 
     int imgIndex = _ui->comboImageType->findData(imagetype);

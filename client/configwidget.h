@@ -1,5 +1,4 @@
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QString>
@@ -21,5 +20,3 @@ private:
     Ui::Form *_ui;
     QSettings *_settings;
 };
-
-#endif // CONFIGWIDGET_H

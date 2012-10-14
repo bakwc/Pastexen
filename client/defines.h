@@ -1,5 +1,4 @@
-#ifndef DEFINES_H
-#define DEFINES_H
+#pragma once
 
 #include <QString>
 
@@ -11,5 +10,3 @@ const QString DEFAULT_IMAGE_TYPE = "png";
 const QString DEFAULT_SOURCES_TYPE = "txt";
 const QString APP_NAME = "Pastexen 0.1";
 const bool    DEFAULT_SHOW_SOURCES_CONF_DIALOG = false;
-
-#endif // DEFINES_H

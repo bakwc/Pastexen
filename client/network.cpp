@@ -18,8 +18,6 @@ Network::Network(QSettings *settings, QObject *parent) :
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
-    qDebug() << Q_FUNC_INFO;
-
     _socket.connectToHost(_serverAddr, 9876);
     _socket.waitForConnected();
 
@@ -48,7 +46,6 @@ QByteArray Network::readFile(const QString &fileName)
 
 void Network::onDataReceived()
 {
-    qDebug() << Q_FUNC_INFO;
     const QByteArray arr = _socket.readAll();
     const QString link = getValue(arr, "url");
     emit linkReceived(link);
