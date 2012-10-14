@@ -101,6 +101,8 @@ void ConfigWidget::changeHotkey()
             _settings->setValue(settingsKey, dial.key());
 
             b->setText(dial.key());
+
+            emit settingsChanged();
         }
     }
 }

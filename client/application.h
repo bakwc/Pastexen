@@ -24,6 +24,7 @@ private slots:
     void trayIconClicked(const QSystemTrayIcon::ActivationReason &button);
     void linkAvaliable(const QString &link);
     void aboutDialog();
+    void setupHotkeys();
 private:
     void processScreenshot(bool isFullScreen);
 private:
