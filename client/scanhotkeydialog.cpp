@@ -6,6 +6,7 @@ ScanHotkeyDialog::ScanHotkeyDialog(QWidget *parent) :
 {
     _ui.setupUi(this);
     _ui.lineEdit->setReadOnly(true);
+    this->setFixedSize(this->size());
 }
 
 bool ScanHotkeyDialog::event(QEvent *ev)

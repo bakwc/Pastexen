@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>310</height>
+    <width>297</width>
+    <height>205</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>380</width>
-    <height>310</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -42,8 +42,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>361</width>
-     <height>211</height>
+     <width>277</width>
+     <height>151</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -53,17 +53,48 @@
     <property name="verticalSpacing">
      <number>4</number>
     </property>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_2">
+    <item row="3" column="0">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>ScreenFullHotkey:</string>
+       <string>Fullscreen s-shot:</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="comboImageType">
-      <property name="currentIndex">
-       <number>-1</number>
+    <item row="4" column="1">
+     <widget class="QPushButton" name="fullhotkey">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="labelPassword">
+      <property name="text">
+       <string>Syntax:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QPushButton" name="parthotkey">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QPushButton" name="texthotkey">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Code/text share:</string>
       </property>
      </widget>
     </item>
@@ -71,16 +102,6 @@
      <widget class="QComboBox" name="comboSourcesType">
       <property name="editable">
        <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="labelPassword">
-      <property name="text">
-       <string>Language:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -99,72 +120,28 @@
     </item>
     <item row="2" column="1">
      <widget class="QCheckBox" name="checkBoxLangDialogShow">
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
       <property name="text">
-       <string>Show language select dialog</string>
+       <string>Display syntax selection dialog</string>
       </property>
       <property name="checked">
        <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="3" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="4" column="0">
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>ScreenPartHotkey:</string>
+       <string>Part screen s-shot:</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>ShareTextHotkey:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QPushButton" name="fullhotkey">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="parthotkey">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="texthotkey">
-      <property name="text">
-       <string/>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="comboImageType">
+      <property name="currentIndex">
+       <number>-1</number>
       </property>
      </widget>
     </item>
@@ -173,10 +150,10 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>260</y>
-     <width>261</width>
-     <height>41</height>
+     <x>30</x>
+     <y>170</y>
+     <width>231</width>
+     <height>31</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">

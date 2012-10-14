@@ -15,6 +15,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
+    this->setFixedSize(this->size());
 
     connect(_ui.cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(_ui.applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window

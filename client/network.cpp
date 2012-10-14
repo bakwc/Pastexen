@@ -26,11 +26,8 @@ void Network::upload(const QByteArray& data, const QString &type)
     arr.append("version=1.0\n");
     arr.append("type=" + type + "\n");
     arr.append(QString("size=%1\n\n").arg(data.size()));
-    qDebug() << QString(arr);
     arr.append(data);
     _socket.write(arr);
-    qDebug() << "Data size: " << arr.size();
-    qDebug() << "Upload started!";
 }
 
 QByteArray Network::readFile(const QString &fileName)

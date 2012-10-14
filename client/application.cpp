@@ -120,7 +120,9 @@ void Application::processCodeShare()
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     if (showsourcedialog) {
         LanguageSelectDialog dialog(_settings);
-        dialog.exec();
+        if (!dialog.exec()) {
+            return;
+        }
     }
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
@@ -170,10 +172,6 @@ void Application::setupHotkeys()
 
     if (!_shortcutTextShare->setShortcut(QKeySequence(codeHotkey)))
         qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
-
-//    _trayIconMenu->actionAt(QPoint(0, 1))->setText(tr("Text share (%1)").arg(codeHotkey));
-//    _trayIconMenu->addAction(tr("Full s-shot (%1)").arg(fullHotkey)
-//    _trayIconMenu->addAction(tr("Half s-shot (%1)").arg(partHotkey)
 
     QList<QAction*> actsList = _trayIconMenu->actions();
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));
