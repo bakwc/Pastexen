@@ -42,7 +42,8 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 FORMS += \
     config.ui \
-    languageselectdialog.ui
+    languageselectdialog.ui \
+    scanHotkeysDialog.ui
 
 INSTALLS += target
 isEmpty(PREFIX) {

@@ -148,21 +148,21 @@
      </widget>
     </item>
     <item row="5" column="1">
-     <widget class="QPushButton" name="screenFullButton">
+     <widget class="QPushButton" name="fullhotkey">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QPushButton" name="screenPartButton">
+     <widget class="QPushButton" name="parthotkey">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
     <item row="6" column="1">
-     <widget class="QPushButton" name="shareTextButton">
+     <widget class="QPushButton" name="texthotkey">
       <property name="text">
        <string/>
       </property>

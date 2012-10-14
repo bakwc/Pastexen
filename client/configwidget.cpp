@@ -20,9 +20,9 @@ ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
     connect(_ui->cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
     connect(_ui->applyButton, SIGNAL(clicked()), this, SLOT(applyChanges()));    // Config window
 
-    connect(_ui->screenFullButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_ui->screenPartButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_ui->shareTextButton, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui->fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui->parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_ui->texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -41,8 +41,8 @@ void ConfigWidget::init(QString fullHotkey, QString partHotkey, QString textHotk
 
     showTypes(fullHotkey, partHotkey, textHotkey);
 
-    auto imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
-    auto sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
 
     int imgIndex = _ui->comboImageType->findData(imagetype);
@@ -67,9 +67,9 @@ void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString tex
     _ui->comboSourcesType->addItem(tr("C++"), QString("cpp"));
     _ui->comboSourcesType->addItem(tr("Pascal"), QString("pas"));
 
-    _ui->screenFullButton->setText(fullHotkey);
-    _ui->screenPartButton->setText(partHotkey);
-    _ui->shareTextButton->setText(textHotkey);
+    _ui->fullhotkey->setText(fullHotkey);
+    _ui->parthotkey->setText(partHotkey);
+    _ui->texthotkey->setText(textHotkey);
 }
 
 
@@ -92,8 +92,15 @@ void ConfigWidget::changeHotkey()
 {
     ScanHotkeyDialog dial(this);
     dial.setModal(true);
-    if (dial.exec())
-        qDebug() << "ScanHotkeyDialog return true";
-    else
-        qDebug() << "ScanHotkeyDeialog return false";
+    if (dial.exec()) {
+        QPushButton* b = qobject_cast<QPushButton*>(sender());
+        if (b) {
+            QString settingsKey("general/");
+            settingsKey += b->objectName();
+
+            _settings->setValue(settingsKey, dial.key());
+
+            b->setText(dial.key());
+        }
+    }
 }
