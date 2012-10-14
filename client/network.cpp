@@ -7,13 +7,19 @@
 #include <QTime>
 #include "network.h"
 #include "utils.h"
+#include "application.h"
 
 Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
     _settings(settings)
 {
-    _serverAddr = QHostInfo::fromName("pastexen.com").addresses().at(0);
-    connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
+    QList<QHostAddress> addrs = QHostInfo::fromName("pastexen.com").addresses();
+    if (!addrs.size()) {
+        qDebug() << "No internet connection";
+    } else {
+        _serverAddr = addrs.at(0);
+        connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
+    }
 }
 
 void Network::upload(const QByteArray& data, const QString &type)
