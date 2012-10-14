@@ -32,9 +32,6 @@ void ConfigWidget::init(QString fullHotkey, QString partHotkey, QString textHotk
                          .arg(APP_NAME)
                          .arg(tr("Config")));
 
-    QIcon icon(":/icons/icon.png");
-    this->setWindowIcon(icon);
-
     showTypes(fullHotkey, partHotkey, textHotkey);
 
     QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
