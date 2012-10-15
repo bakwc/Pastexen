@@ -28,6 +28,9 @@ void Network::lookedUp(const QHostInfo &host)
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
+    if (_serverAddr.isNull()) {
+        return; // If no internet connection
+    }
     _socket.connectToHost(_serverAddr, 9876);
     _socket.waitForConnected();
 
