@@ -59,4 +59,5 @@ void Network::onDataReceived()
     const QByteArray arr = _socket.readAll();
     const QString link = getValue(arr, "url");
     emit linkReceived(link);
+    _socket.disconnectFromHost();
 }
