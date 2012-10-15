@@ -1,5 +1,4 @@
-#ifndef PSERVER_H
-#define PSERVER_H
+#pragma once
 
 #include <QObject>
 #include <QTcpServer>
@@ -21,5 +20,3 @@ public slots:
 private:
     QTcpServer  server;
 };
-
-#endif // PSERVER_H

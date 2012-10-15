@@ -1,5 +1,4 @@
-#ifndef PSOCKET_H
-#define PSOCKET_H
+#pragma once
 
 #include <QString>
 #include <QTcpSocket>
@@ -49,4 +48,4 @@ public:
 private:
     QString _link;
 };
-#endif // PSOCKET_H
+

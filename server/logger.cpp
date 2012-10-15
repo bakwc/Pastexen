@@ -6,7 +6,6 @@ QString Logger::_path = QString();
 
 bool Logger::configure(const QString &path)
 {
-//    _path = path;
     _f = fopen(path.toLocal8Bit(), "a");
     return _f;
 }
@@ -31,8 +30,6 @@ void Logger::logger(QtMsgType type, const char *msg)
         break;
     }
     }
-
-//    fprintf(stderr, "%s", msg);
 
     fflush(_f);
 }

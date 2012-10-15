@@ -33,10 +33,10 @@ void pSaver::save(const QByteArray &data, const QString& type)
     QString typeFolder(Settings::types()[type]);
 
     do {
-        filename = randName(Settings::fileNameLenght()) + '.' + type;;
+        filename = randName(Settings::fileNameLenght()) + '.' + type;
         path = typeFolder + filename;
         file.setFileName(path);
-    } while(_set.contains(path) && --i);
+    } while(_files.contains(path) && --i);
 
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "\nCannot create file:" << file.fileName();
@@ -88,11 +88,9 @@ void pSaver::findFiles()
         QStringList entry = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
         for (auto eIt = entry.begin(); eIt != entry.end(); ++eIt) {
             const QString str = *it + *eIt;
-            _set.insert(str);
+            _files.insert(str);
         }
     }
-
-//    qDebug() << Q_FUNC_INFO << _set;
 }
 
 QStringList pSaver::unique(const QStringList &list)

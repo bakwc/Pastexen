@@ -11,6 +11,7 @@
 QTime *dTime = 0;
 #endif
 
+const int MAX_DATA_SIZE = 5000000; // 5 Mb for now
 
 pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
     QObject(0), _socket(socket), _packetSize(0)
@@ -70,6 +71,12 @@ void pSocket::onDataReceived()
 
     if (_packetSize == 0) {
         int n = data.indexOf("\n\n");
+        if (n == -1) {
+            qDebug() << "Wrong data received. Disconnect" << _socket->localAddress();
+            _socket->disconnectFromHost();
+            return;
+        }
+
         QByteArray header = data.left(n);
         auto content = data.mid(n+2);
         _buffer = content;
@@ -77,13 +84,20 @@ void pSocket::onDataReceived()
         _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
 
-        if ( !Settings::types().contains(_fileType) ) {
+        if (_fileType == "" || !Settings::types().contains(_fileType) ) {
             qDebug() << "Sender type is not exist. Disconnect" << _socket->localAddress();
             _socket->disconnectFromHost();
+            return;
         }
 
     } else {
         _buffer += data;
+    }
+
+    if (_buffer.size() > MAX_DATA_SIZE) {
+        qDebug() << "File is too big! Disconnect" << _socket->localAddress();
+        _socket->disconnectFromHost();
+        return;
     }
 
 #ifdef FUNC_DEBUG

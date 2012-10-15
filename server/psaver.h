@@ -1,5 +1,4 @@
-#ifndef SAVER_H
-#define SAVER_H
+#pragma once
 
 #include <QThread>
 #include <QString>
@@ -21,16 +20,11 @@ signals:
 public slots:
     void save(const QByteArray& data, const QString &type);
 
-protected:
-//    void customEvent(QEvent *);
-
 private:
     static pSaver  *pThis;
     static QString randName(int count);
-    QSet<QString> _set;
+    QSet<QString> _files;
 
     void findFiles();
     QStringList unique(const QStringList& list);
 };
-
-#endif // SAVER_H

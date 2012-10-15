@@ -1,5 +1,4 @@
-#ifndef PTHREADPOOL_H
-#define PTHREADPOOL_H
+#pragma once
 
 #include <QObject>
 #include <QThread>
@@ -26,5 +25,3 @@ private:
     static pThreadPool *_inst;
 
 };
-
-#endif // PTHREADPOOL_H

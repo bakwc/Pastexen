@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QStringList>
@@ -32,5 +31,3 @@ private:
 
     void usage();
 };
-
-#endif // APPLICATION_H
