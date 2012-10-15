@@ -6,6 +6,7 @@
 #include <QTime>
 #include "network.h"
 #include "utils.h"
+#include "application.h"
 
 Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
