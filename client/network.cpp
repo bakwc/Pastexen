@@ -1,5 +1,4 @@
 #include <QHttpRequestHeader>
-#include <QHostInfo>
 #include <QByteArray>
 #include <QFile>
 #include <QDebug>
@@ -12,8 +11,18 @@ Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
     _settings(settings)
 {
-    _serverAddr = QHostInfo::fromName("pastexen.com").addresses().at(0);
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
+    QHostInfo::lookupHost("pastexen.com",
+                          this, SLOT(lookedUp(QHostInfo)));
+}
+
+void Network::lookedUp(const QHostInfo &host)
+{
+    if (host.error() != QHostInfo::NoError) {
+        qDebug() << "Lookup failed:" << host.errorString();
+        return;
+    }
+    _serverAddr = host.addresses().at(0);
 }
 
 void Network::upload(const QByteArray& data, const QString &type)

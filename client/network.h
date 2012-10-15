@@ -6,6 +6,7 @@
 #include <QSslError>
 #include <QSettings>
 #include <QHostAddress>
+#include <QHostInfo>
 #include "defines.h"
 
 class Network : public QObject
@@ -19,6 +20,7 @@ signals:
     void linkReceived(const QString &link);
 private slots:
     void onDataReceived();
+    void lookedUp(const QHostInfo &host);
 private:
     QByteArray readFile(const QString& fileName);
 private:
