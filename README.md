@@ -5,7 +5,7 @@ Pastexen
 
 ### Информация
 * Описание архитектуры: [читать](https://github.com/bakwc/Pastexen/wiki)
-* Beta версия для Windows: [скачать](https://github.com/downloads/bakwc/Pastexen/pastexen-0.1-wind32.zip)
+* Beta версия для Windows: [скачать](https://github.com/downloads/bakwc/Pastexen/pastexen-0.2-wind32.zip)
 * Исходники: [скачать](https://github.com/bakwc/Pastexen/zipball/master)
 
 ### Использование
