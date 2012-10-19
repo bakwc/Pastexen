@@ -8,9 +8,16 @@
 #include "logger.h"
 #include <QFile>
 
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#endif
 
 int main(int argc, char** argv)
 {
+    #ifdef Q_OS_LINUX
+    daemon(0, 0);
+    #endif
+
     Application app(argc, argv);
     if (!app.parseArgs())
         return 0;
@@ -24,11 +31,11 @@ int main(int argc, char** argv)
             qDebug() << "Log file not been set";
     }
 
-    Settings    setting(pathToConfig);
-    pSaver      saver;
+    Settings setting(pathToConfig);
+    pSaver saver;
     pThreadPool pool(Settings::threads());
 
-    pServer     server;
+    pServer server;
 
     app.exec();
 }
