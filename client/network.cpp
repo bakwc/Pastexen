@@ -23,8 +23,7 @@ void Network::lookedUp(const QHostInfo &host)
         qDebug() << "Lookup failed:" << host.errorString();
         return;
     }
-    //_serverAddr = host.addresses().at(0);
-    _serverAddr = QHostAddress("127.0.0.1");
+    _serverAddr = host.addresses().at(0);
 }
 
 void Network::upload(const QByteArray& data, const QString &type)
