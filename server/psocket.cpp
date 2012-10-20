@@ -12,9 +12,10 @@ QTime *dTime = 0;
 #endif
 
 const int MAX_DATA_SIZE = 5000000; // 5 Mb for now
+const int MAX_DAY_SIZE = 50 * 1024 * 1024; // 50 Mb 4 day
 
-pSocket::pSocket(QTcpSocket *socket, QThread *thread) :
-    QObject(0), _socket(socket), _packetSize(0)
+pSocket::pSocket(QTcpSocket *socket, QThread *thread, QAtomicInt& limit) :
+    QObject(0), _socket(socket), _packetSize(0), _limit(limit)
 {
     connect(_socket, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
     connect(_socket, SIGNAL(disconnected()), this, SLOT(deleteLater()));
@@ -80,6 +81,7 @@ void pSocket::onDataReceived()
         QByteArray header = data.left(n);
         auto content = data.mid(n+2);
         _buffer = content;
+        _limit.fetchAndAddAcquire(content.size());
         _packetSize = getValue(header, "size").toInt();
         _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
@@ -92,11 +94,13 @@ void pSocket::onDataReceived()
 
     } else {
         _buffer += data;
+        _limit.fetchAndAddAcquire(data.size());
     }
 
-    if (_buffer.size() > MAX_DATA_SIZE) {
+    if (_buffer.size() > MAX_DATA_SIZE || _limit > MAX_DAY_SIZE) {
         qDebug() << "File is too big! Disconnect" << _socket->localAddress();
         _socket->disconnectFromHost();
+        _socket->deleteLater();
         return;
     }
 

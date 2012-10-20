@@ -1,7 +1,9 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <QTcpServer>
+#include <QAtomicInt>
 #include "psetting.h"
 
 class pThreadPool;
@@ -16,7 +18,10 @@ signals:
     
 public slots:
     void onConnection();
+private:
+    void timerEvent(QTimerEvent *);
 
 private:
-    QTcpServer  server;
+    QTcpServer  _server;
+    QHash<QHostAddress, QAtomicInt> _limits;
 };

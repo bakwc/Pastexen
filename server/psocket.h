@@ -4,7 +4,7 @@
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QEvent>
-
+#include <QAtomicInt>
 
 class SendLinkEvent;
 
@@ -13,7 +13,7 @@ class pSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit pSocket(QTcpSocket *socket, QThread* thread);
+    explicit pSocket(QTcpSocket *socket, QThread* thread, QAtomicInt& limit);
     ~pSocket();
     
 signals:
@@ -22,6 +22,9 @@ signals:
 public slots:
     void onDataReceived();
     void sendLink(const QString& link);
+private:
+    QString randName(int count);
+    void customEvent(QEvent*);
 
 private:
     QByteArray  _buffer;
@@ -29,10 +32,7 @@ private:
     int         _packetSize;
     QString     _fileType;
     QString     _protoVersion;
-
-private:
-    QString randName(int count);
-    void customEvent(QEvent*);
+    QAtomicInt  &_limit;
 };
 
 
