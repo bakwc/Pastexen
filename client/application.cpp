@@ -8,6 +8,8 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QBuffer>
+#include <QLocalSocket>
+#include <QTimer>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -37,8 +39,19 @@ Application::~Application()
     delete _trayIconMenu;
 }
 
-void Application::pxAppInit()
+bool Application::pxAppInit()
 {
+    QLocalSocket socket;
+    socket.connectToServer(APP_NAME);
+    if (socket.waitForConnected(500)) {
+        qDebug() << "Application allready launched!";
+        return false;
+    }
+    _localServer = new QLocalServer(this);
+    connect(_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
+    _localServer->listen(APP_NAME);
+
+
     _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat, this);
 
     _configWidget = new ConfigWidget(_settings);
@@ -93,6 +106,11 @@ void Application::pxAppInit()
 
     if (!file.exists())
         _configWidget->show();
+    return true;
+}
+
+void Application::newLocalSocketConnection()
+{
 }
 
 void Application::processScreenshot(bool isFullScreen)

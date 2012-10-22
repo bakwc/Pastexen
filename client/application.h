@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QSettings>
 #include <QFile>
+#include <QLocalServer>
 #include "configwidget.h"
 #include "network.h"
 
@@ -15,7 +16,7 @@ class Application : public QApplication
 public:
     Application(int argc, char *argv[]);
     ~Application();
-    void pxAppInit();
+    bool pxAppInit();
 private slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
@@ -24,6 +25,7 @@ private slots:
     void linkAvaliable(const QString &link);
     void aboutDialog();
     void setupHotkeys();
+    void newLocalSocketConnection();
 private:
     void processScreenshot(bool isFullScreen);
 private:
@@ -35,4 +37,5 @@ private:
     QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     QSettings *_settings;
+    QLocalServer *_localServer;
 };
