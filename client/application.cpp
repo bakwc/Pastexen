@@ -48,9 +48,11 @@ bool Application::pxAppInit()
         return false;
     }
     _localServer = new QLocalServer(this);
-    connect(_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
-    _localServer->listen(APP_NAME);
-
+//    connect(_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
+    if (!_localServer->listen(APP_NAME)) {
+        QLocalServer::removeServer(APP_NAME);
+        _localServer->listen(APP_NAME);
+    }
 
     _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat, this);
 
@@ -64,22 +66,10 @@ bool Application::pxAppInit()
     _configWidget->init(fullHotkey, partHotkey, codeHotkey);
 
     _shortcutScreenFull = new QxtGlobalShortcut;
-//    QObject::connect(_shortcutScreenFull, SIGNAL(activated()), SLOT(processScreenshotFull()));
-//    if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
-//        qDebug() << "Error activating hotkey:" << fullHotkey;          // Shortcut for full screen
-
     _shortcutScreenPart = new QxtGlobalShortcut;
-//    QObject::connect(_shortcutScreenPart, SIGNAL(activated()), SLOT(processScreenshotPart()));
-//    if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
-//        qDebug() << "Error activating hotkey:" << partHotkey;        // Shortcut for part of the screen
-
     _shortcutTextShare = new QxtGlobalShortcut;
-//    QObject::connect(_shortcutTextShare, SIGNAL(activated()), SLOT(processCodeShare()));
-//    if (!_shortcutTextShare->setShortcut(QKeySequence(codeHotkey)))
-//        qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
 
     connectDisconectHotkeys(true);
-
     connect(_configWidget, SIGNAL(showSignal(bool)), this, SLOT(connectDisconectHotkeys(bool)));
 
     _trayIconMenu = new QMenu;
