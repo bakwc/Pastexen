@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>297</width>
-    <height>205</height>
+    <width>400</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,20 +18,20 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>0</height>
+    <width>400</width>
+    <height>240</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>380</width>
-    <height>310</height>
+    <width>400</width>
+    <height>240</height>
    </size>
   </property>
   <property name="baseSize">
    <size>
-    <width>350</width>
-    <height>300</height>
+    <width>400</width>
+    <height>240</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -46,8 +46,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>277</width>
-     <height>151</height>
+     <width>385</width>
+     <height>176</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -60,7 +60,7 @@
     <item row="3" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Fullscreen s-shot:</string>
+       <string>Part screen s-shot:</string>
       </property>
      </widget>
     </item>
@@ -122,6 +122,20 @@
       </property>
      </widget>
     </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Full screen s-shot:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="comboImageType">
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="1">
      <widget class="QCheckBox" name="checkBoxLangDialogShow">
       <property name="contextMenuPolicy">
@@ -135,27 +149,13 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Part screen s-shot:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="comboImageType">
-      <property name="currentIndex">
-       <number>-1</number>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>170</y>
+     <x>80</x>
+     <y>200</y>
      <width>231</width>
      <height>31</height>
     </rect>
