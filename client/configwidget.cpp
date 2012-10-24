@@ -11,7 +11,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
 {
     _ui.setupUi(this);
 
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+//    this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
