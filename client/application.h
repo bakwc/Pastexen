@@ -26,6 +26,7 @@ private slots:
     void aboutDialog();
     void setupHotkeys();
     void newLocalSocketConnection();
+    void connectDisconectHotkeys(bool b);
 private:
     void processScreenshot(bool isFullScreen);
 private:

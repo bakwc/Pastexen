@@ -1,5 +1,7 @@
 #include "configwidget.h"
 #include <QCloseEvent>
+#include <QHideEvent>
+#include <QShowEvent>
 #include <QDesktopWidget>
 #include "scanhotkeydialog.h"
 #include "defines.h"
@@ -70,6 +72,18 @@ void ConfigWidget::closeEvent(QCloseEvent *event)
 {
     this->hide();
     event->ignore();
+}
+
+void ConfigWidget::showEvent(QShowEvent *event)
+{
+    emit showSignal(false);
+    QWidget::showEvent(event);
+}
+
+void ConfigWidget::hideEvent(QHideEvent *event)
+{
+    emit showSignal(true);
+    QWidget::hideEvent(event);
 }
 
 void ConfigWidget::applyChanges()

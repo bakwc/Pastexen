@@ -10,11 +10,16 @@ class ConfigWidget : public QWidget
     Q_OBJECT
 public:
     ConfigWidget(QSettings *settings, QWidget *parent = 0);
-    void closeEvent(QCloseEvent *event);
     void init(QString fullHotkey, QString partHotkey, QString textHotkey);
+
+protected:
+    void closeEvent(QCloseEvent *event);
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
 
 signals:
     void settingsChanged();
+    void showSignal(bool b);
 
 public slots:
     void applyChanges();
