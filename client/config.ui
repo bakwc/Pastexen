@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>330</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,7 +33,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>290</y>
+     <y>270</y>
      <width>201</width>
      <height>31</height>
     </rect>
@@ -64,11 +64,14 @@
      <x>10</x>
      <y>150</y>
      <width>241</width>
-     <height>121</height>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
     <string>Code share</string>
+   </property>
+   <property name="checkable">
+    <bool>false</bool>
    </property>
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
@@ -76,7 +79,7 @@
       <x>10</x>
       <y>20</y>
       <width>221</width>
-      <height>69</height>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -171,7 +174,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>80</y>
       <width>250</width>
       <height>28</height>
      </rect>
@@ -193,11 +196,14 @@
      <x>10</x>
      <y>10</y>
      <width>241</width>
-     <height>121</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="title">
     <string>Image share</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
    </property>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">

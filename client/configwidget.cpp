@@ -77,6 +77,8 @@ void ConfigWidget::closeEvent(QCloseEvent *event)
 void ConfigWidget::showEvent(QShowEvent *event)
 {
     emit showSignal(false);
+    raise();
+    activateWindow();
     QWidget::showEvent(event);
 }
 
