@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>304</height>
+    <height>301</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,7 +33,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>270</y>
+     <y>260</y>
      <width>201</width>
      <height>31</height>
     </rect>
@@ -174,7 +174,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>77</y>
       <width>250</width>
       <height>28</height>
      </rect>
@@ -196,7 +196,7 @@
      <x>10</x>
      <y>10</y>
      <width>241</width>
-     <height>121</height>
+     <height>116</height>
     </rect>
    </property>
    <property name="title">
@@ -211,7 +211,7 @@
       <x>10</x>
       <y>20</y>
       <width>221</width>
-      <height>94</height>
+      <height>91</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
