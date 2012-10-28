@@ -8,4 +8,5 @@ clean:
 	#cd client && qmake && INSTALL_ROOT=$(DESTDIR) make uninstall_target
 	cd client && qmake && make clean
 	rm -f client/Makefile
-	rm -f client/PasteXen
+	rm -f client/PasteXen client/pastexen
+

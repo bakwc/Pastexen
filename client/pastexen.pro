@@ -13,8 +13,10 @@ QXT     -= console
 QXT     += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = PasteXen
+TARGET = pastexen
+win32 {
+    TARGET = PasteXen
+}
 TEMPLATE = app
 
 SOURCES += main.cpp \
