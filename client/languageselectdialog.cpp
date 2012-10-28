@@ -31,11 +31,6 @@ LanguageSelectDialog::~LanguageSelectDialog()
 
 void LanguageSelectDialog::showTypes()
 {
-    /*
-    ui->comboLanguageType->addItem(tr("Plain text"), QString("txt"));
-    ui->comboLanguageType->addItem(tr("C++"), QString("cpp"));
-    ui->comboLanguageType->addItem(tr("Pascal"), QString("pas")); */
-
     for (QMap<QString, QString>::iterator i = _languages.begin(); i != _languages.end(); i++) {
         ui->comboLanguageType->addItem(i.value(), i.key());
     }

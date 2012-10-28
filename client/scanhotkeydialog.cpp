@@ -11,14 +11,12 @@ ScanHotkeyDialog::ScanHotkeyDialog(QWidget *parent) :
 
 bool ScanHotkeyDialog::event(QEvent *ev)
 {
-//    QShortcutEvent *e = dynamic_cast<QShortcutEvent*>(ev);
     if (ev->type() == QEvent::KeyPress) {
         QKeyEvent* e = dynamic_cast<QKeyEvent*>(ev);
         QKeySequence seq;
 
         if (e->key() >= Qt::Key_Shift && e->key() <= Qt::Key_NumLock ||
                 e->key() == -1) {
-//            qDebug() << "key filter";
             seq = QKeySequence(e->modifiers());
         } else {
             seq = QKeySequence(e->key(), e->modifiers());
@@ -27,9 +25,6 @@ bool ScanHotkeyDialog::event(QEvent *ev)
         _key = rigthStringKey(seq.toString());
 
         _ui.lineEdit->setText(_key);
-
-//        qDebug() << "event" << e->key() << e->modifiers()
-//                 << "QKeySequense::toString" << _key;
     }
 
     return QDialog::event(ev);
