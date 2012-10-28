@@ -7,9 +7,10 @@
 #include "defines.h"
 #include <QDebug>
 
-ConfigWidget::ConfigWidget(QSettings *settings, QWidget *parent)
+ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
     : QWidget(parent),
-      _settings(settings)
+      _settings(settings),
+      _languages(languages)
 {
     _ui.setupUi(this);
 
@@ -57,9 +58,9 @@ void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString tex
     _ui.comboImageType->addItem("JPG", QString("jpg"));
     _ui.comboImageType->addItem("PNG", QString("png"));
 
-    _ui.comboSourcesType->addItem(tr("Plain text"), QString("txt"));
-    _ui.comboSourcesType->addItem(tr("C++"), QString("cpp"));
-    _ui.comboSourcesType->addItem(tr("Pascal"), QString("pas"));
+    for (QMap<QString, QString>::iterator i = _languages.begin(); i != _languages.end(); i++) {
+        _ui.comboSourcesType->addItem(i.value(), i.key());
+    }
 
     _ui.fullhotkey->setText(fullHotkey);
     _ui.parthotkey->setText(partHotkey);

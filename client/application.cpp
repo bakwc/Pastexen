@@ -48,15 +48,16 @@ bool Application::pxAppInit()
         return false;
     }
     _localServer = new QLocalServer(this);
-//    connect(_localServer, SIGNAL(newConnection()), this, SLOT(newLocalSocketConnection()));
+
     if (!_localServer->listen(APP_NAME)) {
         QLocalServer::removeServer(APP_NAME);
         _localServer->listen(APP_NAME);
     }
 
     _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat, this);
+    initLanguages();
 
-    _configWidget = new ConfigWidget(_settings);
+    _configWidget = new ConfigWidget(_settings, _languages);
     QObject::connect(_configWidget, SIGNAL(settingsChanged()), this, SLOT(setupHotkeys()));
 
     QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
@@ -83,7 +84,6 @@ bool Application::pxAppInit()
 
     setupHotkeys();
 
-//    QIcon icon(":/icons/icon.png");
     _trayIcon = new QSystemTrayIcon(QIcon(":/icons/icon.png"), this);
     connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
@@ -149,7 +149,7 @@ void Application::processCodeShare()
 {
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     if (showsourcedialog) {
-        LanguageSelectDialog dialog(_settings);
+        LanguageSelectDialog dialog(_settings, _languages);
         if (!dialog.exec()) {
             return;
         }
@@ -186,8 +186,6 @@ void Application::aboutDialog()
 {
     QMessageBox::information(NULL, APP_NAME,
                              tr("Utility for easy screenshots and code sharing<br> We lives at <a href=\"http://pastexen.com/\">pastexen.com</a><br> Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
-    //QMessageBox::information(NULL, APP_NAME,
-    //                         tr("test <a href=\"test\">Test</a>"));
 }
 
 void Application::setupHotkeys()
@@ -209,4 +207,33 @@ void Application::setupHotkeys()
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));
     actsList[2]->setText(tr("Full s-shot (%1)").arg(fullHotkey));
     actsList[3]->setText(tr("Half s-shot (%1)").arg(partHotkey));
+}
+
+void Application::initLanguages()
+{
+    _languages.insert("txt", "Plain text");
+    _languages.insert("c", "C");
+    _languages.insert("cpp", "C++");
+    _languages.insert("java", "Java");
+    _languages.insert("php", "PHP");
+    _languages.insert("py", "Python");
+    _languages.insert("pl", "Perl");
+    _languages.insert("m", "ObjectiveC");
+    _languages.insert("xml", "XML");
+    _languages.insert("html", "HTML");
+    _languages.insert("js", "Javascript");
+    _languages.insert("css", "CSS");
+    _languages.insert("json", "Json");
+    _languages.insert("as", "ActionScript");
+    _languages.insert("vb", "VBscript");
+    _languages.insert("d", "D");
+    _languages.insert("sql", "SQL");
+    _languages.insert("st", "Smalltalk");
+    _languages.insert("lisp", "LISP");
+    _languages.insert("ini", "ini");
+    _languages.insert("conf", "Apache");
+    _languages.insert("sh", "BASH");
+    _languages.insert("bat", "Dos (bat)");
+    _languages.insert("cmake", "CMake");
+    _languages.insert("hs", "Haskell");
 }

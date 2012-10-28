@@ -4,6 +4,7 @@
 #include <QxtGui/QxtGlobalShortcut>
 #include <QSystemTrayIcon>
 #include <QMenu>
+#include <QMap>
 #include <QSettings>
 #include <QFile>
 #include <QLocalServer>
@@ -29,6 +30,7 @@ private slots:
     void connectDisconectHotkeys(bool b);
 private:
     void processScreenshot(bool isFullScreen);
+    void initLanguages();
 private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
@@ -38,5 +40,6 @@ private:
     QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     QSettings *_settings;
+    QMap<QString, QString> _languages;
     QLocalServer *_localServer;
 };

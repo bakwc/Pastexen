@@ -2,6 +2,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QMap>
 
 namespace Ui {
 class LanguageSelectDialog;
@@ -12,7 +13,7 @@ class LanguageSelectDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit LanguageSelectDialog(QSettings *settings, QWidget *parent = 0);
+    explicit LanguageSelectDialog(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent = 0);
     ~LanguageSelectDialog();
     void showTypes();
     
@@ -21,5 +22,6 @@ private slots:
 
 private:
     QSettings *_settings;
+    QMap<QString, QString> &_languages;
     Ui::LanguageSelectDialog *ui;
 };

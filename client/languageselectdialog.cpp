@@ -4,9 +4,10 @@
 #include "ui_languageselectdialog.h"
 #include "defines.h"
 
-LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QWidget *parent)
+LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
     : QDialog(parent)
     , _settings(settings)
+    , _languages(languages)
     , ui(new Ui::LanguageSelectDialog)
 {
     ui->setupUi(this);
@@ -30,9 +31,14 @@ LanguageSelectDialog::~LanguageSelectDialog()
 
 void LanguageSelectDialog::showTypes()
 {
+    /*
     ui->comboLanguageType->addItem(tr("Plain text"), QString("txt"));
     ui->comboLanguageType->addItem(tr("C++"), QString("cpp"));
-    ui->comboLanguageType->addItem(tr("Pascal"), QString("pas"));
+    ui->comboLanguageType->addItem(tr("Pascal"), QString("pas")); */
+
+    for (QMap<QString, QString>::iterator i = _languages.begin(); i != _languages.end(); i++) {
+        ui->comboLanguageType->addItem(i.value(), i.key());
+    }
 }
 
 void LanguageSelectDialog::on_buttonBox_accepted()

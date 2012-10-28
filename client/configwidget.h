@@ -3,13 +3,14 @@
 #include <QWidget>
 #include <QString>
 #include <QSettings>
+#include <QMap>
 #include "ui_config.h"
 
 class ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ConfigWidget(QSettings *settings, QWidget *parent = 0);
+    ConfigWidget(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent = 0);
     void init(QString fullHotkey, QString partHotkey, QString textHotkey);
 
 protected:
@@ -29,4 +30,5 @@ private:
 
     Ui::ConfigForm _ui;
     QSettings *_settings;
+    QMap<QString, QString> &_languages;
 };
