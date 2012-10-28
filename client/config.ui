@@ -233,7 +233,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Part screen s-shot:</string>
+        <string>Part screenshot:</string>
        </property>
       </widget>
      </item>
@@ -306,7 +306,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Full screen s-shot:</string>
+        <string>Full screenshot:</string>
        </property>
       </widget>
      </item>
