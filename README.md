@@ -21,3 +21,6 @@ Pastexen
 * cd Pastexen
 * qmake
 * make
+
+### Лицензия
+GNU GPL v3, http://www.gnu.org/licenses/gpl.html
