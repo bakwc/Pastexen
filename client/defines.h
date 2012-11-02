@@ -2,7 +2,7 @@
 
 #include <QString>
 
-const QString SETTINGS_FILE = "config.ini";
+const QString SETTINGS_FILE = "/config.ini";
 const QString DEFAULT_HOTKEY_FULL = "F11";
 const QString DEFAULT_HOTKEY_PART = "F10";
 const QString DEFAULT_HOTKEY_CODE = "F9";

@@ -10,6 +10,7 @@
 #include <QBuffer>
 #include <QLocalSocket>
 #include <QTimer>
+#include <QDir>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -54,7 +55,9 @@ bool Application::pxAppInit()
         _localServer->listen(APP_NAME);
     }
 
-    _settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat, this);
+    QString homePath = QDir::homePath();
+    
+    _settings = new QSettings(homePath + SETTINGS_FILE, QSettings::IniFormat, this);
     initLanguages();
 
     _configWidget = new ConfigWidget(_settings, _languages);
