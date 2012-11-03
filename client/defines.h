@@ -1,8 +1,14 @@
 #pragma once
 
 #include <QString>
+#include <QtGlobal>
 
-const QString SETTINGS_FILE = "/config.ini";
+const QString SETTINGS_FILE =
+        #ifdef Q_OS_WS_WIN
+        "config.ini";
+        #else
+        ".pastexen.conf";
+        #endif
 const QString DEFAULT_HOTKEY_FULL = "F11";
 const QString DEFAULT_HOTKEY_PART = "F10";
 const QString DEFAULT_HOTKEY_CODE = "F9";

@@ -56,8 +56,8 @@ bool Application::pxAppInit()
     }
 
     QString homePath = QDir::homePath();
-    
-    _settings = new QSettings(homePath + SETTINGS_FILE, QSettings::IniFormat, this);
+
+    _settings = new QSettings(homePath + "/" + SETTINGS_FILE, QSettings::IniFormat, this);
     initLanguages();
 
     _configWidget = new ConfigWidget(_settings, _languages);
