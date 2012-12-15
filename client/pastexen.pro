@@ -16,6 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
 win32 {
     TARGET = PasteXen
+    RC_FILE = PasteXen.rc
 }
 TEMPLATE = app
 
@@ -50,5 +51,4 @@ isEmpty(PREFIX) {
  PREFIX = /usr/local/bin
 }
 target.path=$$PREFIX/
-
 
