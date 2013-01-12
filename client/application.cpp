@@ -189,7 +189,7 @@ void Application::linkAvaliable(const QString &link)
 void Application::aboutDialog()
 {
     QMessageBox::information(NULL, APP_NAME,
-                             tr("Utility for easy screenshots and code sharing<br> We lives at <a href=\"http://pastexen.com/\">pastexen.com</a><br> Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
+                             tr("Utility for easy screenshoting and code sharing<br> We live at <a href=\"http://pastexen.com/\">pastexen.com</a><br> Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
 }
 
 void Application::setupHotkeys()
