@@ -56,8 +56,9 @@ bool Application::pxAppInit()
     }
 
     QString homePath = QDir::homePath();
+    QString settingsFile = homePath + "/" + SETTINGS_FILE;
+    _settings = new QSettings(settingsFile, QSettings::IniFormat, this);
 
-    _settings = new QSettings(homePath + "/" + SETTINGS_FILE, QSettings::IniFormat, this);
     initLanguages();
 
     _configWidget = new ConfigWidget(_settings, _languages);
@@ -98,7 +99,7 @@ bool Application::pxAppInit()
     this->setQuitOnLastWindowClosed(false);
 
     _trayIcon->show();
-    QFile file(SETTINGS_FILE);
+    QFile file(settingsFile);
 
     if (!file.exists())
         _configWidget->show();
