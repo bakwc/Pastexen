@@ -27,7 +27,7 @@ void pServer::onConnection()
 {
     auto socket = _server.nextPendingConnection();
 
-    auto addr = socket->localAddress();
+    auto addr = socket->peerAddress();
     auto it = _limits.find(addr);
     if (it == _limits.end()) {
         it = _limits.insert(addr, 0);
