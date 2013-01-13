@@ -19,7 +19,8 @@ pServer::pServer(QObject *parent):
 #ifdef FUNC_DEBUG
     qWarning() << "FuncDebug activated";
 #endif
-    startTimer(1000 * 60 * 60 * 60 * 24);
+    _timeLeft = 0;
+    startTimer(1000);
 }
 
 void pServer::onConnection()
@@ -37,13 +38,15 @@ void pServer::onConnection()
             return;
         }
     }
-    #ifdef FUNC_DEBUG
-    qDebug() << "Limit: " << it.value();
-    #endif
+    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value() << " bytes";
     new pSocket(socket, pThreadPool::getNextThread(), it.value());
 }
 
 void pServer::timerEvent(QTimerEvent *)
 {
-    _limits.clear();
+    _timeLeft++;
+    if (_timeLeft > 86400) { // Ip limits clear once a day
+        _limits.clear();
+        _timeLeft = 0;
+    }
 }

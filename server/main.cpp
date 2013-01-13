@@ -14,13 +14,16 @@
 
 int main(int argc, char** argv)
 {
-    #ifdef Q_OS_LINUX
-    daemon(0, 0);
-    #endif
-
     Application app(argc, argv);
-    if (!app.parseArgs())
-        return 0;
+    if (!app.parseArgs()) {
+        qDebug() << "Wrong usage!";
+        return 42;
+    }
+
+    #ifdef Q_OS_LINUX
+    int d = daemon(0, 0);
+    Q_UNUSED(d);
+    #endif
 
     QString pathToConfig = app.config();
 

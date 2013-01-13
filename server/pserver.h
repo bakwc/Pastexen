@@ -24,4 +24,5 @@ private:
 private:
     QTcpServer  _server;
     QHash<QHostAddress, QAtomicInt> _limits;
+    size_t _timeLeft;
 };

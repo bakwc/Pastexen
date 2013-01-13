@@ -25,6 +25,6 @@ QMAKE_CXXFLAGS += -std=c++0x
 
 DEFINES += \
 #            TIME_DEBUG \
-            FUNC_DEBUG
+#            FUNC_DEBUG
 
 OTHER_FILES +=

@@ -222,6 +222,7 @@ void Application::initLanguages()
     _languages.insert("php", "PHP");
     _languages.insert("py", "Python");
     _languages.insert("pl", "Perl");
+    _languages.insert("pas", "Pascal");
     _languages.insert("m", "ObjectiveC");
     _languages.insert("xml", "XML");
     _languages.insert("html", "HTML");
