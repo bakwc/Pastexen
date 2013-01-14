@@ -233,7 +233,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Part screenshot:</string>
+        <string>Partial screenshot:</string>
        </property>
       </widget>
      </item>
