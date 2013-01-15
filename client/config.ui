@@ -68,7 +68,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Code share</string>
+    <string>Code share:</string>
    </property>
    <property name="checkable">
     <bool>false</bool>
@@ -233,7 +233,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Part screenshot:</string>
+        <string>Partial screenshot:</string>
        </property>
       </widget>
      </item>
