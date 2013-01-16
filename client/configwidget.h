@@ -17,7 +17,11 @@ protected:
     void closeEvent(QCloseEvent *event);
     void showEvent(QShowEvent *event);
     void hideEvent(QHideEvent *event);
+#if defined(Q_OS_WIN)
     bool winEvent (MSG * message, long * result);
+#elif defined(Q_OS_LINUX)
+
+#endif
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 signals:
     void settingsChanged();
@@ -29,9 +33,12 @@ public slots:
 private:
     void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
     void registerActualHotkeys();
-    void registerHotkeyWin(const QString& str, size_t hotkeyId);
-    size_t qtKeyToWin(size_t key);
     Ui::ConfigForm _ui;
     QSettings *_settings;
     QMap<QString, QString> &_languages;
+
+#if defined(Q_OS_WIN)
+    size_t qtKeyToWin(size_t key);
+    void registerHotkeyWin(const QString& str, size_t hotkeyId);
+#endif
 };
