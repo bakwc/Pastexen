@@ -1,4 +1,4 @@
-#include <QHttpRequestHeader>
+//#include <QHttpRequestHeader>
 #include <QByteArray>
 #include <QFile>
 #include <QDebug>

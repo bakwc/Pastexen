@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QxtGui/QxtApplication>
-#include <QxtGui/QxtGlobalShortcut>
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QMap>
@@ -35,9 +33,9 @@ private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
-    QxtGlobalShortcut *_shortcutScreenFull;
-    QxtGlobalShortcut *_shortcutScreenPart;
-    QxtGlobalShortcut *_shortcutTextShare;
+    //QxtGlobalShortcut *_shortcutScreenFull;
+    //QxtGlobalShortcut *_shortcutScreenPart;
+    //QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     QSettings *_settings;
     QMap<QString, QString> _languages;

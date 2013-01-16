@@ -7,11 +7,6 @@
 CONFIG   -= console
 QT       += core gui network
 
-CONFIG  += qxt
-
-QXT     -= console
-QXT     += core gui
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
 win32 {
