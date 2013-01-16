@@ -16,10 +16,11 @@ public:
     Application(int argc, char *argv[]);
     ~Application();
     bool pxAppInit();
-private slots:
+public slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
     void processCodeShare();
+private slots:
     void trayIconClicked(const QSystemTrayIcon::ActivationReason &button);
     void linkAvaliable(const QString &link);
     void aboutDialog();

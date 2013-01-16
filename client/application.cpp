@@ -64,11 +64,7 @@ bool Application::pxAppInit()
     _configWidget = new ConfigWidget(_settings, _languages);
     QObject::connect(_configWidget, SIGNAL(settingsChanged()), this, SLOT(setupHotkeys()));
 
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
-
-    _configWidget->init(fullHotkey, partHotkey, codeHotkey);
+    _configWidget->init();
 
     //_shortcutScreenFull = new QxtGlobalShortcut;
     //_shortcutScreenPart = new QxtGlobalShortcut;
@@ -197,6 +193,12 @@ void Application::setupHotkeys()
     QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
     QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+
+    //#ifdef Q_OS_WIN
+    //if (!RegisterHotKey(NULL, 1, MOD_ALT, 0x42)) {
+    //    qDebug() << "Error activating hothey!";
+    //}
+    //#endif
 
     //if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
     //    qDebug() << "Error activating hotkey:" << fullHotkey;          // Shortcut for full screen
