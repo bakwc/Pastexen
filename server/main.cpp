@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
     if (app.logFile().size()) {
         if (Logger::configure(app.logFile()))
-            qInstallMsgHandler(Logger::logger);
+            qInstallMessageHandler(Logger::logger);
         else
             qDebug() << "Log file not been set";
     }

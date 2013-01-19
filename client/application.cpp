@@ -11,6 +11,7 @@
 #include <QLocalSocket>
 #include <QTimer>
 #include <QDir>
+#include <QScreen>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -127,7 +128,7 @@ void Application::connectDisconectHotkeys(bool b)
 
 void Application::processScreenshot(bool isFullScreen)
 {
-    QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);

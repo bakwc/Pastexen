@@ -38,6 +38,8 @@ void pSaver::save(const QByteArray &data, const QString& type)
         file.setFileName(path);
     } while(_files.contains(path) && --i);
 
+    _files.insert(path);
+
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "\nCannot create file:" << file.fileName();
         return;
@@ -70,7 +72,7 @@ QString pSaver::randName(int count)
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
-    qsrand(QTime().msecsTo(QTime::currentTime()));
+    qsrand(QTime::currentTime().msec());
     for (int i = 0; i < count; ++i) {
         str += alphanum[qrand() % (sizeof(alphanum) - 1)];
     }
