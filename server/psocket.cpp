@@ -97,7 +97,7 @@ void pSocket::onDataReceived()
         _limit.fetchAndAddAcquire(data.size());
     }
 
-    if (_buffer.size() > MAX_DATA_SIZE || _limit > MAX_DAY_SIZE) {
+    if (_buffer.size() > MAX_DATA_SIZE || _limit.loadAcquire() > MAX_DAY_SIZE) {
         qDebug() << "File is too big! Disconnect" << _socket->localAddress();
         _socket->disconnectFromHost();
         _socket->deleteLater();

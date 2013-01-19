@@ -32,13 +32,13 @@ void pServer::onConnection()
     if (it == _limits.end()) {
         it = _limits.insert(addr, 0);
     } else {
-        if (it.value() > 50*1024*1024) {
+        if (it.value().loadAcquire() > 50*1024*1024) {
             socket->disconnectFromHost();
             socket->deleteLater();
             return;
         }
     }
-    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value() << " bytes";
+    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value().loadAcquire() << " bytes";
     new pSocket(socket, pThreadPool::getNextThread(), it.value());
 }
 
