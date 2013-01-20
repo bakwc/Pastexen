@@ -47,8 +47,8 @@
 	}
 	
 	if(isset($_GET['raw'])) {
-		header('Content-Type:text/html; charset=utf-8');
-		echo '<pre>' . htmlspecialchars($source->getData()) . '</pre>';
+		header('Content-Type:text/plain; charset=utf-8');
+		readfile($source->path);
 		exit();
 	}
 ?>
