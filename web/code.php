@@ -47,7 +47,8 @@
 	}
 	
 	if(isset($_GET['raw'])) {
-		echo '<pre>' . htmlspecialchars($source->getData()) . '</pre>';
+		header('Content-Type:text/plain; charset=utf-8');
+		readfile($source->path);
 		exit();
 	}
 ?>
@@ -97,7 +98,7 @@
 					</div>
 					<div class="pull-right">
 						<ul class="social">
-							<li><a href="http://fb.com/pastexen" class="fb">FB</a></li>
+							<li><a href="http://www.facebook.com/groups/310112359099842/" class="fb">FB</a></li>
 							<li><a href="http://vk.com/pastexen" class="vk">BK</a></li>
 						</ul>
 					</div>

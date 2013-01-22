@@ -96,8 +96,8 @@ ul.social li{float:left;margin-right:10px;}
 .sheme{background:url(../img/sheme.png);width:940px;height:172px;margin:15px 0 15px 25px;}
 .pk{color:transparent;width:32px;height:33px;display:block;background:url('../img/social2.png') 0 0 no-repeat;}
 .pk:hover{color:transparent;background:url('../img/social2.png') 0 -34px no-repeat;}
-.fb{color:transparent;width:31px;height:32px;display:block;background:url('../img/social.png') 0 0 no-repeat;}
-.fb:hover{color:transparent;background:url('../img/social.png') 0 -34px no-repeat;}
+.fb{color:transparent;width:31px;height:32px;display:block;background:url('../img/social.png') 0 -34px no-repeat;}
+.fb:hover{color:transparent;background:url('../img/social.png') 0 0 no-repeat;}
 .vk{color:transparent;width:31px;height:32px;display:block;background:url('../img/social.png') -35px -34px no-repeat;}
 .vk:hover{color:transparent;background:url('../img/social.png') -35px 0 no-repeat;}
 .slogan{text-align:center;}
