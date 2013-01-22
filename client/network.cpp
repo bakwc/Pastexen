@@ -1,4 +1,4 @@
-#include <QHttpRequestHeader>
+//#include <QHttpRequestHeader>
 #include <QByteArray>
 #include <QFile>
 #include <QDebug>
@@ -28,6 +28,8 @@ void Network::lookedUp(const QHostInfo &host)
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
+    _serverAddr = QHostAddress::LocalHost;
+
     if (_serverAddr.isNull()) {
         return; // If no internet connection
     }

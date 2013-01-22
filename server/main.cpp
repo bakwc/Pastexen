@@ -21,15 +21,15 @@ int main(int argc, char** argv)
     }
 
     #ifdef Q_OS_LINUX
-    int d = daemon(0, 0);
-    Q_UNUSED(d);
+//    int d = daemon(0, 0);
+//    Q_UNUSED(d);
     #endif
 
     QString pathToConfig = app.config();
 
     if (app.logFile().size()) {
         if (Logger::configure(app.logFile()))
-            qInstallMsgHandler(Logger::logger);
+            qInstallMessageHandler(Logger::logger);
         else
             qDebug() << "Log file not been set";
     }

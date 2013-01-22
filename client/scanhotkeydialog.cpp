@@ -15,7 +15,7 @@ bool ScanHotkeyDialog::event(QEvent *ev)
         QKeyEvent* e = dynamic_cast<QKeyEvent*>(ev);
         QKeySequence seq;
 
-        if (e->key() >= Qt::Key_Shift && e->key() <= Qt::Key_NumLock ||
+        if ((e->key() >= Qt::Key_Shift && e->key() <= Qt::Key_NumLock) ||
                 e->key() == -1) {
             seq = QKeySequence(e->modifiers());
         } else {

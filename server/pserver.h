@@ -11,7 +11,10 @@ class pThreadPool;
 class pServer : public QObject
 {
     Q_OBJECT
+
 public:
+    static const int LIMIT = 50*1024*1024;
+
     explicit pServer(QObject *parent = 0);
     
 signals:

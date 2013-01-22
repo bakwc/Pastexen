@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QxtGui/QxtApplication>
-#include <QxtGui/QxtGlobalShortcut>
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QMap>
@@ -18,10 +16,11 @@ public:
     Application(int argc, char *argv[]);
     ~Application();
     bool pxAppInit();
-private slots:
+public slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
     void processCodeShare();
+private slots:
     void trayIconClicked(const QSystemTrayIcon::ActivationReason &button);
     void linkAvaliable(const QString &link);
     void aboutDialog();
@@ -35,9 +34,9 @@ private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
-    QxtGlobalShortcut *_shortcutScreenFull;
-    QxtGlobalShortcut *_shortcutScreenPart;
-    QxtGlobalShortcut *_shortcutTextShare;
+    //QxtGlobalShortcut *_shortcutScreenFull;
+    //QxtGlobalShortcut *_shortcutScreenPart;
+    //QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     QSettings *_settings;
     QMap<QString, QString> _languages;

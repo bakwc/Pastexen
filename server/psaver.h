@@ -10,6 +10,7 @@
 class pSaver : public QThread
 {
     Q_OBJECT
+
 public:
     explicit pSaver();
     static pSaver* inst() { return pThis; }
