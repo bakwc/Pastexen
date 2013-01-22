@@ -1,7 +1,9 @@
 #include "logger.h"
+#include <QDateTime>
+#include "pserver.h"
 
 QIODevice* Logger::_io = 0;
-FILE* Logger::_f = 0;
+FILE* Logger::_f = stderr;
 QString Logger::_path = QString();
 
 bool Logger::configure(const QString &path)
@@ -32,4 +34,11 @@ void Logger::logger(QtMsgType type, const QMessageLogContext& context, const QSt
     }
 
     fflush(_f);
+}
+
+void Logger::log(const QString& ipAddr, int limit)
+{
+    QDateTime t = QDateTime::currentDateTime();
+    fprintf(_f, "%d connected %s %d\n",
+            t.toTime_t(), ipAddr.toLocal8Bit().data(), limit);
 }
