@@ -109,8 +109,7 @@
 		<div class="container bread hide">
 			<ul class="breadcrumb">
 				<li><a href="#">Home</a> <span class="divider">/</span></li>
-				<li><a href="#">Source</a> <span class="divider">/</span></li>
-				<li class="active">Filename</li>
+				<li class="active"><?php echo $source->name; ?></li>
 			</ul>
 		</div>
 		
@@ -125,7 +124,7 @@
 				<div class="pull-right share">
 					<div id="vk_like" class="vk_like"></div>
 					<script type="text/javascript">VK.Widgets.Like("vk_like", {type: "mini"});</script>
-					<div class="fb-like" data-href="http://pastexen.com/source/s" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="trebuchet ms"></div>
+					<div class="fb-like" data-href="<?php echo htmlspecialchars($pageUrl); ?>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="trebuchet ms"></div>
 					<g:plusone></g:plusone>
 				</div>
 				<div class="clearfix"></div>
