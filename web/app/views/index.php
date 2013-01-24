@@ -53,6 +53,7 @@
 						$supportedDownloads = array(
 							'windows'	=> 'Windows',
 							'debian'	=> 'Debian',
+							'other'		=> 'Other',
 							'source'	=> 'Source'
 						);
 						foreach($supportedDownloads as $configName => $downloadName) {
