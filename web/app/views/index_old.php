@@ -12,6 +12,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
+		<link href="/app/static/styles/twitter-bootstrap-2.2.2.css" rel="stylesheet" />
 		<link href="/app/static/styles/old/style.min.css" rel="stylesheet">
 		<link rel="shortcut icon" href="/app/static/images/favicon.png">
 		<!--[if gte IE 9]><style type="text/css"> .gradient{filter: none;}</style><![endif]-->
