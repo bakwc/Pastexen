@@ -16,11 +16,33 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	final class ApplicationUtils {
+		public static function urlStripParameter($url, $parameter) {
+			$parsedUrl = parse_url($url);
+			
+			if(!isset($parsedUrl['query']))
+				return $url;
 
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
-	require(dirname(__FILE__) . '/app/index.php');
+			$querySplitted = explode('&', $parsedUrl['query']);
+			foreach($querySplitted as $queryElement) {
+				list($name, $value) = explode('=', $queryElement);
+				if($value == null)
+					$value = '';
+				$queryData[$name] = $value;
+			}
+			
+			if(!isset($queryData[$parameter]))
+				return $url;
+			
+			unset($queryData[$parameter]);
+			
+			$url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'] . '?' . http_build_query($queryData);
+			return $url;
+		}
+	}

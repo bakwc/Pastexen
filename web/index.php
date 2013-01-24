@@ -17,10 +17,5 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
+	$action = 'index';
 	require(dirname(__FILE__) . '/app/index.php');
