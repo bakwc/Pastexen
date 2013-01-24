@@ -14,6 +14,7 @@ bool Logger::configure(const QString &path)
 
 void Logger::logger(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
+    Q_UNUSED(context);
     switch (type) {
     case QtDebugMsg: {
         fprintf(_f, "%s", msg.toLocal8Bit().data());

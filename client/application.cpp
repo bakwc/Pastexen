@@ -127,6 +127,10 @@ void Application::processCodeShare()
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
     QString text = QApplication::clipboard()->text();
+    if (text.count() == 0) {
+        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
+        return;
+    }
     _network->upload(text.toUtf8(),sourcestype);
 }
 

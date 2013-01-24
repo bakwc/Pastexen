@@ -86,6 +86,11 @@ void pSocket::onDataReceived()
         _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
 
+        if (_packetSize == 0) {
+            qDebug() << "Client trying to send empty data";
+            _socket->disconnectFromHost();
+        }
+
         if (_fileType == "" || !Settings::types().contains(_fileType) ) {
             qDebug() << "Sender type is not exist. Disconnect" << _socket->localAddress();
             _socket->disconnectFromHost();
