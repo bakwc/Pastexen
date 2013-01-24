@@ -17,6 +17,15 @@ public:
     ~Application();
     bool pxAppInit();
 public slots:
+    inline void hotkeyPressed(size_t id) {
+        if (id == HOTKEY_CODE_ID) {
+            processCodeShare();
+        } else if (id == HOTKEY_FULL_ID) {
+            processScreenshot(true);
+        } else if (id == HOTKEY_PART_ID) {
+            processScreenshot(false);
+        }
+    }
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
     void processCodeShare();
@@ -26,7 +35,6 @@ private slots:
     void aboutDialog();
     void setupHotkeys();
     void newLocalSocketConnection();
-    void connectDisconectHotkeys(bool b);
 private:
     void processScreenshot(bool isFullScreen);
     void initLanguages();
@@ -34,9 +42,6 @@ private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
-    //QxtGlobalShortcut *_shortcutScreenFull;
-    //QxtGlobalShortcut *_shortcutScreenPart;
-    //QxtGlobalShortcut *_shortcutTextShare;
     Network *_network;
     QSettings *_settings;
     QMap<QString, QString> _languages;

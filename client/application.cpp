@@ -23,9 +23,6 @@ Application::Application(int argc, char *argv[]) :
     , _configWidget(0)
     , _trayIcon(0)
     , _trayIconMenu(0)
-    //, _shortcutScreenFull(0)
-    //, _shortcutScreenPart(0)
-    //, _shortcutTextShare(0)
     , _network(0)
     , _settings(0)
 {
@@ -35,9 +32,6 @@ Application::~Application()
 {
     _trayIcon->hide();
     _settings->sync();
-    //delete _shortcutScreenPart;
-    //delete _shortcutScreenFull;
-    //delete _shortcutTextShare;
     delete _trayIconMenu;
 }
 
@@ -63,16 +57,10 @@ bool Application::pxAppInit()
     initLanguages();
 
     _configWidget = new ConfigWidget(_settings, _languages);
-    QObject::connect(_configWidget, SIGNAL(settingsChanged()), this, SLOT(setupHotkeys()));
+    connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
+    connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
     _configWidget->init();
-
-    //_shortcutScreenFull = new QxtGlobalShortcut;
-    //_shortcutScreenPart = new QxtGlobalShortcut;
-    //_shortcutTextShare = new QxtGlobalShortcut;
-
-    connectDisconectHotkeys(true);
-    connect(_configWidget, SIGNAL(showSignal(bool)), this, SLOT(connectDisconectHotkeys(bool)));
 
     _trayIconMenu = new QMenu;
     _trayIconMenu->addAction(tr("About"), this, SLOT(aboutDialog()));
@@ -105,25 +93,6 @@ bool Application::pxAppInit()
 
 void Application::newLocalSocketConnection()
 {
-}
-
-void Application::connectDisconectHotkeys(bool b)
-{
-    static bool alreadyConnect = false;
-
-    if (!alreadyConnect && b) {
-        //connect(_shortcutScreenFull, SIGNAL(activated()), this, SLOT(processScreenshotFull()));
-        //connect(_shortcutScreenPart, SIGNAL(activated()), this, SLOT(processScreenshotPart()));
-        //connect(_shortcutTextShare, SIGNAL(activated()), this, SLOT(processCodeShare()));
-    }
-
-    if (!b){
-        //disconnect(_shortcutScreenFull, SIGNAL(activated()), this, SLOT(processScreenshotFull()));
-        //disconnect(_shortcutScreenPart, SIGNAL(activated()), this, SLOT(processScreenshotPart()));
-        //disconnect(_shortcutTextShare, SIGNAL(activated()), this, SLOT(processCodeShare()));
-    }
-
-    alreadyConnect = b;
 }
 
 void Application::processScreenshot(bool isFullScreen)
@@ -194,21 +163,6 @@ void Application::setupHotkeys()
     QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
     QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
-
-    //#ifdef Q_OS_WIN
-    //if (!RegisterHotKey(NULL, 1, MOD_ALT, 0x42)) {
-    //    qDebug() << "Error activating hothey!";
-    //}
-    //#endif
-
-    //if (!_shortcutScreenFull->setShortcut(QKeySequence(fullHotkey)))
-    //    qDebug() << "Error activating hotkey:" << fullHotkey;          // Shortcut for full screen
-
-    //if (!_shortcutScreenPart->setShortcut(QKeySequence(partHotkey)))
-   //     qDebug() << "Error activating hotkey:" << partHotkey;        // Shortcut for part of the screen
-
-   // if (!_shortcutTextShare->setShortcut(QKeySequence(codeHotkey)))
-   //     qDebug() << "Error activating hotkey:" << codeHotkey;          // Shortcut for text share
 
     QList<QAction*> actsList = _trayIconMenu->actions();
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));

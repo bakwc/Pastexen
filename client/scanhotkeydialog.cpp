@@ -13,30 +13,14 @@ bool ScanHotkeyDialog::event(QEvent *ev)
 {
     if (ev->type() == QEvent::KeyPress) {
         QKeyEvent* e = dynamic_cast<QKeyEvent*>(ev);
-        QKeySequence seq;
 
-        if ((e->key() >= Qt::Key_Shift && e->key() <= Qt::Key_NumLock) ||
-                e->key() == -1) {
-            seq = QKeySequence(e->modifiers());
-        } else {
-            seq = QKeySequence(e->key(), e->modifiers());
+        if (Keys.GetSimpleKeys().size() < 1) {
+            Keys.AddKey(e->key());
         }
+        Keys.AddModifiers(e->modifiers());
 
-        _key = rigthStringKey(seq.toString());
-
-        _ui.lineEdit->setText(_key);
+        _ui.lineEdit->setText(Keys.ToString());
     }
 
     return QDialog::event(ev);
-}
-
-QString ScanHotkeyDialog::rigthStringKey(const QString &key)
-{
-    int index = key.indexOf(',');
-    if (index == -1)
-        return key;
-
-    QString rightKey(key.mid(index + 2));
-    rightKey.append(key.left(index));
-    return rightKey;
 }

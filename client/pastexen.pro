@@ -21,7 +21,14 @@ SOURCES += main.cpp \
     network.cpp \
     imageselectwidget.cpp \
     languageselectdialog.cpp \
-    scanhotkeydialog.cpp
+    scanhotkeydialog.cpp \
+    ../utils/usettings.cpp \
+    ../utils/ufullscreenwrapper.cpp \
+    ../utils/uexception.cpp \
+    ../utils/ucolonsep.cpp \
+    ../utils/ucast.cpp \
+    ../utils/ukeysequence.cpp \
+    ../utils/uglobalhotkeys.cpp
 
 HEADERS  += \
     application.h \
@@ -31,7 +38,16 @@ HEADERS  += \
     imageselectwidget.h \
     utils.h \
     languageselectdialog.h \
-    scanhotkeydialog.h
+    scanhotkeydialog.h \
+    winhotkeymap.h \
+    ../utils/usettings.h \
+    ../utils/ufullscreenwrapper.h \
+    ../utils/uexception.h \
+    ../utils/ucolonsep.h \
+    ../utils/ucast.h \
+    ../utils/ukeysequence.h \
+    ../utils/uglobalhotkey.h \
+    ../utils/uglobalhotkeys.h
 
 RESOURCES += \
     resources.qrc
@@ -47,3 +63,4 @@ isEmpty(PREFIX) {
 }
 target.path=$$PREFIX/
 
+QMAKE_CXXFLAGS += -std=c++0x

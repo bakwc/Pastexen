@@ -4,9 +4,7 @@
 #include <QShowEvent>
 #include <QDesktopWidget>
 #include <QDebug>
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
+
 #include "application.h"
 #include "scanhotkeydialog.h"
 #include "defines.h"
@@ -14,7 +12,8 @@
 ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
     : QWidget(parent),
       _settings(settings),
-      _languages(languages)
+      _languages(languages),
+      _hotKeys(new UGlobalHotkeys(parent))
 {
     _ui.setupUi(this);
 
@@ -29,6 +28,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
     connect(_ui.fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
+    connect(_hotKeys, SIGNAL(Activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
     registerActualHotkeys();
 }
 
@@ -37,13 +37,9 @@ void ConfigWidget::registerActualHotkeys() {
     QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
 
-    qDebug() << "Full hotkey: " << fullHotkey;
-
-    #ifdef Q_OS_WIN
-    registerHotkeyWin(partHotkey, HOTKEY_PART_ID);
-    registerHotkeyWin(fullHotkey, HOTKEY_FULL_ID);
-    registerHotkeyWin(codeHotkey, HOTKEY_CODE_ID);
-    #endif
+    _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
+    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
+    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
 }
 
 void ConfigWidget::init()
@@ -73,79 +69,6 @@ void ConfigWidget::init()
     }
 
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
-}
-
-#if defined(Q_OS_WIN)
-size_t ConfigWidget::qtKeyToWin(size_t key) {
-    // TODO: other maping or full keys list
-    switch (key) {
-    case Qt::Key_F9:
-        return VK_F9;
-        break;
-    case Qt::Key_F10:
-        return VK_F10;
-        break;
-    case Qt::Key_F11:
-        return VK_F11;
-        break;
-    }
-    qDebug() << "Hotkey not found in mapping!";
-    return 0;
-}
-
-void ConfigWidget::registerHotkeyWin(const QString& str, size_t hotkeyId) {
-    qDebug() << Q_FUNC_INFO;
-    QKeySequence keys;
-    keys = QKeySequence::fromString(str);
-    size_t winMod = 0;
-    size_t key = 0x42;
-
-    qDebug() << "Str:   " << str;
-    qDebug() << "Count: " << keys.count();
-
-    // TODO: correctly process modifiers
-    for (size_t i = 0; i != (size_t)keys.count(); i++) {
-        if (keys[i] == Qt::CTRL) {
-            winMod = MOD_CONTROL;
-        } else if (keys[i] == Qt::ALT) {
-            winMod = MOD_ALT;
-        } else {
-            key = qtKeyToWin(keys[i]);
-        }
-    }
-
-    qDebug() << key;
-
-    if (!RegisterHotKey((HWND)winId(), hotkeyId, winMod, key)) {
-        qDebug() << "Error activating hothey!";
-    }
-}
-
-bool ConfigWidget::winEvent (MSG * message, long * result) {
-    Q_UNUSED(result);
-    if (message->message == WM_HOTKEY) {
-        switch (message->wParam) {
-        case HOTKEY_FULL_ID:
-            ((Application*)qApp)->processScreenshotFull();
-            break;
-        case HOTKEY_CODE_ID:
-            ((Application*)qApp)->processCodeShare();
-            break;
-        case HOTKEY_PART_ID:
-            ((Application*)qApp)->processScreenshotPart();
-            break;
-        }
-    }
-    return false;
-}
-#endif
-
-bool ConfigWidget::nativeEvent(const QByteArray &eventType, void *message, long *result) {
-    Q_UNUSED(eventType);
-    #ifdef Q_OS_WIN
-    winEvent((MSG*)message, result);
-    #endif
-    return false;
 }
 
 void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
