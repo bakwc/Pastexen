@@ -50,7 +50,7 @@
 					<ul class="nav">
 						<li><a href="/">Home</a></li>
 					</ul>
-					<p class="navbar-text pull-right">Pastexen on <a href="http://www.facebook.com/groups/310112359099842/">Facebook</a> and <a href="http://vk.com/pastexen">Вконтакте</a>.</p>
+					<p class="navbar-text pull-right">Pastexen on <a href="http://www.facebook.com/groups/310112359099842/">Facebook</a> and <a href="http://vk.com/pastexen">Vkontakte</a>.</p>
 				</div>
 			</div>
 		</div>
