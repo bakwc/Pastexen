@@ -47,7 +47,8 @@ HEADERS  += \
     ../utils/ucast.h \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkey.h \
-    ../utils/uglobalhotkeys.h
+    ../utils/uglobalhotkeys.h \
+    ../utils/udebug.h
 
 RESOURCES += \
     resources.qrc

@@ -41,7 +41,7 @@ void pServer::onConnection()
 //    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value().loadAcquire() << " bytes";
     new pSocket(socket, pThreadPool::getNextThread(), it.value());
     Logger::log(socket->peerAddress().toString() + socket->peerName(), it.value().loadAcquire());
-
+    // UDebug << "asdfads";
 }
 
 // invoked once per minute

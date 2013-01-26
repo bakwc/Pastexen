@@ -1,4 +1,3 @@
-//#include <QHttpRequestHeader>
 #include <QByteArray>
 #include <QFile>
 #include <QDebug>
@@ -8,13 +7,15 @@
 #include "utils.h"
 #include "application.h"
 
+#include "../utils/udebug.h"
+
 Network::Network(QSettings *settings, QObject *parent) :
     QObject(parent),
     _settings(settings)
 {
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
-    QHostInfo::lookupHost("pastexen.com",
-                          this, SLOT(lookedUp(QHostInfo)));
+    this->startTimer(30000);
+    timerEvent(NULL);
 }
 
 void Network::lookedUp(const QHostInfo &host)
@@ -26,11 +27,29 @@ void Network::lookedUp(const QHostInfo &host)
     _serverAddr = host.addresses().at(0);
 }
 
+void Network::timerEvent(QTimerEvent *) {
+    qDebug() << Q_FUNC_INFO;
+    if (_serverAddr.isNull()) {
+        QHostInfo::abortHostLookup(_lookupId);
+        _lookupId = QHostInfo::lookupHost("pastexen.com",
+                              this, SLOT(lookedUp(QHostInfo)));
+    }
+}
+
 void Network::upload(const QByteArray& data, const QString &type)
 {
+    UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
+        qDebug() << "Unable to upload data: host not resolved";
+        emit trayMessage("Error", "Not connected - host not resolved");
         return; // If no internet connection
     }
+    if (_socket.state() != QAbstractSocket::UnconnectedState) {
+        emit trayMessage("Error", "Sending previous request");
+        UDebug << "Error connecting to server!";
+        return;
+    }
+
     _socket.connectToHost(_serverAddr, 9876);
     _socket.waitForConnected();
 

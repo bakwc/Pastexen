@@ -18,14 +18,17 @@ public:
     void upload(const QByteArray &data, const QString &type);
 signals:
     void linkReceived(const QString &link);
+    void trayMessage(const QString &caption, const QString &text);
 private slots:
     void onDataReceived();
     void lookedUp(const QHostInfo &host);
 private:
     QByteArray readFile(const QString& fileName);
+    void timerEvent(QTimerEvent *);
 private:
     QSettings *_settings;
     bool _ready;
     QTcpSocket _socket;
     QHostAddress _serverAddr;
+    int _lookupId;
 };
