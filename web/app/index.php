@@ -16,11 +16,22 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
-
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
-	require(dirname(__FILE__) . '/app/index.php');
+	
+	define('APPLICATION_ENTRY_POINT', true);
+	
+	if(!isset($action)) {
+		if(!isset($_REQUEST['action']))
+			$action = 'index';
+		else
+			$action = $_REQUEST['action'];
+	}
+	
+	require_once(dirname(__FILE__) . '/config.php');
+	require_once(dirname(__FILE__) . '/core/Application.php');
+	
+	$application = new Application();
+	$application->init($applicationConfig, $action, $_REQUEST);
+	$application->run();
+	$application->send();
+	
+	exit();

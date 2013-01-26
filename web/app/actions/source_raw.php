@@ -16,11 +16,29 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
-
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
-	require(dirname(__FILE__) . '/app/index.php');
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	require_once(dirname(__FILE__) . '/../models/Source.php');
+	
+	final class ApplicationAction_source_raw extends ApplicationAction {
+		public function run() {
+			if(!isset($this->application->parameters['file']))
+				throw new Exception('File identifier is missing.', 400);
+			
+			try {
+				$source = new ApplicationModel_Source($this->application->parameters['file'], $this->application->config['sources_dir']);
+			}
+			catch(Exception $e) {
+				throw new Exception('File was not found.', 404);
+			}
+			
+			$this->application->outputHeaders = array(
+				'Content-Type:text/plain; charset=utf-8'
+			);
+			$this->application->outputContent = $source->getData();
+		}
+	}
