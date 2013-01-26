@@ -179,6 +179,7 @@ void Application::initLanguages()
     _languages.insert("txt", "Plain text");
     _languages.insert("c", "C");
     _languages.insert("cpp", "C++");
+    _languages.insert("cs", "C#");
     _languages.insert("java", "Java");
     _languages.insert("php", "PHP");
     _languages.insert("py", "Python");
