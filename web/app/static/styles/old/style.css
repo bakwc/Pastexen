@@ -1,0 +1,183 @@
+@media (max-width:1024px) { 
+	.container.intro {
+		background: rgb(255,255,255);
+		background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZGFkZmU5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L3JhZGlhbEdyYWRpZW50PgogIDxyZWN0IHg9Ii01MCIgeT0iLTUwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+		background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(218,223,233,1) 100%);
+		background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(218,223,233,1)));
+		background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+		background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+		background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+		background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dadfe9',GradientType=1);
+	}
+}
+@font-face {
+	font-family: 'TrebuchetMS';
+	src: url('trebuchetms.eot');
+	src: url('trebuchetms.eot?#iefix') format('embedded-opentype'),
+			 url('trebuchetms.woff') format('woff'),
+			 url('trebuchetms.ttf') format('truetype'),
+			 url('trebuchetms.svg#trebuchetms') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'TrebuchetMSi';
+	src: url('trebuchetmsitalic.eot');
+	src: url('trebuchetmsitalic.eot?#iefix') format('embedded-opentype'),
+			 url('trebuchetmsitalic.woff') format('woff'),
+			 url('trebuchetmsitalic.ttf') format('truetype'),
+			 url('trebuchetmsitalic.svg#trebuchetmsitalic') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: "Trebuchet MS", "TrebuchetMS", Tahoma;
+}
+.hbg {
+	background: rgb(255,255,255);
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZGFkZmU5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L3JhZGlhbEdyYWRpZW50PgogIDxyZWN0IHg9Ii01MCIgeT0iLTUwIiB3aWR0aD0iMTAxIiBoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%, rgba(218,223,233,1) 100%);
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(218,223,233,1)));
+	background: -webkit-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+	background: -o-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+	background: -ms-radial-gradient(center, ellipse cover, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+	background: radial-gradient(ellipse at center, rgba(255,255,255,1) 0%,rgba(218,223,233,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dadfe9',GradientType=1);
+}
+.head {
+	margin: 50px 0;
+}
+.logo {
+	text-align: center;
+	padding-left: 100px;
+}
+ul.social {
+	list-style: none;
+	display: inline-block;
+}
+ul.social li {
+	float: left;
+	margin-right: 10px;
+}
+.sheme {
+	background: url(/app/static/images/old/sheme.png);
+	width: 940px;
+	height: 172px;
+	margin: 15px 0 15px 25px;
+}
+.fb {
+	color: transparent;
+	width: 31px;
+	height: 32px;
+	display: block;
+	background: url('/app/static/images/old/social.png') 0 -34px no-repeat;
+}
+.fb:hover {
+	color: transparent;
+	background: url('/app/static/images/old/social.png') 0 0 no-repeat;
+}
+.vk {
+	color:transparent;
+	width: 31px;
+	height: 32px;
+	display: block;
+	background: url('/app/static/images/old/social.png') -35px -34px no-repeat;
+}
+.vk:hover {
+	color: transparent;
+	background: url('/app/static/images/old/social.png') -35px 0 no-repeat;
+}
+.slogan {
+	text-align: center;
+}
+.slogan span {
+	font-family: "TrebuchetMSi", Tahoma;
+	font-size: 30px;
+	line-height: 40px;
+	text-align: center;
+	color: #444c52;
+}
+.slogan span.tw {
+	font-size: 36px;
+}
+.download-section {
+	text-align: center;
+}
+.download-section .down-text {
+	font-size: 24px;
+}
+.download-section a.src {
+	text-decoration: underline;
+	color: #3f4888;
+}
+.download-section a {
+	color: transparent;
+}
+.download-section .btns {
+	margin: 12px 0 0 290px;
+}
+.download-section .btns .vertsper {
+	float: left;
+	display: block;
+	width:2px;
+	height: 50px;
+	background: url(/app/static/images/old/download.png) -7px -111px;
+}
+.download-section .btns .win {
+	float: left;
+	display: block;
+	width: 150px;
+	height: 50px;
+	background: url(/app/static/images/old/download.png) 0 -6px no-repeat;
+	margin-left:50px;
+}
+.download-section .btns .macos {
+	float: left;
+	display: block;
+	width: 150px;
+	height: 50px;
+	background: url(/app/static/images/old/download.png) 0 -60px no-repeat;
+}
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+	width: 1024px;
+}
+.str {
+	background: url(/app/static/images/old/str.png);
+	width: 100%;
+	height: 8px;
+	display: block;
+	margin-top: -8px;
+}
+.ping {
+	background: url(/app/static/images/old/download.png) -20px -117px no-repeat;
+	width: 130px;
+	height: 38px;
+	margin: -30px auto 10px auto;
+}
+.about {
+	margin-top: 15px;
+}
+.about span {
+	color: #444c52;
+	font-weight: lighter;
+}
+.about .btext {
+	font-size: 16px;
+	font-weight: bold;
+}
+.about .ltext {
+	font-size: 14px;
+}
+.about .block {
+	width: 480px;
+	float: left;
+}
+.span12 {
+	width: 980px !important;
+}
+.descr {
+	text-align: justify;
+	text-align-last: justify;
+}

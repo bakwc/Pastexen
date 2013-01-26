@@ -16,11 +16,15 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
-
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
-	require(dirname(__FILE__) . '/app/index.php');
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	final class ApplicationAction_about extends ApplicationAction {
+		public function run() {
+			$view = new ApplicationView($this->application, $this->application->path . '/views/about.php');
+			$view->render();
+		}
+	}

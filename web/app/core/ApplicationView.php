@@ -16,11 +16,38 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	final class ApplicationView {
+		private $application;
+		private $path;
+		private $variables;
+		
+		public function __construct(&$application, $path) {
+			$this->application = $application;
+			$this->path = $path;
+			$this->variables = array();
+		}
+		
+		public function __set($variable, $value) {
+			$this->variables[$variable] = $value;
+		}
+		
+		public function render() {
+			if(!is_readable($this->path))
+				throw new Exception('Cannot find template file!', 500);
+		
+			foreach($this->variables as $variable => $value)
+				$$variable = $value;
 
-	if(isset($_GET['download']))
-		$action = 'source_download';
-	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
-	else
-		$action = 'source_view';
-	require(dirname(__FILE__) . '/app/index.php');
+			ob_start();
+			
+			require($this->path);
+			
+			$this->application->outputContent = ob_get_clean();
+		}
+	}
