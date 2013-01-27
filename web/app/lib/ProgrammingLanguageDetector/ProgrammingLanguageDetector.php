@@ -18,10 +18,10 @@
 	 */
 	
 	final class ProgrammingLanguageDetector {
-		private $knowledgeBaseWordsFrequency = array();
+		private $knowledgeBase = array();
 		
 		public function detect($source) {
-			$languagesScore = $this->score($source);
+			$languagesScore = $this->score(self::removeComments($source));
 			$bestLanguage = 'undefined';
 			$bestLanguageScore = 0;
 			foreach($languagesScore as $language => $score)
@@ -34,35 +34,39 @@
 		}
 		
 		public function exportKnowledgeBase() {
-			return gzcompress(serialize($this->knowledgeBaseWordsFrequency));
+			return gzcompress(serialize($this->knowledgeBase));
 		}
 		
 		public function importKnowledgeBase($data) {
-			$this->knowledgeBaseWordsFrequency = unserialize(gzuncompress($data));
+			$this->knowledgeBase = unserialize(gzuncompress($data));
 		}
 		
 		public function train($source, $language) {
-			$sourceWordsFrequency = self::countWords($source);
-			foreach($sourceWordsFrequency as $word => $frequency) {
-				if(!isset($this->knowledgeBaseWordsFrequency[$language][$word]))
-					$this->knowledgeBaseWordsFrequency[$language][$word] = 0;
-				
-				$this->knowledgeBaseWordsFrequency[$language][$word] += $frequency;
+			$sourceWords = self::countWords(self::removeComments($source));
+			
+			if(!isset($this->knowledgeBase[$language]['total']))
+				$this->knowledgeBase[$language]['total'] = 0;
+			$this->knowledgeBase[$language]['total'] += $sourceWords['total'];
+			
+			foreach($sourceWords['freq'] as $word => $frequency) {
+				if(!isset($this->knowledgeBase[$language]['freq'][$word]))
+					$this->knowledgeBase[$language]['freq'][$word] = 0;
+				$this->knowledgeBase[$language]['freq'][$word] += $frequency;
 			}
 		}
 		
 		private function score($source) {
 			$languagesScore = array();
-			$sourceWordsFrequency = self::countWords($source);
-			foreach($this->knowledgeBaseWordsFrequency as $language => $kbWordsFrequency) {
+			$sourceWords = self::countWords($source);
+			foreach($this->knowledgeBase as $language => $kbWords) {
 				$languagesScore[$language] = 0;
 				
-				foreach($kbWordsFrequency as $word => $kbFrequency) {
-					if(!isset($sourceWordsFrequency[$word]))
+				foreach($kbWords['freq'] as $word => $kbFrequency) {
+					if(!isset($sourceWords['freq'][$word]))
 						continue;
 					
-					$kbFrequencyWeighted = $kbFrequency / count($kbWordsFrequency);
-					$srcFrequencyWeighted = $sourceWordsFrequency[$word] / count($sourceWordsFrequency);
+					$kbFrequencyWeighted = $kbFrequency / $kbWords['total'];
+					$srcFrequencyWeighted = $sourceWords['freq'][$word] / $sourceWords['total'];
 				
 					$languagesScore[$language] += 1 - abs($srcFrequencyWeighted - $kbFrequencyWeighted);
 				}
@@ -73,6 +77,7 @@
 		
 		private static function countWords($source) {
 			$words = array_filter(preg_split('/[^A-Za-z]/', $source));
+			$wordsTotal = count($words);
 			
 			$wordsFrequency = array();
 			foreach($words as $word) {
@@ -84,6 +89,15 @@
 				++$wordsFrequency[$word];
 			}
 			
-			return $wordsFrequency;
+			return array('total' => $wordsTotal, 'freq' => $wordsFrequency);
+		}
+		
+		// this method removes comments from the source
+		// NOTE: if // and /* */ are not comments in your programming language, then this method will erase some of your code!
+		private static function removeComments($source) {
+			$source = preg_replace('/\/\/(.*)/', '', $source);
+			$source = preg_replace('/\/\*(.*)\*\//Us', '', $source);
+			
+			return $source;
 		}
 	}
