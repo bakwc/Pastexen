@@ -32,6 +32,7 @@
 		public $config;
 		private $action;
 		public $parameters;
+		public $languageStrings;
 		public $outputHeaders;
 		public $outputContent;
 		
@@ -46,6 +47,8 @@
 			
 			$this->parameters = $parameters;
 			
+			$this->languageStrings = array();
+			
 			$this->outputHeaders = array();
 			$this->outputContent = '';
 		}
@@ -53,6 +56,11 @@
 		public function run() {
 			try {
 				@date_default_timezone_set('UTC');
+				
+				$language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+				if(!is_readable($this->path . '/languages/' . $language . '.php'))
+					$language = $this->config['language_default'];
+				require_once($this->path . '/languages/' . $language . '.php');
 				
 				if(strspn($this->action, 'abcdefghijklmnopqrstuvwxyz0123456789_-') !== strlen($this->action))
 					throw new Exception('Invalid action name!', 400);

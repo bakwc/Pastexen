@@ -50,4 +50,16 @@
 			
 			$this->application->outputContent = ob_get_clean();
 		}
+		
+		// string l(string $languageStringName [, string $argument [, string $... ]])
+		// returns a formatted language string, like sprintf()
+		private function l($languageStringName) {
+			if(!isset($this->application->languageStrings[$languageStringName]))
+				return '%' . $languageStringName . '%';
+			$functionArguments = func_get_args();
+			return call_user_func_array('sprintf', array_merge(
+				array($this->application->languageStrings[$languageStringName]),
+				array_slice($functionArguments, 1)
+			));
+		}
 	}

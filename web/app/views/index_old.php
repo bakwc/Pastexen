@@ -1,4 +1,24 @@
 <?php
+	/*
+	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
+	 * Copyright (C) 2013  denis <denisavvakumov@gmail.com>
+	 * Copyright (C) 2013  roman <dutchakdev.com>
+	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 *
+	 * This program is free software: you can redistribute it and/or modify
+	 * it under the terms of the GNU General Public License as published by
+	 * the Free Software Foundation, either version 3 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * This program is distributed in the hope that it will be useful,
+	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 * GNU General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU General Public License
+	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 */
+
 	if(!defined('APPLICATION_ENTRY_POINT')) {
 		echo 'Access denied.';
 		exit();
@@ -32,19 +52,22 @@
 						</div>
 					</div>
 					<div class="span12 slogan">
-						<span class="frst">А что Вы делаете, когда надо быстро показать</span>
+						<span class="frst"><?php echo $this->l('slogan_line1'); ?></span>
 						<br>
-						<span class="tw">картинку или часть кода</span>
+						<span class="tw"><?php echo $this->l('slogan_line2'); ?></span>
 						<div class="sheme"></div>
 					</div>
 					<div class="span12 download-section">
-						<span class="down-text">Скачать</span>
-						<div class="btns row">
-							<a href="https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_0.2_win32_installer.exe" class="win">Для Windows</a>
-							<span class="vertsper"></span>
-							<a href="https://github.com/bakwc/Pastexen/tree/master/builds" class="macos">Other builds</a>
+						<span class="down-text"><?php echo $this->l('action_download'); ?></span>
+						<br />
+						<div class="btn-group">
+							<a class="btn btn-large btn-warning" href="<?php echo $this->application->config['download_link_windows']; ?>"><?php echo $this->l('download_windows'); ?></a>
+							<a class="btn btn-large" href="<?php echo $this->application->config['download_link_other']; ?>"><?php echo $this->l('download_other'); ?></a>
 						</div>
-						<a href="https://github.com/bakwc/Pastexen/" class="src">Sources (github)</a> <a href="Oo.php" class="src">Our team</a>
+						<br />
+						<a href="<?php echo $this->application->config['download_link_source']; ?>" class="download-section-sub"><?php echo $this->l('download_source'); ?></a>
+						&nbsp;&nbsp;&nbsp;
+						<a href="Oo.php" class="download-section-sub"><?php echo $this->l('our_team'); ?></a>
 						<br/>
 						<br/>
 						<br/>
@@ -64,9 +87,9 @@
 							<img src="/app/static/images/features-screenshot.png" width="140" height="115">
 						</div>
 						<div class="span4 descr">
-							<span class="btext">Делитесь скриншотами одним <br/>нажатием клавиши</span>
+							<span class="btext"><?php echo $this->l('feature_screenshot_header'); ?></span>
 							<br/>
-							<span class="ltext">Все снятые изображения сохраняются на сервере и создается ссылка. Остается лишь нажать Ctrl+V</span>
+							<span class="ltext"><?php echo $this->l('feature_screenshot_text'); ?></span>
 						</div>
 					</div>
 					<div class="block">
@@ -74,9 +97,9 @@
 							<img src="/app/static/images/features-code.png" width="140" height="115">
 						</div>
 						<div class="span4 descr">
-							<span style="font-size:16px;font-weight: bold;">Копируйте код и отправляйте его <br/>уже с подсветкой синтаксиса</span>
+							<span class="btext"><?php echo $this->l('feature_code_header'); ?></span>
 							<br/>
-							<span style="font-size:14px;">Весь загруженный код сохраняется на сервере и создается ссылка. Остается лишь нажать Ctrl+V</span>
+							<span class="ltext"><?php echo $this->l('feature_code_text'); ?></span>
 						</div>
 					</div>
 				</div>

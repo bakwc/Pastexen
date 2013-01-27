@@ -48,22 +48,22 @@
 				<div class="container">
 					<a class="brand" href="/">Pastexen</a>
 					<ul class="nav">
-						<li><a href="/">Home</a></li>
+						<li><a href="/"><?php echo $this->l('menu_index'); ?></a></li>
 					</ul>
-					<p class="navbar-text pull-right">Pastexen on <a href="http://www.facebook.com/groups/310112359099842/">Facebook</a> and <a href="http://vk.com/pastexen">Vkontakte</a>.</p>
+					<p class="navbar-text pull-right"><?php echo $this->l('we_on_fb_and_vk_linked', '<a href="http://www.facebook.com/groups/310112359099842/">', '</a>', '<a href="http://vk.com/pastexen">', '</a>'); ?>.</p>
 				</div>
 			</div>
 		</div>
 		
 		<div class="container">
 			<div class="btn-group pull-left">
-				<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download">Download</a>
-				<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw">Raw</a>
+				<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
+				<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw"><?php echo $this->l('action_open_raw'); ?></a>
 				<?php
 					if($isDarkColorScheme)
-						echo '<a class="btn" href="' . htmlspecialchars($url) . '&light">Light mode</a>';
+						echo '<a class="btn" href="' . htmlspecialchars($url) . '&light">' . $this->l('action_switch_to_light') . '</a>';
 					else
-						echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">Dark mode</a>';
+						echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">' . $this->l('action_switch_to_dark') . '</a>';
 				?>
 			</div>
 			<div class="pull-right social">

@@ -108,37 +108,9 @@ ul.social li {
 .download-section .down-text {
 	font-size: 24px;
 }
-.download-section a.src {
+.download-section-sub {
 	text-decoration: underline;
 	color: #3f4888;
-}
-.download-section a {
-	color: transparent;
-}
-.download-section .btns {
-	margin: 12px 0 0 290px;
-}
-.download-section .btns .vertsper {
-	float: left;
-	display: block;
-	width:2px;
-	height: 50px;
-	background: url(/app/static/images/old/download.png) -7px -111px;
-}
-.download-section .btns .win {
-	float: left;
-	display: block;
-	width: 150px;
-	height: 50px;
-	background: url(/app/static/images/old/download.png) 0 -6px no-repeat;
-	margin-left:50px;
-}
-.download-section .btns .macos {
-	float: left;
-	display: block;
-	width: 150px;
-	height: 50px;
-	background: url(/app/static/images/old/download.png) 0 -60px no-repeat;
 }
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
 	width: 1024px;
