@@ -36,9 +36,10 @@
 				throw new Exception('File was not found.', 404);
 			}
 			
+			$filename = basename($source->name, pathinfo($source->name, PATHINFO_EXTENSION)) . $source->getType();
 			$this->application->outputHeaders = array(
 				'Content-type: application/force-download',
-				'Content-Disposition: attachment; filename="' . $source->name . '"',
+				'Content-Disposition: attachment; filename="' . $filename . '"',
 				'Content-Length: ' . filesize($source->path)
 			);
 			$this->application->outputContent = $source->getData();

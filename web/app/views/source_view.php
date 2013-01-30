@@ -102,7 +102,7 @@
 			<div class="clearfix"></div>
 			
 			<hr />
-		
+			
 			<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
 		</div>
 	</body>
