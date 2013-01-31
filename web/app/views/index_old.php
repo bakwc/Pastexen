@@ -44,7 +44,7 @@
 				<div class="row">
 					<div class="span12 head">
 						<div class="logo">
-							<img src="/app/static/images/logo_beta.png" width="240" height="45"  alt="Pastexen beta">
+							<img src="/app/static/images/logo_beta.png" width="240" height="45"  alt="Pastexen" />
 							<ul class="social">
 								<li><a href="http://www.facebook.com/groups/310112359099842/" class="fb">FB</a></li>
 								<li><a href="http://vk.com/pastexen" class="vk">BK</a></li>
@@ -84,7 +84,7 @@
 				<div class="span12">
 					<div class="block">
 						<div class="span2 pict" style="float:left">
-							<img src="/app/static/images/features-screenshot.png" width="140" height="115"  alt="Features">
+							<img src="/app/static/images/features-screenshot.png" width="140" height="115" alt="<?php echo $this->l('feature_screenshot_picture_title'); ?>" />
 						</div>
 						<div class="span4 descr">
 							<span class="btext"><?php echo $this->l('feature_screenshot_header'); ?></span>
@@ -94,7 +94,7 @@
 					</div>
 					<div class="block">
 						<div class="span2 pict" style="float:left">
-							<img src="/app/static/images/features-code.png" width="140" height="115"  alt="Code">
+							<img src="/app/static/images/features-code.png" width="140" height="115" alt="<?php echo $this->l('feature_code_picture_title'); ?>" />
 						</div>
 						<div class="span4 descr">
 							<span class="btext"><?php echo $this->l('feature_code_header'); ?></span>
