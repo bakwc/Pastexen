@@ -36,7 +36,7 @@
 	</head>
 	<body>
 		<div class="container">
-			<img src="/app/static/images/logo_beta.png" alt="Pastexen beta" />
+			<img src="/app/static/images/logo_beta.png" alt="Pastexen" />
 			<a class="pull-right" href="/Oo.php"><?php echo $this->l('our_team'); ?></a>
 			
 			<hr />
@@ -70,7 +70,7 @@
 			<div class="row">
 				<div class="span6">
 					<div class="media">
-						<img class="pull-left" src="/app/static/images/features-code.png" alt="Some code" />
+						<img class="pull-left" src="/app/static/images/features-code.png" alt="<?php echo $this->l('feature_code_picture_title'); ?>" />
 						<div class="media-body">
 							<h4 class="media-heading"><?php echo $this->l('feature_code_header'); ?></h4>
 							<p><?php echo $this->l('feature_code_text'); ?></p>
@@ -79,7 +79,7 @@
 				</div>
 				<div class="span6">
 					<div class="media">
-						<img class="pull-left" src="/app/static/images/features-screenshot.png" alt="Features" />
+						<img class="pull-left" src="/app/static/images/features-screenshot.png" alt="<?php echo $this->l('feature_screenshot_picture_title'); ?>" />
 						<div class="media-body">
 							<h4 class="media-heading"><?php echo $this->l('feature_screenshot_header'); ?></h4>
 							<p><?php echo $this->l('feature_screenshot_text'); ?></p>
