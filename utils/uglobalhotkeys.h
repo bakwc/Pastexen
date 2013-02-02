@@ -22,7 +22,10 @@ struct UHotkeyData {
 };
 #endif
 
-class UGlobalHotkeys : public QWidget, public QAbstractNativeEventFilter
+class UGlobalHotkeys : public QWidget
+        #if defined(Q_OS_LINUX)
+        , public QAbstractNativeEventFilter
+        #endif
 {
     Q_OBJECT
 public:
