@@ -48,13 +48,17 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
 
 void UGlobalHotkeys::UnregisterHotkey(size_t id) {
     Q_ASSERT(Registered.find(id) != Registered.end() && "Unregistered hotkey");
+    #if defined(Q_OS_WIN)
     UnregisterHotKey((HWND)winId(), id);
+    #endif
     Registered.remove(id);
 }
 
 UGlobalHotkeys::~UGlobalHotkeys() {
     for (QSet<size_t>::iterator i = Registered.begin(); i != Registered.end(); i++) {
+        #if defined(Q_OS_WIN)
         UnregisterHotKey((HWND)winId(), *i);
+        #endif
     }
 }
 
