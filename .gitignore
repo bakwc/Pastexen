@@ -11,6 +11,8 @@
 *.la
 *.a
 
+*.autosave
+
 client/Makefile*
 server/Makefile*
 speedserver/Makefile*

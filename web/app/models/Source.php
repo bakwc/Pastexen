@@ -22,6 +22,8 @@
 		exit();
 	}
 	
+	require_once(dirname(__FILE__) . '/../lib/ProgrammingLanguageDetector/ProgrammingLanguageDetector.php');
+	
 	final class ApplicationModel_Source extends ApplicationModel {
 		private $codeTypes = array(
 			// file extension => code type
@@ -56,6 +58,7 @@
 			'hs'    => 'haskell',
 			'lhs'   => 'haskell',
 		);
+		private $codeTypeDetector = null;
 		
 		public $name; // name of the file
 		public $path; // path to the file
@@ -70,9 +73,14 @@
 		
 		public function getType() {
 			$extension = strtolower(pathinfo($this->name, PATHINFO_EXTENSION));
-			if(empty($extension) || !in_array($extension, $this->codeTypes))
-				return 'undefined'; // unknown type
-			return $this->codeTypes[$extension];
+			if(!empty($extension) && in_array($extension, $this->codeTypes))
+				return $this->codeTypes[$extension];
+			
+			if($this->codeTypeDetector == null) {
+				$this->codeTypeDetector = new ProgrammingLanguageDetector();
+				$this->codeTypeDetector->importKnowledgeBase(file_get_contents(dirname(__FILE__) . '/../lib/ProgrammingLanguageDetector/knowledge_base.dat'));
+			}
+			return $this->codeTypeDetector->detect($this->getData());
 		}
 		
 		public function getData() {

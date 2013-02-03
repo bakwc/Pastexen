@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 CONFIG   -= console
-QT       += core gui network
+QT       += core gui network gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
@@ -39,7 +39,7 @@ HEADERS  += \
     utils.h \
     languageselectdialog.h \
     scanhotkeydialog.h \
-    winhotkeymap.h \
+    hotkeymap.h \
     ../utils/usettings.h \
     ../utils/ufullscreenwrapper.h \
     ../utils/uexception.h \
@@ -47,7 +47,8 @@ HEADERS  += \
     ../utils/ucast.h \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkey.h \
-    ../utils/uglobalhotkeys.h
+    ../utils/uglobalhotkeys.h \
+    ../utils/udebug.h
 
 RESOURCES += \
     resources.qrc
@@ -64,3 +65,6 @@ isEmpty(PREFIX) {
 target.path=$$PREFIX/
 
 QMAKE_CXXFLAGS += -std=c++0x
+unix {
+    LIBS += -lxcb-keysyms
+}

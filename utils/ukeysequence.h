@@ -29,8 +29,8 @@ public:
         }
         return Keys[n];
     }
-    QVector<int> GetSimpleKeys();
-    QVector<int> GetModifiers();
+    QVector<int> GetSimpleKeys() const;
+    QVector<int> GetModifiers() const;
 private:
     QVector<int> Keys;
 };

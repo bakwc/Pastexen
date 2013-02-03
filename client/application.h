@@ -35,9 +35,11 @@ private slots:
     void aboutDialog();
     void setupHotkeys();
     void newLocalSocketConnection();
+    void trayMessage(const QString &caption, const QString &text);
 private:
     void processScreenshot(bool isFullScreen);
     void initLanguages();
+    bool checkEllapsed();
 private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
@@ -46,4 +48,5 @@ private:
     QSettings *_settings;
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
+    QTime _lastSended;
 };

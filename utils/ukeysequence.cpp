@@ -53,7 +53,7 @@ QString UKeySequence::ToString() {
     return result.join('+');
 }
 
-QVector<int> UKeySequence::GetSimpleKeys() {
+QVector<int> UKeySequence::GetSimpleKeys() const {
     QVector<int> result;
     for (int i = 0; i < Keys.size(); i++) {
         if (!IsModifier(Keys[i])) {
@@ -63,7 +63,7 @@ QVector<int> UKeySequence::GetSimpleKeys() {
     return result;
 }
 
-QVector<int> UKeySequence::GetModifiers() {
+QVector<int> UKeySequence::GetModifiers() const {
     QVector<int> result;
     for (int i = 0; i < Keys.size(); i++) {
         if (IsModifier(Keys[i])) {

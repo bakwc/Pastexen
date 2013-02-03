@@ -36,29 +36,30 @@
 	</head>
 	<body>
 		<div class="container">
-			<img src="/app/static/images/logo_beta.png" />
+			<img src="/app/static/images/logo_beta.png" alt="Pastexen" />
+			<a class="pull-right" href="/Oo.php"><?php echo $this->l('our_team'); ?></a>
 			
 			<hr />
 			
 			<div class="hero-unit">
-				<h1>Удобный способ передать картинку или часть кода.</h1>
+				<h1><?php echo $this->l('hero_unit'); ?></h1>
 			</div>
 			
 			<hr />
 
 			<div class="download-section">
-				<h1>Скачать:</h1>
+				<h1><?php echo $this->l('action_download'); ?>:</h1>
 				<div class="btn-group">
 					<?php
 						$supportedDownloads = array(
-							'windows'	=> 'Windows',
-							'debian'	=> 'Debian',
-							'other'		=> 'Other',
-							'source'	=> 'Source'
+							'windows'	=> array(true,  $this->l('download_windows')),
+							'other'		=> array(false, $this->l('download_other')),
+							'source'	=> array(false, $this->l('download_source'))
 						);
-						foreach($supportedDownloads as $configName => $downloadName) {
+						foreach($supportedDownloads as $configName => $downloadParameters) {
+							list($downloadImportance, $downloadName) = $downloadParameters;
 							if(isset($this->application->config['download_link_' . $configName]))
-								echo '<a class="btn btn-large btn-warning" href="' . $this->application->config['download_link_' . $configName] . '">' . $downloadName . '</a>';
+								echo '<a class="btn btn-large' . ($downloadImportance ? ' btn-warning' : '') . '" href="' . $this->application->config['download_link_' . $configName] . '">' . $downloadName . '</a>';
 						}
 					?>
 				</div>
@@ -69,24 +70,23 @@
 			<div class="row">
 				<div class="span6">
 					<div class="media">
-						<img class="pull-left" src="/app/static/images/features-code.png" />
+						<img class="pull-left" src="/app/static/images/features-code.png" alt="<?php echo $this->l('feature_code_picture_title'); ?>" />
 						<div class="media-body">
-							<h4 class="media-heading">Делитесь скриншотами одним нажатием клавиши</h4>
-							<p>Все снятые изображения сохраняются на сервере и создается ссылка. Вам остается лишь нажать Ctrl+V.</p>
+							<h4 class="media-heading"><?php echo $this->l('feature_code_header'); ?></h4>
+							<p><?php echo $this->l('feature_code_text'); ?></p>
 						</div>
 					</div>
 				</div>
 				<div class="span6">
 					<div class="media">
-						<img class="pull-left" src="/app/static/images/features-screenshot.png" />
+						<img class="pull-left" src="/app/static/images/features-screenshot.png" alt="<?php echo $this->l('feature_screenshot_picture_title'); ?>" />
 						<div class="media-body">
-							<h4 class="media-heading">Копируйте код и отправляйте его с подсветкой синтаксиса</h4>
-							<p>Весь загруженный код сохраняется на сервере и создается ссылка. Вам остается лишь нажать Ctrl+V.</p>
+							<h4 class="media-heading"><?php echo $this->l('feature_screenshot_header'); ?></h4>
+							<p><?php echo $this->l('feature_screenshot_text'); ?></p>
 						</div>
 					</div>
 				</div>
 			</div>
-			
 		</div>
 	</body>
 </html>
