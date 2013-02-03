@@ -42,7 +42,9 @@ Application::~Application()
 
 bool Application::pxAppInit()
 {
+    #ifdef Q_OS_LINUX
     dpy = XOpenDisplay(NULL);
+    #endif
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
     if (socket.waitForConnected(500)) {
