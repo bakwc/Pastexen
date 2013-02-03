@@ -1,27 +1,39 @@
 <?php
 	/*
-	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
-	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 * Programming Language Detector - https://github.com/bakwc/Pastexen
+	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
 	 *
-	 * This program is free software: you can redistribute it and/or modify
-	 * it under the terms of the GNU General Public License as published by
-	 * the Free Software Foundation, either version 3 of the License, or
-	 * (at your option) any later version.
+	 * ProgrammingLanguageDetector::cleanSource function is based
+	 * on the source code from <https://github.com/github/linguist/>
+	 * Copyright (c) 2011 GitHub, Inc.
 	 *
-	 * This program is distributed in the hope that it will be useful,
-	 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 * GNU General Public License for more details.
-	 *
-	 * You should have received a copy of the GNU General Public License
-	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	 * Permission is hereby granted, free of charge, to any person
+	 * obtaining a copy of this software and associated documentation
+	 * files (the "Software"), to deal in the Software without
+	 * restriction, including without limitation the rights to use,
+	 * copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 * copies of the Software, and to permit persons to whom the
+	 * Software is furnished to do so, subject to the following
+	 * conditions:
+	 * 
+	 * The above copyright notice and this permission notice shall be
+	 * included in all copies or substantial portions of the Software.
+	 * 
+	 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+	 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+	 * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+	 * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+	 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+	 * OTHER DEALINGS IN THE SOFTWARE.
 	 */
 	
 	final class ProgrammingLanguageDetector {
 		private $knowledgeBase = array();
 		
 		public function detect($source) {
-			$languagesScore = $this->score(self::removeComments($source));
+			$languagesScore = $this->score($source);
 			$bestLanguage = 'undefined';
 			$bestLanguageScore = 0;
 			foreach($languagesScore as $language => $score)
@@ -42,7 +54,10 @@
 		}
 		
 		public function train($source, $language) {
-			$sourceWords = self::countWords(self::removeComments($source));
+			$sourceWords = self::countWordsFreqSource(self::cleanSource($source));
+			
+			if($sourceWords['total'] == 0)
+				return;
 			
 			if(!isset($this->knowledgeBase[$language]['total']))
 				$this->knowledgeBase[$language]['total'] = 0;
@@ -57,7 +72,7 @@
 		
 		private function score($source) {
 			$languagesScore = array();
-			$sourceWords = self::countWords($source);
+			$sourceWords = self::countWordsFreqSource(self::cleanSource($source));
 			foreach($this->knowledgeBase as $language => $kbWords) {
 				$languagesScore[$language] = 0;
 				
@@ -75,7 +90,29 @@
 			return $languagesScore;
 		}
 		
-		private static function countWords($source) {
+
+		
+		private static function cleanSource($source) {
+			// strip single line comments
+			$source = preg_replace('/(\/\/|#|%)(.*)/', '', $source);
+			
+			// strip multi line comments
+			$source = preg_replace('/\/\*(.*)\*\//Us', '', $source); // C
+			$source = preg_replace('/<!--(.*)-->/Us' , '', $source); // XML
+			$source = preg_replace('/{-(.*)-}/Us'    , '', $source); // Haskell
+			$source = preg_replace('/\(\*(.*)\*\)/Us', '', $source); // Coq
+			
+			// strip strings
+			$source = preg_replace('/\'(.*)\'/Us', '', $source); // single quoted
+			$source = preg_replace('/\"(.*)\"/Us', '', $source); // double quoted
+			
+			// strip numbers
+			$source = preg_replace('/(0x)?\d(\d|\.)*/', '', $source);
+			
+			return $source;
+		}
+		
+		private static function countWordsFreqSource($source) {
 			$words = array_filter(preg_split('/[^A-Za-z]/', $source));
 			$wordsTotal = count($words);
 			
@@ -90,14 +127,5 @@
 			}
 			
 			return array('total' => $wordsTotal, 'freq' => $wordsFrequency);
-		}
-		
-		// this method removes comments from the source
-		// NOTE: if // and /* */ are not comments in your programming language, then this method will erase some of your code!
-		private static function removeComments($source) {
-			$source = preg_replace('/\/\/(.*)/', '', $source);
-			$source = preg_replace('/\/\*(.*)\*\//Us', '', $source);
-			
-			return $source;
 		}
 	}

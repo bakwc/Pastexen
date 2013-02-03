@@ -22,14 +22,20 @@
 		exit();
 	}
 	
+	error_reporting(E_ALL);
+	
 	require_once(dirname(__FILE__) . '/ProgrammingLanguageDetector.php');
 	
 	$detector = new ProgrammingLanguageDetector();
 	
 	$trainingFiles = glob(dirname(__FILE__) . '/training_data/*/*.*');
-	foreach($trainingFiles as $file)
-		if(strtolower(basename($file)) != 'license')
-			$detector->train(file_get_contents($file), pathinfo($file, PATHINFO_EXTENSION));
+	foreach($trainingFiles as $file) {
+		$path = explode('/', $file);
+		end($path);
+		$type = prev($path);
+	
+		$detector->train(file_get_contents($file), $type);
+	}
 	
 	file_put_contents(dirname(__FILE__) . '/knowledge_base.dat', $detector->exportKnowledgeBase());
 	
