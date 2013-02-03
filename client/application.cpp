@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QScreen>
 #include <QThread>
+#include <QPixmap>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -165,7 +166,39 @@ void Application::processScreenshot(bool isFullScreen)
         return;
     }
     Sharing = true;
-    QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    QPixmap pixmap;
+    #if defined(Q_OS_LINUX)
+    pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    #elif defined(Q_OS_WIN)
+
+    /** @todo: fix this trash code (it works but slow)
+     * Howto: create a new thread, grabing clipboard
+    {
+        INPUT ip;
+        ip.type = INPUT_KEYBOARD;
+        ip.ki.wScan = 0;
+        ip.ki.time = 0;
+        ip.ki.dwExtraInfo = 0;
+
+        ip.ki.wVk = VK_SNAPSHOT;
+        ip.ki.dwFlags = 0;
+        SendInput(1, &ip, sizeof(INPUT));
+        QThread::msleep(100);
+
+        ip.ki.wVk = VK_SNAPSHOT;
+        ip.ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(1, &ip, sizeof(INPUT));
+        QThread::msleep(100);
+    }
+
+
+    while (pixmap.isNull()) {
+        pixmap = this->clipboard()->pixmap();
+    }
+    */
+    pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    #endif
+
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);
