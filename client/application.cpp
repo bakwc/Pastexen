@@ -19,11 +19,6 @@
 #include "defines.h"
 #include "languageselectdialog.h"
 
-#ifdef Q_OS_WIN
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x500
-#include <windows.h>
-#endif
 
 Application::Application(int argc, char *argv[]) :
     QApplication(argc, argv)
@@ -40,14 +35,18 @@ Application::~Application()
     _trayIcon->hide();
     _settings->sync();
     delete _trayIconMenu;
+#ifdef Q_OS_LINUX
+    delete dpy;
+#endif
 }
 
 bool Application::pxAppInit()
 {
+    dpy = XOpenDisplay(NULL);
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
     if (socket.waitForConnected(500)) {
-        qDebug() << "Application allready launched!";
+        qDebug() << "Application already launched!";
         return false;
     }
 
@@ -157,7 +156,7 @@ void Application::processCodeShare()
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
 
-    #if defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
     INPUT ip;
     ip.type = INPUT_KEYBOARD;
     ip.ki.wScan = 0;
@@ -186,7 +185,25 @@ void Application::processCodeShare()
     QThread::msleep(100);
     #endif
 
+#ifdef Q_OS_LINUX
+    if (dpy)
+    {
+
+        qDebug() << Q_FUNC_INFO;
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, 0);
+        QThread::msleep(100);
+        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_DOWN, 0);
+
+        QThread::sleep(1);
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, 0);
+        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_UP, 0);
+
+    }
+qDebug() << Q_FUNC_INFO;
+#endif
+
     QString text = QApplication::clipboard()->text();
+
     if (text.count() == 0) {
         _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
         return;
