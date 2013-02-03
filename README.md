@@ -15,8 +15,7 @@ Pastexen
 * F9 - публикация текстов/исходников. Скопируйте текст/исходник в буфер обмена и нажмите на F9. Вы получите ссылку на ваш текст/исходник с подсветкой синтаксиса для выбранного языка программирования
 
 ### Сборка
-* Install [Qt 4.6](http://qt.nokia.com/)
-* Install [libqxt-0.6.2](http://dev.libqxt.org/libqxt/get/v0.6.2.zip)
+* Install [Qt 5.0.1](http://qt.nokia.com/)
 * git clone git@github.com:bakwc/Pastexen
 * cd Pastexen
 * qmake
