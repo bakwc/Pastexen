@@ -49,4 +49,5 @@ private:
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
     QTime _lastSended;
+    bool Sharing = false;
 };

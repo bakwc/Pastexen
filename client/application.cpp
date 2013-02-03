@@ -20,6 +20,7 @@
 #include "languageselectdialog.h"
 
 #ifdef Q_OS_WIN
+#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x500
 #include <windows.h>
 #endif
@@ -112,15 +113,21 @@ void Application::trayMessage(const QString &caption, const QString &text)
 
 void Application::processScreenshot(bool isFullScreen)
 {
+    if (Sharing) {
+        return;
+    }
     if (!checkEllapsed()) {
         return;
     }
+    Sharing = true;
     QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);
-        if (!imageSelectDialog.exec())
+        if (!imageSelectDialog.exec()) {
+            Sharing = false;
             return;
+        }
     }
 
     QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
@@ -131,6 +138,7 @@ void Application::processScreenshot(bool isFullScreen)
     pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
     buffer.close();
     _network->upload(imageBytes, imagetype);
+    Sharing = false;
 }
 
 void Application::processCodeShare()
