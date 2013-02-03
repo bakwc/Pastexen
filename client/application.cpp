@@ -228,6 +228,7 @@ void Application::setupHotkeys()
 
 void Application::initLanguages()
 {
+    _languages.insert("auto", "Auto detection");
     _languages.insert("txt", "Plain text");
     _languages.insert("c", "C");
     _languages.insert("cpp", "C++");
