@@ -68,5 +68,5 @@ target.path=$$PREFIX/
 
 QMAKE_CXXFLAGS += -std=c++0x
 unix {
-    LIBS += -lxcb-keysyms
+    LIBS += -lxcb-keysyms -lX11 -lXtst
 }
