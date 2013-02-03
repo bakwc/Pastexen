@@ -2,4 +2,7 @@
     <qresource prefix="/icons">
         <file>icon.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>pastexen_ru.qm</file>
+    </qresource>
 </RCC>

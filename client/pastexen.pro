@@ -15,6 +15,10 @@ win32 {
 }
 TEMPLATE = app
 
+CODEC = UTF-8
+
+TRANSLATIONS = pastexen_ru.ts
+
 SOURCES += main.cpp \
     application.cpp \
     configwidget.cpp \
@@ -39,14 +43,12 @@ HEADERS  += \
     utils.h \
     languageselectdialog.h \
     scanhotkeydialog.h \
-    hotkeymap.h \
     ../utils/usettings.h \
     ../utils/ufullscreenwrapper.h \
     ../utils/uexception.h \
     ../utils/ucolonsep.h \
     ../utils/ucast.h \
     ../utils/ukeysequence.h \
-    ../utils/uglobalhotkey.h \
     ../utils/uglobalhotkeys.h \
     ../utils/udebug.h
 
