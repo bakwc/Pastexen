@@ -19,6 +19,56 @@
 #include "defines.h"
 #include "languageselectdialog.h"
 
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <string>
+#include <climits>
+
+QString getClipboardText() {
+    std::string result;
+    Display* d = XOpenDisplay(nullptr);
+    if(d) {
+        Window wParent = DefaultRootWindow(d);
+        Window w = XCreateSimpleWindow(
+            d, wParent, 0, 0, 1, 1, 0, CopyFromParent, CopyFromParent);
+        Atom target = XInternAtom(d, "UTF8_STRING", False);
+        XConvertSelection(d, XA_PRIMARY, target, None, w, CurrentTime);
+        XFlush(d);
+
+        for(unsigned long offset = 0;;) {
+            XEvent ev;
+            XNextEvent(d, &ev);
+            if(SelectionNotify == ev.type
+               && None != ev.xselection.property
+            ) {
+                Atom actual_type_return = None;
+                int actual_format_return = 0;
+                unsigned long nitems_return = 0;
+                unsigned long bytes_after_return = 0;
+                unsigned char* prop_return = nullptr;
+                XGetWindowProperty(
+                    d, w, ev.xselection.property, offset, INT_MAX
+                    , False, AnyPropertyType, &actual_type_return
+                    , &actual_format_return, &nitems_return
+                    , &bytes_after_return, &prop_return);
+                if(nitems_return) {
+                    result.append(reinterpret_cast<const char*>(prop_return)
+                                  , nitems_return);
+                    offset += nitems_return;
+                }
+                XDeleteProperty(d, w, ev.xselection.property);
+                if(!bytes_after_return) {
+                    break;
+                }
+            }
+        }
+        XDestroyWindow(d, w);
+        XCloseDisplay(d);
+    }
+    return QString(result.c_str());
+}
+#endif
 
 Application::Application(int argc, char *argv[]) :
     QApplication(argc, argv)
@@ -35,16 +85,10 @@ Application::~Application()
     _trayIcon->hide();
     _settings->sync();
     delete _trayIconMenu;
-#ifdef Q_OS_LINUX
-    delete dpy;
-#endif
 }
 
 bool Application::pxAppInit()
 {
-    #ifdef Q_OS_LINUX
-    dpy = XOpenDisplay(NULL);
-    #endif
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
     if (socket.waitForConnected(500)) {
@@ -187,30 +231,28 @@ void Application::processCodeShare()
     QThread::msleep(100);
     #endif
 
+    QString text;
 #ifdef Q_OS_LINUX
-    if (dpy)
-    {
-
-        qDebug() << Q_FUNC_INFO;
-        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, 0);
-        QThread::msleep(100);
+        Display *dpy = XOpenDisplay(NULL);
+        if (!dpy) qDebug() << "DPU ERROR!";
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, CurrentTime);
         XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_DOWN, 0);
-
-        QThread::sleep(1);
-        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, 0);
+        QThread::msleep(200);
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, CurrentTime);
         XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_UP, 0);
-
-    }
-qDebug() << Q_FUNC_INFO;
+        XCloseDisplay(dpy);
+        text = getClipboardText();
+#elif defined(Q_OS_WIN)
+    text = QApplication::clipboard()->text();
 #endif
 
-    QString text = QApplication::clipboard()->text();
 
     if (text.count() == 0) {
         _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
         return;
     }
     _network->upload(text.toUtf8(),sourcestype);
+
 }
 
 

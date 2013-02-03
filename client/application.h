@@ -65,7 +65,4 @@ private:
     QLocalServer *_localServer;
     QTime _lastSended;
     bool Sharing = false;
-    #ifdef Q_OS_LINUX
-    Display *dpy;
-    #endif
 };
