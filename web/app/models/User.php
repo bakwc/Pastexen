@@ -26,11 +26,14 @@
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/SortedSet.php');
 	
 	final class ApplicationModel_User extends ApplicationModel {
-		private $id = null;
-		private $login = null;
-		private $passwordHash = null;
-		private $uuids = array();
+		private $id = null;				// user id
+		private $login = null;			// user's login
+		private $passwordHash = null;	// user's password hash
+		private $uuids = array();		// UUIDs of user's clients
 	
+		/**
+		 * Converts this object to string. Used only for debugging.
+		 */
 		public function __toString() {
 			$uuidsString = '';
 			foreach($this->uuids as $time => $uuid)
@@ -38,57 +41,81 @@
 			return 'User(id: ' . $this->id . ', login: "' . $this->login . '", passwordHash: "' . $this->passwordHash . '", uuids: {' . $uuidsString . '})';
 		}
 	
+		/**
+		 * Sets id. If it is invalid, throws an exception.
+		 */
 		public function setId($id) {
 			if(!is_numeric($id) || $id <= 0)
 				throw new Exception('Id must be an integer greater than 0.');
 			$this->id = $id;
 		}
 		
+		/**
+		 * Returns id. If id is not known, throws an exception.
+		 */
 		public function getId() {
 			if($this->id === null)
 				throw new Exception('Id is not defined.');
 			return $this->id;
 		}
 		
+		/**
+		 * Sets login. If the login is invalid, throws an exception.
+		 */
 		public function setLogin($login) {
 			if(!self::validateLogin($login))
 				throw new Exception('Login is invalid.');
 			$this->login = $login;
 		}
 		
+		/**
+		 * Returns login. If it is not known, throws an exception.
+		 */
 		public function getLogin() {
 			if($this->login === null)
 				throw new Exception('Login is not defined.');
 			return $this->login;
 		}
 		
+		/**
+		 * Checks whether the login is valid. Returns false, if it is not.
+		 */
 		public static function validateLogin($login) {
 			return strlen($login) >= 6 && strlen($login) <= 25 && self::validateAlphanumeric($login);
 		}
 		
+		/**
+		 * Sets password hash. Throws an exception if it is not a valid md5 hash.
+		 */
 		public function setPasswordHash($hash) {
-			if(!self::validatePasswordHash($hash))
+			if(!self::validateMd5Hash($hash))
 				throw new Exception('Password hash is invalid.');
 			$this->passwordHash = $hash;
 		}
 		
+		/**
+		 * Returns password hash. Throws an exception if the hash is not known.
+		 */
 		public function getPasswordHash() {
 			if($this->passwordHash === null)
 				throw new Exception('Password hash is not defined.');
 			return $this->passwordHash;
 		}
 		
+		/**
+		 * Makes hash from the original password.
+		 */
 		public function makePasswordHash($password) {
 			return md5(md5($password) . $this->application->config['user_password_salt']);
 		}
 		
-		public static function validatePasswordHash($hash) {
-			return strlen($hash) == 32 && self::validateHex($hash);
-		}
-		
+		/**
+		 * Adds a client's UUID to the list of user's clients. UUIDs and their timestamps must be unique for one user.
+		 * You cannot add two same UUIDs or two different UUIDs with same timestamps to one user.
+		 */
 		public function addUuid($uuid, $time) {
 			if(!self::validateUuid($uuid))
-				throw new Exception('Uuid is invalid.');
+				throw new Exception('UUID is invalid.');
 		
 			// if there is the same uuid, we must remove it
 			$sameUuidTime = array_search($uuid, $this->uuids);
@@ -99,16 +126,30 @@
 			$this->uuids[$time] = $uuid;
 		}
 		
+		/**
+		 * Returns a list of user's clients UUIDs. Throws an exception if there are no UUIDs for the user.
+		 * The list is an associative array where the keys are timestamps of the moment when UUID was attached
+		 * to the user and values are the UUID strings.
+		 */
 		public function getUuids() {
 			if(empty($this->uuids))
 				throw new Exception('No uuids are defined.');
 			return $this->uuids;
 		}
 		
+		/**
+		 * Checks whether the client UUID is valid. Returns false, if it is not.
+		 */
 		public static function validateUuid($uuid) {
 			return strlen($uuid) == 48 && self::validateHex($uuid);
 		}
 		
+		/**
+		 * Loads the user's information from the database. The user's login or id must be set before this
+		 * function is called. If the id is unknown, but the login is known, this function will try to find the
+		 * user's id first. Then, it will try to load the information for this user from the database. If an
+		 * error occurs, an exception will be thrown.
+		 */
 		public function load() {
 			if($this->id === null && $this->login !== null) {
 				$userLoginKey = new Rediska_Key('user_login_' . $this->login);
@@ -133,6 +174,10 @@
 				throw new Exception('Not enough information was given to load the user data.');
 		}
 		
+		/**
+		 * Saves user's information into the database. If user's id is not known, it will try to create
+		 * a new user. User's id and login must be unique. If an error occurs, an exception will be thrown.
+		 */
 		public function save() {
 			if($this->id !== null) { // id is known - edit existing user
 				if(!$this->application->rediska->exists('user_' . $this->id))
