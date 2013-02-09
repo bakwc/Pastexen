@@ -1,8 +1,9 @@
 #pragma once
 
 #include <QString>
+#include <QTime>
 
-QString getValue(const QString& data, const QString& key)
+inline QString getValue(const QString& data, const QString& key)
 {
     int start = data.indexOf(key);
 
@@ -12,3 +13,16 @@ QString getValue(const QString& data, const QString& key)
     return res;
 }
 
+inline QString GenerateUUID()
+{
+    QTime now = QTime::currentTime();
+    qsrand(now.msec());
+
+    QString uuid(24 * 2);
+    for (size_t i = 0; i < 24 * 2; i++) {
+        int c = qrand() % 16;
+        Q_ASSERT(c >= 0);
+        uuid[i] = c < 10 ? '0' + c : 'A' + (c - 10);
+    }
+    return uuid;
+}

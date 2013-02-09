@@ -7,6 +7,8 @@
 #include <QSet>
 #include <QHash>
 
+#include "redisclient.h"
+
 class pSaver : public QThread
 {
     Q_OBJECT
@@ -19,12 +21,13 @@ signals:
     void fileName(QString str);
 
 public slots:
-    void save(const QByteArray& data, const QString &type);
+    void save(const QByteArray& data, const QString& type, const QString& uuid);
 
 private:
     static pSaver  *pThis;
     static QString randName(int count);
     QSet<QString> _files;
+    TRedisClient _redis;
 
     void findFiles();
     QStringList unique(const QStringList& list);

@@ -19,6 +19,7 @@
 #include "ui_config.h"
 #include "defines.h"
 #include "languageselectdialog.h"
+#include "utils.h"
 
 #ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
@@ -141,6 +142,13 @@ bool Application::pxAppInit()
     QString homePath = QDir::homePath();
     QString settingsFile = homePath + "/" + SETTINGS_FILE;
     _settings = new QSettings(settingsFile, QSettings::IniFormat, this);
+
+    QString uuid = _settings->value("general/uuid").toString();
+    if (uuid.length() != 24 * 2) {
+        uuid = GenerateUUID();
+        Q_ASSERT(uuid.length() == 24 * 2);
+        _settings->setValue("general/uuid", uuid);
+    }
 
     initLanguages();
 
