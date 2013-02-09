@@ -1,0 +1,88 @@
+#include <QThread>
+#include "application.h"
+#include "imageselectwidget.h"
+#include "ui_config.h"
+#include "defines.h"
+#include "languageselectdialog.h"
+
+#ifdef Q_OS_WIN
+#define _WIN32_WINNT 0x500
+#include <windows.h>
+#endif
+
+Application::Application(int argc, char *argv[]) :
+    QApplication(argc, argv)
+    , _configWidget(0)
+    , _trayIcon(0)
+    , _trayIconMenu(0)
+    , _network(0)
+    , _settings(0)
+{
+}
+
+Application::~Application()
+{
+    _trayIcon->hide();
+    _settings->sync();
+    delete _trayIconMenu;
+}
+
+bool Application::pxAppInit()
+{
+    QLocalSocket socket;
+    socket.connectToServer(APP_NAME);
+    if (socket.waitForConnected(500)) {
+        qDebug() << "Application allready launched!";
+        return false;
+    }
+
+    _lastSended.start();
+
+    _localServer = new QLocalServer(this);
+
+    if (!_localServer->listen(APP_NAME)) {
+        QLocalServer::removeServer(APP_NAME);
+        _localServer->listen(APP_NAME);
+    }
+
+    QString homePath = QDir::homePath();
+    QString settingsFile = homePath + "/" + SETTINGS_FILE;
+    _settings = new QSettings(settingsFile, QSettings::IniFormat, this);
+
+    initLanguages();
+
+    _configWidget = new ConfigWidget(_settings, _languages);
+    connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
+    connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
+
+    _configWidget->init();
+
+    _trayIconMenu = new QMenu;
+    _trayIconMenu->addAction(tr("About"), this, SLOT(aboutDialog()));
+    _trayIconMenu->addAction("", this, SLOT(processCodeShare()));
+    _trayIconMenu->addAction("", this, SLOT(processScreenshotFull()));
+    _trayIconMenu->addAction("", this, SLOT(processScreenshotPart()));
+    _trayIconMenu->addAction(tr("Configure"), _configWidget, SLOT(show()));
+    _trayIconMenu->addSeparator();
+    _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
+
+    setupHotkeys();
+
+    _trayIcon = new QSystemTrayIcon(QIcon(":/icons/icon.png"), this);
+    connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
+    _trayIcon->setContextMenu(_trayIconMenu);                                   // Tray icon
+
+    _network = new Network(_settings, this);
+    connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
+    connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
+
+    this->setQuitOnLastWindowClosed(false);
+
+    _trayIcon->show();
+    QFile file(settingsFile);
+
+    if (!file.exists())
+        _configWidget->show();
+    return true;
+}

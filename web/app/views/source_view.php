@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
-	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -21,89 +21,65 @@
 		echo 'Access denied.';
 		exit();
 	}
+	
+	$pageTitle = $source->name;
+	$jsIncludes = array('/app/static/javascript/google-prettify.js');
+	$cssIncludes = array('/app/static/styles/prettify-tomorrow' . ($isDarkColorScheme ? '-night-bright' : '') . '.css');
+	$bodyTagParameters = 'onload="prettyPrint()"';
+	require(dirname(__FILE__) . '/includes/header.php');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Pastexen - <?php echo $source->name; ?></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="description" content="" />
-		<meta name="author" content="" />
-		<link rel="shortcut icon" href="/app/static/images/favicon.png" />
-		<!--[if lt IE 9]>
-			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
-		<script src="/app/static/javascript/google-prettify.js"></script>
-		<link href="/app/static/styles/twitter-bootstrap-2.2.2.css" rel="stylesheet" />
-		<link href="/app/static/styles/prettify-tomorrow<?php echo $isDarkColorScheme ? '-night-bright' : ''; ?>.css" rel="stylesheet" />
-		<link href="/app/static/styles/app-common.css" rel="stylesheet" />
-		<link href="/app/static/styles/app-navbar.css" rel="stylesheet" />
-	</head>
-	<body onload="prettyPrint()">
-		<div id="fb-root"></div>
-		
-		<div class="navbar navbar-fixed-top">
-			<div class="navbar-inner">
-				<div class="container">
-					<a class="brand" href="/">Pastexen</a>
-					<ul class="nav">
-						<li><a href="/"><?php echo $this->l('menu_index'); ?></a></li>
-					</ul>
-					<p class="navbar-text pull-right"><?php echo $this->l('we_on_fb_and_vk_linked', '<a href="http://www.facebook.com/groups/310112359099842/">', '</a>', '<a href="http://vk.com/pastexen">', '</a>'); ?>.</p>
-				</div>
-			</div>
-		</div>
-		
-		<div class="container">
-			<div class="btn-group pull-left">
-				<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
-				<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw"><?php echo $this->l('action_open_raw'); ?></a>
-				<?php
-					if($isDarkColorScheme)
-						echo '<a class="btn" href="' . htmlspecialchars($url) . '&light">' . $this->l('action_switch_to_light') . '</a>';
-					else
-						echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">' . $this->l('action_switch_to_dark') . '</a>';
-				?>
-			</div>
-			<div class="pull-right social">
-				<div id="vk_like" class="vkontakte-like-button"></div>
-				<script type="text/javascript" src="//vk.com/js/api/openapi.js?60"></script>
-				<script type="text/javascript">
-					VK.init({apiId: 3196338, onlyWidgets: true});
-					VK.Widgets.Like("vk_like", {type: "mini"});
-				</script>
-				
-				<div class="fb-like" data-href="<?php echo htmlspecialchars($url); ?>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="trebuchet ms"></div>
-				<script type="text/javascript">
-					(function(d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0];
-					if (d.getElementById(id)) return;
-					js = d.createElement(s); js.id = id;
-					js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124238757728309";
-					fjs.parentNode.insertBefore(js, fjs);
-					}(document, 'script', 'facebook-jssdk'));
-				</script>
-				
-				<g:plusone></g:plusone>
-				<script type="text/javascript">
-					(function() {
-					var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-					po.src = 'https://apis.google.com/js/plusone.js';
-					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-					})();
-				</script>
-				
-				<a href="https://twitter.com/share" class="twitter-share-button" data-via="pastexen" data-lang="en">Tweet</a>
-				<script type="text/javascript">
-					!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-				</script>
-			</div>
-			<div class="clearfix"></div>
-			
-			<hr />
-			
-			<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
-		</div>
-	</body>
-</html>
+
+<div id="fb-root"></div>
+
+<div class="btn-group pull-left">
+	<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
+	<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw"><?php echo $this->l('action_open_raw'); ?></a>
+	<?php
+		if($isDarkColorScheme)
+			echo '<a class="btn" href="' . htmlspecialchars($url) . '&light">' . $this->l('action_switch_to_light') . '</a>';
+		else
+			echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">' . $this->l('action_switch_to_dark') . '</a>';
+	?>
+</div>
+<div class="pull-right social">
+	<div id="vk_like" class="vkontakte-like-button"></div>
+	<script type="text/javascript" src="//vk.com/js/api/openapi.js?60"></script>
+	<script type="text/javascript">
+		VK.init({apiId: 3196338, onlyWidgets: true});
+		VK.Widgets.Like("vk_like", {type: "mini"});
+	</script>
+	
+	<div class="fb-like" data-href="<?php echo htmlspecialchars($url); ?>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="trebuchet ms"></div>
+	<script type="text/javascript">
+		(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124238757728309";
+		fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
+	
+	<g:plusone></g:plusone>
+	<script type="text/javascript">
+		(function() {
+		var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+		po.src = 'https://apis.google.com/js/plusone.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+	
+	<a href="https://twitter.com/share" class="twitter-share-button" data-via="pastexen" data-lang="en">Tweet</a>
+	<script type="text/javascript">
+		!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+	</script>
+</div>
+<div class="clearfix"></div>
+
+<hr />
+
+<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
+
+<?php
+	require(dirname(__FILE__) . '/includes/footer.php');
+?>
