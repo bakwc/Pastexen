@@ -71,6 +71,38 @@ QString getClipboardText() {
 }
 #endif
 
+
+#ifdef Q_OS_WIN
+bool IsTopMost( HWND hwnd )
+{
+  WINDOWINFO info;
+  GetWindowInfo( hwnd, &info );
+  return ( info.dwExStyle & WS_EX_TOPMOST ) ? true : false;
+}
+
+bool IsFullScreenSize( HWND hwnd, const int cx, const int cy )
+{
+  RECT r;
+  ::GetWindowRect( hwnd, &r );
+  return r.right - r.left == cx && r.bottom - r.top == cy;
+}
+
+bool IsFullscreenAndMaximized( HWND hwnd )
+{
+  if( IsTopMost( hwnd ) )
+  {
+    const int cx = GetSystemMetrics( SM_CXSCREEN );
+    const int cy = GetSystemMetrics( SM_CYSCREEN );
+    if( IsFullScreenSize( hwnd, cx, cy ) )
+      return true;
+  }
+  return false;
+}
+
+#endif
+
+
+
 Application::Application(int argc, char *argv[]) :
     QApplication(argc, argv)
     , _configWidget(0)
@@ -169,34 +201,22 @@ void Application::processScreenshot(bool isFullScreen)
     QPixmap pixmap;
     #if defined(Q_OS_LINUX)
     pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+
     #elif defined(Q_OS_WIN)
 
-    /** @todo: fix this trash code (it works but slow)
-     * Howto: create a new thread, grabing clipboard
+
+    if(IsFullscreenAndMaximized(GetForegroundWindow()))
     {
-        INPUT ip;
-        ip.type = INPUT_KEYBOARD;
-        ip.ki.wScan = 0;
-        ip.ki.time = 0;
-        ip.ki.dwExtraInfo = 0;
 
-        ip.ki.wVk = VK_SNAPSHOT;
-        ip.ki.dwFlags = 0;
-        SendInput(1, &ip, sizeof(INPUT));
-        QThread::msleep(100);
-
-        ip.ki.wVk = VK_SNAPSHOT;
-        ip.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &ip, sizeof(INPUT));
-        QThread::msleep(100);
+        //pixmap.load("screenshot.bmp"); //Still not have working function for take snapshot from full screen applications
     }
 
-
-    while (pixmap.isNull()) {
-        pixmap = this->clipboard()->pixmap();
+    else
+    {
+        pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     }
-    */
-    pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+
+    //pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     #endif
 
     if (!isFullScreen) {
