@@ -30,6 +30,9 @@ void pSaver::save(const QByteArray &data, const QString& type)
     int i = 10;
     QFile file;
     QString filename, path;
+    if (Settings::types().find(type) == Settings::types().end()) {
+        return;
+    }
     QString typeFolder(Settings::types()[type]);
 
     do {
