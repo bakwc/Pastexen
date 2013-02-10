@@ -66,17 +66,10 @@
 					<?php if(isset($_SESSION['authorized_user_id'])) { ?>
 						<div class="btn-group pull-right">
 							<a class="btn btn-primary" href="/account.php"><i class="icon-user icon-white"></i> <?php echo $_SESSION['authorized_user_login']; ?></a>
-							<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a tabindex="-1" href="/register.php"><i class="icon-plus"></i> <?php echo $this->l('action_attach_client'); ?></a></li>
-								<li><a tabindex="-1" href="/logout.php"><i class="icon-off"></i> <?php echo $this->l('action_logout'); ?></a></li>
-							</ul>
+							<a class="btn" title="<?php echo $this->l('action_logout'); ?>" href="/logout.php"><i class="icon-off"></i></a>
 						</div>
 					<?php } else { ?>
-						<div class="btn-group pull-right">
-							<a class="btn btn-primary" href="/login.php"><?php echo $this->l('action_login'); ?></a>
-							<a class="btn" href="/register.php"><?php echo $this->l('action_register'); ?></a>
-						</div>
+						<a class="btn btn-primary pull-right" href="/login.php"><?php echo $this->l('action_login'); ?></a>
 					<?php } ?>
 				</div>
 			</div>

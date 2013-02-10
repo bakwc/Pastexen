@@ -26,15 +26,23 @@
 	
 	final class ApplicationAction_user_register extends ApplicationAction {
 		public function run() {
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_register.php');
-
+			$uuid = '';
+			$uuidBad = false;
 			if(!isset($this->application->parameters['uuid']))
-				$uuid = '';
+				$uuidBad = true;
 			else {
 				$uuid = $this->application->parameters['uuid'];
 				if(!ApplicationModel_User::validateUuid($uuid))
-					$uuid = '';
+					$uuidBad = true;
 			}
+			if($uuidBad) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /';
+				$this->application->outputContent = '';
+				return;
+			}
+		
+			$view = new ApplicationView($this->application, $this->application->path . '/views/user_register.php');
 			$view->uuid = $uuid;
 			
 			if(isset($this->application->parameters['login']))

@@ -25,15 +25,9 @@
 	require_once(dirname(__FILE__) . '/../models/User.php');
 	
 	final class ApplicationAction_user_register_handler extends ApplicationAction {
-		public function run() {
+		public function run() {	
 			$uuid = '';
-			$login = '';
-			$password = '';
 			$uuidBad = false;
-			$loginBad = false;
-			$passwordWrong = false;
-			$registerUser = false;	
-		
 			if(!isset($this->application->parameters['uuid']))
 				$uuidBad = true;
 			else {
@@ -41,7 +35,15 @@
 				if(!ApplicationModel_User::validateUuid($uuid))
 					$uuidBad = true;
 			}
-			
+			if($uuidBad) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /';
+				$this->application->outputContent = '';
+				return;
+			}
+
+			$login = '';
+			$loginBad = false;
 			if(!isset($this->application->parameters['login']))
 				$loginBad = true;
 			else {
@@ -50,11 +52,13 @@
 					$loginBad = true;
 			}
 			
+			$password = '';
 			if(isset($this->application->parameters['password']))
 				$password = $this->application->parameters['password'];
 			
-			$success = !$uuidBad && !$loginBad;
-			
+			$success = !$loginBad;
+			$passwordWrong = false;
+			$registerUser = false;
 			if($success) {
 				$user = new ApplicationModel_User($this->application);
 				try {
@@ -93,7 +97,6 @@
 			$view->success = $success;
 			$view->registered = $registerUser;
 			$view->uuid = $uuid;
-			$view->uuidBad = $uuidBad;
 			$view->login = $login;
 			$view->loginBad = $loginBad;
 			$view->passwordWrong = $passwordWrong;

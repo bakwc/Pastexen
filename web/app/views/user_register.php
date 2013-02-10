@@ -32,8 +32,6 @@
 	if(isset($success) && !$success) {
 		echo '<div class="alert alert-block alert-error">';
 		echo '<h4>' . $this->l('account_register_errors_occured') . '</h4>';
-		if($uuidBad)
-			echo '<br />' . $this->l('error_uuid_bad');
 		if($loginBad)
 			echo '<br />' . $this->l('error_login_bad');
 		if($passwordWrong)
@@ -42,6 +40,8 @@
 	}
 ?>
 <form action="/app/index.php?action=user_register_handler" method="post" class="form-horizontal">
+	<input type="hidden" name="uuid" value="<?php echo htmlspecialchars($uuid); ?>" />
+
 	<div class="control-group">
 		<label class="control-label" for="login"><?php echo $this->l('field_login'); ?></label>
 		<div class="controls">
@@ -49,28 +49,14 @@
 			<p class="muted"><small><?php echo $this->l('field_login_description'); ?></small></p>
 		</div>
 	</div>
+	
 	<div class="control-group">
 		<label class="control-label" for="password"><?php echo $this->l('field_password'); ?></label>
 		<div class="controls">
 			<input type="text" class="span6" id="password" name="password" autocomplete="off" required />
-			<p class="muted"><small><?php echo $this->l('field_password_description'); ?></small></p>
 		</div>
 	</div>
-	<div class="control-group">
-		<label class="control-label" for="uuid"><?php echo $this->l('field_uuid'); ?></label>
-		<div class="controls">
-			<?php
-				if(!empty($uuid) && (!isset($uuidBad) || !$uuidBad)) {
-					echo '<input type="text" class="span6" id="uuid" value="' . htmlspecialchars($uuid) . '" disabled />';
-					echo '<input type="hidden" name="uuid" value="' . htmlspecialchars($uuid) . '" />';
-				}
-				else {
-					echo '<input type="text" class="span6" id="uuid" name="uuid" maxlength="48" autocomplete="off" value="' . htmlspecialchars($uuid) . '" required />';
-					echo '<p class="muted"><small>' . $this->l('field_uuid_description') . '</small></p>';
-				}
-			?>
-		</div>
-	</div>
+	
 	<div class="form-actions">
 		<input type="submit" class="btn btn-primary" value="<?php echo $this->l('action_register'); ?>" />
 	</div>
