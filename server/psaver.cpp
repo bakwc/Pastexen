@@ -11,13 +11,14 @@
 
 pSaver* pSaver::pThis = 0;
 
-pSaver::pSaver() :
-    QThread(0)
+pSaver::pSaver()
+    : QThread(0)
+    , _redis(0)
 {
     moveToThread(this);
+
     this->start(QThread::LowPriority);
 
-    _redis.SetTimeout(1200);
     findFiles();
 
     pThis = this;
@@ -28,6 +29,11 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
 #ifdef FUNC_DEBUG
     qDebug() << "\n    " << Q_FUNC_INFO;
 #endif
+
+    if (_redis == 0) {
+        _redis = new TRedisClient(this);
+        _redis->SetTimeout(1200);
+    }
 
     int i = 10;
     QFile file;
@@ -51,35 +57,37 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
     }
 
     if (uuid.length() != 0) {
-        QStringList record = _redis.Query("INCR records_count");
-        if (record.size() == 2) {
-            QString recordNumber = record[1];
-            QString fileType = "text";
-            if (type == "jpg" || type == "png") {
-                fileType = "image";
-            }
+        if (!_redis->Connect("127.0.0.1", 6379)) {
+            qDebug() << "redis server unavailable";
+        } else {
 
-            int timestamp = std::time(0);
+            QStringList record = _redis->Query("INCR records_count");
+            if (record.size() == 2) {
+                QString recordNumber = record[1];
+                QString fileType = "text";
+                if (type == "jpg" || type == "png") {
+                    fileType = "image";
+                }
 
-            if (!_redis.Connect("127.0.0.1", 6379)) {
-                qDebug() << "redis server unavailable";
-            } else {
-            _redis.Query("HSET file_" + recordNumber + " type " + fileType);
-            _redis.Query("HSET file_" + recordNumber + " name " + filename);
-            _redis.Query("HSET file_" + recordNumber + " extension " + type);
-            _redis.Query("HSET file_" + recordNumber + " path " + path);
-            _redis.Query(QString("HSET file_%1 timestamp %2")
+                int timestamp = std::time(0);
+
+                _redis->Query("HSET file_" + recordNumber + " type " + fileType);
+                _redis->Query("HSET file_" + recordNumber + " name " + filename);
+                _redis->Query("HSET file_" + recordNumber + " extension " + type);
+                _redis->Query("HSET file_" + recordNumber + " path " + path);
+                _redis->Query("HSET fileid " + filename + " " + recordNumber); 
+                _redis->Query(QString("HSET file_%1 timestamp %2")
                          .arg(recordNumber)
                          .arg(timestamp));
 
-            _redis.Query(QString("ZADD uuid_%1 %2 file_%3")
+                _redis->Query(QString("ZADD uuid_%1 %2 file_%3")
                          .arg(uuid)
                          .arg(timestamp)
                          .arg(recordNumber));
-            _redis.Disconnect();
+                _redis->Disconnect();
+            } else {
+                qDebug() << "Wrong redis response";
             }
-        } else {
-            qDebug() << "Lost db connection!";
         }
     }
 

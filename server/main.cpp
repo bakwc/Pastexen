@@ -21,8 +21,8 @@ int main(int argc, char** argv)
     }
 
     #ifdef Q_OS_LINUX
-//    int d = daemon(0, 0);
-//    Q_UNUSED(d);
+    int d = daemon(0, 0);
+    Q_UNUSED(d);
     #endif
 
     QString pathToConfig = app.config();

@@ -1,9 +1,10 @@
 #include "redisclient.h"
 
-TRedisClient::TRedisClient()
-    : Socket(new QTcpSocket(this))
+TRedisClient::TRedisClient(QObject* parent)
+    : QObject(parent)
     , Timeout(3000)
 {
+    Socket = new QTcpSocket(parent);
 }
 
 void TRedisClient::SetTimeout(int timeout) {

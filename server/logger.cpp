@@ -9,6 +9,7 @@ QString Logger::_path = QString();
 bool Logger::configure(const QString &path)
 {
     _f = fopen(path.toLocal8Bit(), "a");
+    setbuf(_f, NULL);
     return _f;
 }
 

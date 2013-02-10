@@ -7,7 +7,7 @@ class TRedisClient: public QObject
 {
     Q_OBJECT
 public:
-    TRedisClient();
+    TRedisClient(QObject* parent = 0);
     void SetTimeout(int);
     int GetTimeout();
     bool Connect(QString,int);

@@ -9,7 +9,7 @@
 
 #include "redisclient.h"
 
-class pSaver : public QThread
+class pSaver : public QThread 
 {
     Q_OBJECT
 
@@ -27,7 +27,7 @@ private:
     static pSaver  *pThis;
     static QString randName(int count);
     QSet<QString> _files;
-    TRedisClient _redis;
+    TRedisClient *_redis;
 
     void findFiles();
     QStringList unique(const QStringList& list);

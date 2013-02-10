@@ -1,6 +1,8 @@
 QT += core network
 QT -= gui
 
+TARGET = release_binary
+
 SOURCES += \
     main.cpp \
     pserver.cpp \
