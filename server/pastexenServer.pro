@@ -9,7 +9,8 @@ SOURCES += \
     psetting.cpp \
     psaver.cpp \
     application.cpp \
-    logger.cpp
+    logger.cpp \
+    redisclient.cpp
 
 HEADERS += \
     pserver.h \
@@ -19,7 +20,8 @@ HEADERS += \
     psetting.h \
     psaver.h \
     logger.h \
-    application.h
+    application.h \
+    redisclient.h
 
 QMAKE_CXXFLAGS += -std=c++0x
 

@@ -13,16 +13,96 @@
 #include <QDir>
 #include <QScreen>
 #include <QThread>
+#include <QPixmap>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
 #include "defines.h"
 #include "languageselectdialog.h"
+#include "utils.h"
+
+#ifdef Q_OS_LINUX
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <string>
+#include <climits>
+
+QString getClipboardText() {
+    std::string result;
+    Display* d = XOpenDisplay(nullptr);
+    if(d) {
+        Window wParent = DefaultRootWindow(d);
+        Window w = XCreateSimpleWindow(
+            d, wParent, 0, 0, 1, 1, 0, CopyFromParent, CopyFromParent);
+        Atom target = XInternAtom(d, "UTF8_STRING", False);
+        XConvertSelection(d, XA_PRIMARY, target, None, w, CurrentTime);
+        XFlush(d);
+
+        for(unsigned long offset = 0;;) {
+            XEvent ev;
+            XNextEvent(d, &ev);
+            if(SelectionNotify == ev.type
+               && None != ev.xselection.property
+            ) {
+                Atom actual_type_return = None;
+                int actual_format_return = 0;
+                unsigned long nitems_return = 0;
+                unsigned long bytes_after_return = 0;
+                unsigned char* prop_return = nullptr;
+                XGetWindowProperty(
+                    d, w, ev.xselection.property, offset, INT_MAX
+                    , False, AnyPropertyType, &actual_type_return
+                    , &actual_format_return, &nitems_return
+                    , &bytes_after_return, &prop_return);
+                if(nitems_return) {
+                    result.append(reinterpret_cast<const char*>(prop_return)
+                                  , nitems_return);
+                    offset += nitems_return;
+                }
+                XDeleteProperty(d, w, ev.xselection.property);
+                if(!bytes_after_return) {
+                    break;
+                }
+            }
+        }
+        XDestroyWindow(d, w);
+        XCloseDisplay(d);
+    }
+    return QString(result.c_str());
+}
+#endif
+
 
 #ifdef Q_OS_WIN
-#define _WIN32_WINNT 0x500
-#include <windows.h>
+bool IsTopMost( HWND hwnd )
+{
+  WINDOWINFO info;
+  GetWindowInfo( hwnd, &info );
+  return ( info.dwExStyle & WS_EX_TOPMOST ) ? true : false;
+}
+
+bool IsFullScreenSize( HWND hwnd, const int cx, const int cy )
+{
+  RECT r;
+  ::GetWindowRect( hwnd, &r );
+  return r.right - r.left == cx && r.bottom - r.top == cy;
+}
+
+bool IsFullscreenAndMaximized( HWND hwnd )
+{
+  if( IsTopMost( hwnd ) )
+  {
+    const int cx = GetSystemMetrics( SM_CXSCREEN );
+    const int cy = GetSystemMetrics( SM_CYSCREEN );
+    if( IsFullScreenSize( hwnd, cx, cy ) )
+      return true;
+  }
+  return false;
+}
+
 #endif
+
+
 
 Application::Application(int argc, char *argv[]) :
     QApplication(argc, argv)
@@ -46,7 +126,7 @@ bool Application::pxAppInit()
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
     if (socket.waitForConnected(500)) {
-        qDebug() << "Application allready launched!";
+        qDebug() << "Application already launched!";
         return false;
     }
 
@@ -62,6 +142,13 @@ bool Application::pxAppInit()
     QString homePath = QDir::homePath();
     QString settingsFile = homePath + "/" + SETTINGS_FILE;
     _settings = new QSettings(settingsFile, QSettings::IniFormat, this);
+
+    QString uuid = _settings->value("general/uuid").toString();
+    if (uuid.length() != 24 * 2) {
+        uuid = GenerateUUID();
+        Q_ASSERT(uuid.length() == 24 * 2);
+        _settings->setValue("general/uuid", uuid);
+    }
 
     initLanguages();
 
@@ -112,15 +199,41 @@ void Application::trayMessage(const QString &caption, const QString &text)
 
 void Application::processScreenshot(bool isFullScreen)
 {
+    if (Sharing) {
+        return;
+    }
     if (!checkEllapsed()) {
         return;
     }
-    QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    Sharing = true;
+    QPixmap pixmap;
+    #if defined(Q_OS_LINUX)
+    pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+
+    #elif defined(Q_OS_WIN)
+
+
+    if(IsFullscreenAndMaximized(GetForegroundWindow()))
+    {
+
+        //pixmap.load("screenshot.bmp"); //Still not have working function for take snapshot from full screen applications
+    }
+
+    else
+    {
+        pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    }
+
+    //pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    #endif
+
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);
-        if (!imageSelectDialog.exec())
+        if (!imageSelectDialog.exec()) {
+            Sharing = false;
             return;
+        }
     }
 
     QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
@@ -131,6 +244,7 @@ void Application::processScreenshot(bool isFullScreen)
     pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
     buffer.close();
     _network->upload(imageBytes, imagetype);
+    Sharing = false;
 }
 
 void Application::processCodeShare()
@@ -149,7 +263,7 @@ void Application::processCodeShare()
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
 
-    #if defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
     INPUT ip;
     ip.type = INPUT_KEYBOARD;
     ip.ki.wScan = 0;
@@ -178,12 +292,28 @@ void Application::processCodeShare()
     QThread::msleep(100);
     #endif
 
-    QString text = QApplication::clipboard()->text();
+    QString text;
+#ifdef Q_OS_LINUX
+        Display *dpy = XOpenDisplay(NULL);
+        if (!dpy) qDebug() << "DPU ERROR!";
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, CurrentTime);
+        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_DOWN, 0);
+        QThread::msleep(200);
+        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, CurrentTime);
+        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_UP, 0);
+        XCloseDisplay(dpy);
+        text = getClipboardText();
+#elif defined(Q_OS_WIN)
+    text = QApplication::clipboard()->text();
+#endif
+
+
     if (text.count() == 0) {
         _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
         return;
     }
     _network->upload(text.toUtf8(),sourcestype);
+
 }
 
 
@@ -228,7 +358,8 @@ void Application::setupHotkeys()
 
 void Application::initLanguages()
 {
-    _languages.insert("txt", "Plain text");
+    _languages.insert("auto", tr("Auto detection"));
+    _languages.insert("txt", tr("Plain text"));
     _languages.insert("c", "C");
     _languages.insert("cpp", "C++");
     _languages.insert("cs", "C#");

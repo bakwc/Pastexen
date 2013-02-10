@@ -17,7 +17,7 @@ public:
     ~pSocket();
     
 signals:
-    void saveFile(const QByteArray& data, const QString& type);
+    void saveFile(const QByteArray& data, const QString& type, const QString& uuid);
     
 public slots:
     void onDataReceived();
@@ -31,6 +31,7 @@ private:
     QTcpSocket  *_socket;
     int         _packetSize;
     QString     _fileType;
+    QString     _uuid;
     QString     _protoVersion;
     QAtomicInt  &_limit;
 };

@@ -20,7 +20,8 @@ pSocket::pSocket(QTcpSocket *socket, QThread *thread, QAtomicInt& limit) :
     connect(_socket, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
     connect(_socket, SIGNAL(disconnected()), this, SLOT(deleteLater()));
 //    connect(_socket, SIGNAL(disconnected()), _socket, SLOT(deleteLater()));
-    connect(this, SIGNAL(saveFile(QByteArray,QString)), pSaver::inst(), SLOT(save(QByteArray,QString)));
+    connect(this, SIGNAL(saveFile(QByteArray,QString,QString)),
+            pSaver::inst(), SLOT(save(QByteArray,QString,QString)));
 
     _socket->setParent(this);
     moveToThread(thread);
@@ -61,6 +62,20 @@ void pSocket::sendLink(const QString& link)
 #endif
 }
 
+bool checkUUID(const QString& uuid) {
+    if (uuid.length() != 49 - 1) {
+        return false;
+    }
+    for (int i = 0; i < 49 - 1; ++i) {
+        if (!((uuid[i] >= '0' && uuid[i] <= '9') ||
+              (uuid[i] >= 'A' && uuid[i] <= 'F')))
+        {
+            qDebug() << "hren vam: " << uuid[i];
+           return false;
+        }
+    }
+    return true;
+}
 
 void pSocket::onDataReceived()
 {
@@ -85,6 +100,13 @@ void pSocket::onDataReceived()
         _packetSize = getValue(header, "size").toInt();
         _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
+        _uuid = getValue(header, "uuid");
+
+        if (_uuid.length()!=0 && !checkUUID(_uuid)) {
+            qDebug() << "UUID is incorrect. Disconnect" << _socket->localAddress();
+            _socket->disconnectFromHost();
+            return;
+        }
 
         if (_packetSize == 0) {
             qDebug() << "Client trying to send empty data";
@@ -120,7 +142,7 @@ void pSocket::onDataReceived()
 #endif
 
         _packetSize = 0;
-        emit saveFile(_buffer, _fileType);
+        emit saveFile(_buffer, _fileType, _uuid);
 
 #ifdef TIME_DEBUG
         qDebug() << dTime->elapsed();
@@ -131,7 +153,6 @@ void pSocket::onDataReceived()
     qDebug() << '\n' << Q_FUNC_INFO << "end";
 #endif
 }
-
 
 void pSocket::customEvent(QEvent *ev)
 {

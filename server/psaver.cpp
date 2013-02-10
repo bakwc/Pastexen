@@ -7,6 +7,7 @@
 #include <QEvent>
 #include <QtAlgorithms>
 #include <QDir>
+#include <QDateTime>
 
 pSaver* pSaver::pThis = 0;
 
@@ -16,12 +17,13 @@ pSaver::pSaver() :
     moveToThread(this);
     this->start(QThread::LowPriority);
 
+    _redis.SetTimeout(1200);
     findFiles();
 
     pThis = this;
 }
 
-void pSaver::save(const QByteArray &data, const QString& type)
+void pSaver::save(const QByteArray &data, const QString& type, const QString& uuid)
 {
 #ifdef FUNC_DEBUG
     qDebug() << "\n    " << Q_FUNC_INFO;
@@ -30,6 +32,9 @@ void pSaver::save(const QByteArray &data, const QString& type)
     int i = 10;
     QFile file;
     QString filename, path;
+    if (Settings::types().find(type) == Settings::types().end()) {
+        return;
+    }
     QString typeFolder(Settings::types()[type]);
 
     do {
@@ -43,6 +48,39 @@ void pSaver::save(const QByteArray &data, const QString& type)
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "\nCannot create file:" << file.fileName();
         return;
+    }
+
+    if (uuid.length() != 0) {
+        QStringList record = _redis.Query("INCR records_count");
+        if (record.size() == 2) {
+            QString recordNumber = record[1];
+            QString fileType = "text";
+            if (type == "jpg" || type == "png") {
+                fileType = "image";
+            }
+
+            int timestamp = int(QDateTime::currentMSecsSinceEpoch() / 1000);
+
+            if (!_redis.Connect("127.0.0.1", 6379)) {
+                qDebug() << "redis server unavailable";
+            } else {
+            _redis.Query("HSET file_" + recordNumber + " type " + fileType);
+            _redis.Query("HSET file_" + recordNumber + " name " + filename);
+            _redis.Query("HSET file_" + recordNumber + " extension " + type);
+            _redis.Query("HSET file_" + recordNumber + " path " + path);
+            _redis.Query(QString("HSET file_%1 timestamp %2")
+                         .arg(recordNumber)
+                         .arg(timestamp));
+
+            _redis.Query(QString("ZADD uuid_%1 %2 file_%3")
+                         .arg(uuid)
+                         .arg(timestamp)
+                         .arg(recordNumber));
+            _redis.Disconnect();
+            }
+        } else {
+            qDebug() << "Lost db connection!";
+        }
     }
 
 #ifdef FUNC_DEBUG

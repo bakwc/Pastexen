@@ -9,6 +9,21 @@
 #include "configwidget.h"
 #include "network.h"
 
+#ifdef Q_OS_WIN
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x500
+#include <windows.h>
+#endif
+
+#ifdef Q_OS_LINUX
+#include <X11/extensions/XTest.h>
+#define KEY_DOWN True
+#define KEY_UP   False
+#define KEYCODE_LCONTROL 37
+#define KEYCODE_C 54
+#endif
+
+
 class Application : public QApplication
 {
     Q_OBJECT
@@ -49,4 +64,5 @@ private:
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
     QTime _lastSended;
+    bool Sharing = false;
 };
