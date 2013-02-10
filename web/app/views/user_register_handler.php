@@ -16,6 +16,31 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	if(!$success)
+		require(dirname(__FILE__) . '/user_register.php');
+	
+	else {
+		$pageTitle = $this->l('account_register_title');
+		require(dirname(__FILE__) . '/includes/header.php');
+?>
 
-	$action = 'about';
-	require(dirname(__FILE__) . '/app/index.php');
+<h1><?php echo $this->l('account_register_title'); ?></h1>
+<hr />
+<div class="alert alert-block alert-success">
+	<h4><?php echo $this->l('congratulations'); ?></h4>
+	<?php echo $this->l('account_' . ($registered ? 'registered' : 'attached') . '_successfully'); ?>
+	<br /><br />
+	<a href="/account.php" class="btn btn-success"><?php echo $this->l('action_continue'); ?> &rarr;</a>
+</div>
+
+
+<?php
+		require(dirname(__FILE__) . '/includes/footer.php');
+	}
+?>

@@ -17,5 +17,5 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	$action = 'about';
+	$action = 'user_files';
 	require(dirname(__FILE__) . '/app/index.php');

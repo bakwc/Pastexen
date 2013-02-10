@@ -24,72 +24,52 @@
 	
 	require_once(dirname(__FILE__) . '/../models/User.php');
 	
-	final class ApplicationAction_user_attach_handler extends ApplicationAction {
+	final class ApplicationAction_user_login_handler extends ApplicationAction {
 		public function run() {
-			$uuid = '';
+			$success = true;
 			$login = '';
 			$password = '';
-			$uuidBad = false;
-			$loginBad = false;
-			$registerUser = false;
-			$passwordWrong = false;
-		
-			if(!isset($this->application->parameters['uuid']))
-				$uuidBad = true;
-			else {
-				$uuid = $this->application->parameters['uuid'];
-				if(!ApplicationModel_User::validateUuid($uuid))
-					$uuidBad = true;
-			}
 			
 			if(!isset($this->application->parameters['login']))
-				$loginBad = true;
+				$success = false;
 			else {
 				$login = $this->application->parameters['login'];
 				if(!ApplicationModel_User::validateLogin($login))
-					$loginBad = true;
+					$success = false;
 			}
 			
-			if(isset($this->application->parameters['password']))
+			if(!isset($this->application->parameters['password']))
+				$success = false;
+			else
 				$password = $this->application->parameters['password'];
-			
-			$success = !$uuidBad && !$loginBad;
 			
 			if($success) {
 				$user = new ApplicationModel_User($this->application);
-				$user->setLogin($login);
-
 				try {
+					$user->setLogin($login);
 					$user->load();
 				}
 				catch(Exception $e) {
-					$registerUser = true;
-				}
-				
-				if($registerUser) {
-					$user->setPasswordHash($user->makePasswordHash($password));
-					$user->save();
-				}
-				else // user exists; check password
-					if($user->makePasswordHash($password) != $user->getPasswordHash())
-						$passwordWrong = true;
-				
-				$success = $success && !$passwordWrong;
-				
-				if($success) {
-					$user->addUuid($uuid, time());
-					$user->save();
+					$success = false;
 				}
 			}
-			
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_attach_handler.php');
-			$view->success = $success;
-			$view->registered = $registerUser;
-			$view->uuid = $uuid;
-			$view->uuidBad = $uuidBad;
-			$view->login = $login;
-			$view->loginBad = $loginBad;
-			$view->passwordWrong = $passwordWrong;
-			$view->render();
+				
+			if($success)
+				if($user->makePasswordHash($password) != $user->getPasswordHash())
+					$success = false;
+
+			if($success) {
+				$_SESSION['authorized_user_id']    = $user->getId();
+				$_SESSION['authorized_user_login'] = $user->getLogin();
+				
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /account.php';
+				$this->application->outputContent = '';
+			}
+			else {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /login.php?unsuccessful&login=' . urlencode($login);
+				$this->application->outputContent = '';
+			}
 		}
 	}

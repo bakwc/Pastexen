@@ -42,13 +42,7 @@
 			$this->path = realpath(dirname(__FILE__ ). '/..');
 			$this->config = $config;
 			
-			$this->rediska = new Rediska(array(
-				'servers' => array(array(
-					'host' => $this->config['database_host'],
-					'port' => $this->config['database_port'],
-					'password' => $this->config['database_password']
-				))
-			));
+			$this->rediska = null;
 			
 			if(empty($action))
 				$this->action = 'index';
@@ -66,6 +60,16 @@
 		public function run() {
 			try {
 				@date_default_timezone_set('UTC');
+				
+				$this->rediska = new Rediska(array(
+					'servers' => array(array(
+						'host' => $this->config['database_host'],
+						'port' => $this->config['database_port'],
+						'password' => $this->config['database_password']
+					))
+				));
+				
+				session_start();
 				
 				if(isset($this->parameters['language']))
 					$language = $this->parameters['lnaguage'];

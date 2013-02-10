@@ -35,9 +35,15 @@
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<?php
-			if(isset($jsIncludes))
-				foreach($jsIncludes as $js)
-					echo '<script src="' . $js . '"></script>';
+			if(!isset($jsIncludes))
+				$jsIncludes = array();
+			$jsIncludes = array_merge(array(
+				'/app/static/javascript/jquery-1.7.1.min.js',
+				'/app/static/javascript/bootstrap-transition.js',
+				'/app/static/javascript/bootstrap-dropdown.js'
+				), $jsIncludes);
+			foreach($jsIncludes as $js)
+				echo '<script src="' . $js . '"></script>';
 		?>
 		<link href="/app/static/styles/twitter-bootstrap-2.2.2.css" rel="stylesheet" />
 		<?php
@@ -56,7 +62,22 @@
 					<ul class="nav">
 						<li><a href="/"><?php echo $this->l('menu_index'); ?></a></li>
 					</ul>
-					<p class="navbar-text pull-right"><?php echo $this->l('we_on_fb_and_vk_linked', '<a href="http://www.facebook.com/groups/310112359099842/">', '</a>', '<a href="http://vk.com/pastexen">', '</a>'); ?>.</p>
+					
+					<?php if(isset($_SESSION['authorized_user_id'])) { ?>
+						<div class="btn-group pull-right">
+							<a class="btn btn-primary" href="/account.php"><i class="icon-user icon-white"></i> <?php echo $_SESSION['authorized_user_login']; ?></a>
+							<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a tabindex="-1" href="/register.php"><i class="icon-plus"></i> <?php echo $this->l('action_attach_client'); ?></a></li>
+								<li><a tabindex="-1" href="/logout.php"><i class="icon-off"></i> <?php echo $this->l('action_logout'); ?></a></li>
+							</ul>
+						</div>
+					<?php } else { ?>
+						<div class="btn-group pull-right">
+							<a class="btn btn-primary" href="/login.php"><?php echo $this->l('action_login'); ?></a>
+							<a class="btn" href="/register.php"><?php echo $this->l('action_register'); ?></a>
+						</div>
+					<?php } ?>
 				</div>
 			</div>
 		</div>

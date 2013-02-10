@@ -21,8 +21,29 @@
 		echo 'Access denied.';
 		exit();
 	}
-?>
-			<p class="navbar-text pull-right"><?php echo $this->l('we_on_fb_and_vk_linked', '<a href="http://www.facebook.com/groups/310112359099842/">', '</a>', '<a href="http://vk.com/pastexen">', '</a>'); ?></p>
-		</div>
-	</body>
-</html>
+	
+	require_once(dirname(__FILE__) . '/../models/User.php');
+	
+	final class ApplicationAction_user_register extends ApplicationAction {
+		public function run() {
+			$view = new ApplicationView($this->application, $this->application->path . '/views/user_register.php');
+
+			if(!isset($this->application->parameters['uuid']))
+				$uuid = '';
+			else {
+				$uuid = $this->application->parameters['uuid'];
+				if(!ApplicationModel_User::validateUuid($uuid))
+					$uuid = '';
+			}
+			$view->uuid = $uuid;
+			
+			if(isset($this->application->parameters['login']))
+				$view->login = $this->application->parameters['login'];
+			elseif(isset($_SESSION['authorized_user_login']))
+				$view->login = $_SESSION['authorized_user_login'];
+			else
+				$view->login = '';
+			
+			$view->render();
+		}
+	}

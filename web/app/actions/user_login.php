@@ -21,8 +21,25 @@
 		echo 'Access denied.';
 		exit();
 	}
-?>
-			<p class="navbar-text pull-right"><?php echo $this->l('we_on_fb_and_vk_linked', '<a href="http://www.facebook.com/groups/310112359099842/">', '</a>', '<a href="http://vk.com/pastexen">', '</a>'); ?></p>
-		</div>
-	</body>
-</html>
+	
+	require_once(dirname(__FILE__) . '/../models/User.php');
+	
+	final class ApplicationAction_user_login extends ApplicationAction {
+		public function run() {
+			if(isset($_SESSION['authorized_user_id'])) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /account.php';
+				$this->application->outputContent = '';
+			}
+			else {
+				$view = new ApplicationView($this->application, $this->application->path . '/views/user_login.php');
+				
+				$view->error = isset($this->application->parameters['unsuccessful']);
+				
+				if(isset($this->application->parameters['login']))
+					$view->login = $this->application->parameters['login'];
+				
+				$view->render();
+			}
+		}
+	}

@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
-	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,5 @@
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
 
-	$action = 'user_attach_handler';
+	$action = 'user_login';
 	require(dirname(__FILE__) . '/app/index.php');

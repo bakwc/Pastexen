@@ -22,24 +22,14 @@
 		exit();
 	}
 	
-	if(!$success)
-		require(dirname(__FILE__) . '/user_attach.php');
-	
-	else {
-		$pageTitle = $this->l('account_attach_title');
-		require(dirname(__FILE__) . '/includes/header.php');
+	$pageTitle = $this->l('my_files');
+	require(dirname(__FILE__) . '/includes/header.php');
 ?>
 
-<h1><?php echo $this->l('account_attach_title'); ?></h1>
+<h1><?php echo $this->l('my_files'); ?></h1>
 <hr />
-<div class="alert alert-block alert-success">
-	<h4><?php echo $this->l('congratulations'); ?></h4>
-	<?php echo $this->l('account_' . ($registered ? 'registered' : 'attached') . '_successfully'); ?>
-	<a href="/login.php" class="btn btn-success"><?php echo $this->l('action_continue'); ?> &rarr;</a>
-</div>
-
+UNIMPLEMENTED
 
 <?php
-		require(dirname(__FILE__) . '/includes/footer.php');
-	}
+	require(dirname(__FILE__) . '/includes/footer.php');
 ?>

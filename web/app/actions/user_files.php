@@ -16,6 +16,26 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
-
-	$action = 'about';
-	require(dirname(__FILE__) . '/app/index.php');
+	
+	if(!defined('APPLICATION_ENTRY_POINT')) {
+		echo 'Access denied.';
+		exit();
+	}
+	
+	require_once(dirname(__FILE__) . '/../models/User.php');
+	
+	final class ApplicationAction_user_files extends ApplicationAction {
+		public function run() {
+			if(!isset($_SESSION['authorized_user_id'])) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /login.php';
+				$this->application->outputContent = '';
+			}
+		
+			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
+			
+			// unimplemented
+			
+			$view->render();
+		}
+	}

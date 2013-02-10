@@ -16,27 +16,6 @@
 	 * You should have received a copy of the GNU General Public License
 	 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	 */
-	
-	if(!defined('APPLICATION_ENTRY_POINT')) {
-		echo 'Access denied.';
-		exit();
-	}
-	
-	require_once(dirname(__FILE__) . '/../models/User.php');
-	
-	final class ApplicationAction_user_attach extends ApplicationAction {
-		public function run() {
-			if(!isset($this->application->parameters['uuid']))
-				$uuid = '';
-			else {
-				$uuid = $this->application->parameters['uuid'];
-				if(!ApplicationModel_User::validateUuid($uuid))
-					$uuid = '';
-			}
-			
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_attach.php');
-			$view->uuid = $uuid;
-			$view->login = ''; // fixme
-			$view->render();
-		}
-	}
+
+	$action = 'user_register';
+	require(dirname(__FILE__) . '/app/index.php');

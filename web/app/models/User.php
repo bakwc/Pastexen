@@ -45,7 +45,7 @@
 		 * Sets id. If it is invalid, throws an exception.
 		 */
 		public function setId($id) {
-			if(!is_numeric($id) || $id <= 0)
+			if(!ctype_digit($id) || $id <= 0)
 				throw new Exception('Id must be an integer greater than 0.');
 			$this->id = $id;
 		}
@@ -111,11 +111,14 @@
 		
 		/**
 		 * Adds a client's UUID to the list of user's clients. UUIDs and their timestamps must be unique for one user.
-		 * You cannot add two same UUIDs or two different UUIDs with same timestamps to one user.
+		 * You cannot add two same UUIDs or two different UUIDs with same timestamps to one user. Throws an exception
+		 * if the uuid or its timestamp is invalid.
 		 */
 		public function addUuid($uuid, $time) {
 			if(!self::validateUuid($uuid))
 				throw new Exception('UUID is invalid.');
+			if(!ctype_digit($time))
+				throw new Exception('Timestamp must be an integer.');
 		
 			// if there is the same uuid, we must remove it
 			$sameUuidTime = array_search($uuid, $this->uuids);
