@@ -46,7 +46,7 @@
 		 * Sets id. If it is invalid, throws an exception.
 		 */
 		public function setId($id) {
-			if(!ctype_digit($id) || $id <= 0)
+			if(!is_int($id) || $id <= 0)
 				throw new Exception('Id must be an integer greater than 0.');
 			$this->id = $id;
 		}
@@ -118,7 +118,7 @@
 		public function addUuid($uuid, $time) {
 			if(!self::validateUuid($uuid))
 				throw new Exception('UUID is invalid.');
-			if(!ctype_digit($time))
+			if(!is_int($time))
 				throw new Exception('Timestamp must be an integer.');
 		
 			// if there is the same uuid, we must remove it
@@ -179,7 +179,7 @@
 				$this->uuids = array();
 				$uuidsKeySet = new Rediska_Key_SortedSet('user_' . $this->id . '_uuids');
 				foreach($uuidsKeySet->toArray(true) as $uuid)
-					$this->addUuid(substr($uuid->value, strlen('uuid_')), $uuid->score);
+					$this->addUuid(substr($uuid->value, strlen('uuid_')), (int)$uuid->score);
 			}
 			
 			// if the id is unknown, we cannot do anything
@@ -220,7 +220,7 @@
 					throw new Exception('User with login ' . $this->login . ' already exists in the database.');
 				
 				// remove old id lookup key
-				$userLoginOldKey = new Rediska_Kay('user_login_' . $this->loginOld);
+				$userLoginOldKey = new Rediska_Key('user_login_' . $this->loginOld);
 				$userLoginOldKey->delete();
 			}
 			
