@@ -55,6 +55,7 @@ private:
     void processScreenshot(bool isFullScreen);
     void initLanguages();
     bool checkEllapsed();
+    void timerEvent(QTimerEvent *);
 private:
     ConfigWidget *_configWidget;
     QSystemTrayIcon *_trayIcon;
@@ -65,4 +66,5 @@ private:
     QLocalServer *_localServer;
     QTime _lastSended;
     bool Sharing = false;
+    int _timerId;
 };
