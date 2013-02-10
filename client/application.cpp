@@ -261,59 +261,43 @@ void Application::processCodeShare()
         }
     }
 
-    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
-
 #ifdef Q_OS_WIN
-    INPUT ip;
-    ip.type = INPUT_KEYBOARD;
-    ip.ki.wScan = 0;
-    ip.ki.time = 0;
-    ip.ki.dwExtraInfo = 0;
+    QApplication::processEvents();
 
-    ip.ki.wVk = VK_CONTROL;
-    ip.ki.dwFlags = 0;
-    SendInput(1, &ip, sizeof(INPUT));
+    INPUT input[4];
 
-    QThread::msleep(100);
-    ip.ki.wVk = 'C';
-    ip.ki.dwFlags = 0;
-    SendInput(1, &ip, sizeof(INPUT));
+    input[0].type = INPUT_KEYBOARD;
+    input[0].ki.wVk = VK_CONTROL;
+    input[0].ki.wScan = 0;
+    input[0].ki.dwFlags = 0;
+    input[0].ki.time = 0;
+    input[0].ki.dwExtraInfo = 0;
 
-    QThread::msleep(100);
-    ip.ki.wVk = 'C';
-    ip.ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(1, &ip, sizeof(INPUT));
+    input[1].type = INPUT_KEYBOARD;
+    input[1].ki.wVk = 'C';
+    input[1].ki.wScan = 0;
+    input[1].ki.dwFlags = 0;
+    input[1].ki.time = 10;
+    input[1].ki.dwExtraInfo = 0;
 
-    QThread::msleep(100);
-    ip.ki.wVk = VK_CONTROL;
-    ip.ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(1, &ip, sizeof(INPUT));
+    input[2].type = INPUT_KEYBOARD;
+    input[2].ki.wVk = 'C';
+    input[2].ki.wScan = 0;
+    input[2].ki.dwFlags = KEYEVENTF_KEYUP;
+    input[2].ki.time = 20;
+    input[2].ki.dwExtraInfo = 0;
 
-    QThread::msleep(100);
+    input[3].type = INPUT_KEYBOARD;
+    input[3].ki.wVk = VK_CONTROL;
+    input[3].ki.wScan = 0;
+    input[3].ki.dwFlags = KEYEVENTF_KEYUP;
+    input[3].ki.time = 30;
+    input[3].ki.dwExtraInfo = 0;
+
+    SendInput(4, input, sizeof(INPUT));
+
     #endif
-
-    QString text;
-#ifdef Q_OS_LINUX
-        Display *dpy = XOpenDisplay(NULL);
-        if (!dpy) qDebug() << "DPU ERROR!";
-        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, CurrentTime);
-        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_DOWN, 0);
-        QThread::msleep(200);
-        XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, CurrentTime);
-        XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_UP, 0);
-        XCloseDisplay(dpy);
-        text = getClipboardText();
-#elif defined(Q_OS_WIN)
-    text = QApplication::clipboard()->text();
-#endif
-
-
-    if (text.count() == 0) {
-        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
-        return;
-    }
-    _network->upload(text.toUtf8(),sourcestype);
-
+    _timerId = this->startTimer(200);
 }
 
 
@@ -395,4 +379,35 @@ bool Application::checkEllapsed()
     }
     _lastSended.restart();
     return true;
+}
+
+void Application::timerEvent(QTimerEvent *) {
+    qDebug() << "ON_TIMER!";
+    this->killTimer(_timerId);
+
+    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+
+    QString text;
+
+#ifdef Q_OS_LINUX
+    Display *dpy = XOpenDisplay(NULL);
+    if (!dpy) qDebug() << "DPU ERROR!";
+    XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_DOWN, CurrentTime);
+    XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_DOWN, 0);
+    QThread::msleep(200);
+    XTestFakeKeyEvent(dpy, KEYCODE_LCONTROL, KEY_UP, CurrentTime);
+    XTestFakeKeyEvent(dpy, KEYCODE_C, KEY_UP, 0);
+    XCloseDisplay(dpy);
+    text = getClipboardText();
+#elif defined(Q_OS_WIN)
+    text = QApplication::clipboard()->text();
+#endif
+
+    qDebug() << text;
+
+    if (text.count() == 0) {
+        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
+        return;
+    }
+    _network->upload(text.toUtf8(), sourcestype);
 }

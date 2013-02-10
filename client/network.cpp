@@ -28,10 +28,9 @@ void Network::lookedUp(const QHostInfo &host)
 }
 
 void Network::timerEvent(QTimerEvent *) {
-    qDebug() << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
         QHostInfo::abortHostLookup(_lookupId);
-        _lookupId = QHostInfo::lookupHost("127.0.0.1",
+        _lookupId = QHostInfo::lookupHost("pastexen.com",
                               this, SLOT(lookedUp(QHostInfo)));
     }
 }
@@ -52,7 +51,7 @@ void Network::upload(const QByteArray& data, const QString &type)
 
     UDebug << "Server addr: " << _serverAddr.toString();
     _socket.connectToHost(_serverAddr, 9876);
-    _socket.waitForConnected();
+    _socket.waitForConnected(4000);
 
     QByteArray arr;
     arr.append("proto=pastexen\n");
