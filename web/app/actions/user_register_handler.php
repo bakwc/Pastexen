@@ -25,17 +25,17 @@
 	require_once(dirname(__FILE__) . '/../models/User.php');
 	
 	final class ApplicationAction_user_register_handler extends ApplicationAction {
-		public function run() {	
+		public function run() {
 			$uuid = '';
 			$uuidBad = false;
 			if(!isset($this->application->parameters['uuid']))
-				$uuidBad = true;
+				$uuid = '';
 			else {
 				$uuid = $this->application->parameters['uuid'];
-				if(!ApplicationModel_User::validateUuid($uuid))
+				if(!empty($uuid) && !ApplicationModel_User::validateUuid($uuid))
 					$uuidBad = true;
 			}
-			if($uuidBad) {
+			if($uuidBad) { // invalid uuid is set
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /';
 				$this->application->outputContent = '';
@@ -56,41 +56,62 @@
 			if(isset($this->application->parameters['password']))
 				$password = $this->application->parameters['password'];
 			
+			// login must be valid
 			$success = !$loginBad;
+			
 			$passwordWrong = false;
 			$registerUser = false;
 			if($success) {
 				$user = new ApplicationModel_User($this->application);
 				try {
+					// try to load user with selected login 
 					$user->setLogin($login);
 					$user->load();
 				}
 				catch(Exception $e) {
+					// selected login does not exist - create a new user
 					$registerUser = true;
 				}
 				
+				// register a new user
 				if($registerUser) {
 					$user->setPasswordHash($user->makePasswordHash($password));
 					$user->save();
 				}
-				else // user exists; check password
+				
+				// user already exists, then check password
+				else {
 					if($user->makePasswordHash($password) != $user->getPasswordHash())
 						$passwordWrong = true;
-				
-				$success = !$passwordWrong;
+					$success = !$passwordWrong;
+				}
 			}
 			
+			// if everything is ok (user has the correct password, etc)...
+			$attachUser = false;
 			if($success) {
 				try {
+					// authorize user
 					$_SESSION['authorized_user_id']    = $user->getId();
 					$_SESSION['authorized_user_login'] = $user->getLogin();
 				
-					$user->addUuid($uuid, time());
-					$user->save();
+					// attach uuid if we have to
+					if(!empty($uuid)) {
+						$attachUser = true;
+						$user->addUuid($uuid, time());
+						$user->save();
+					}
 				}
 				catch(Exception $e) {
 					$success = false;
 				}
+			}
+			
+			// if we have only authorized the user
+			if($success && !$registerUser && !$attachUser) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /account.php';
+				$this->application->outputContent = '';
 			}
 			
 			$view = new ApplicationView($this->application, $this->application->path . '/views/user_register_handler.php');

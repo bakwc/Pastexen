@@ -67,7 +67,7 @@
 		public function setLogin($login) {
 			if(!self::validateLogin($login))
 				throw new Exception('Login is invalid.');
-			$this->login = $login;
+			$this->login = strtolower($login);
 		}
 		
 		/**
