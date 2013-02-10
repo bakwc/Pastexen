@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
-	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 		exit();
 	}
 	
+	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska.php');
 	require_once(dirname(__FILE__) . '/ApplicationModel.php');
 	require_once(dirname(__FILE__) . '/ApplicationView.php');
 	require_once(dirname(__FILE__) . '/ApplicationAction.php');
@@ -30,6 +31,7 @@
 	final class Application {
 		public $path;
 		public $config;
+		public $rediska;
 		private $action;
 		public $parameters;
 		public $languageStrings;
@@ -39,6 +41,8 @@
 		public function init($config, $action, $parameters) {
 			$this->path = realpath(dirname(__FILE__ ). '/..');
 			$this->config = $config;
+			
+			$this->rediska = null;
 			
 			if(empty($action))
 				$this->action = 'index';
@@ -57,7 +61,21 @@
 			try {
 				@date_default_timezone_set('UTC');
 				
-				$language = strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+				$this->rediska = new Rediska(array(
+					'servers' => array(array(
+						'host' => $this->config['database_host'],
+						'port' => $this->config['database_port'],
+						'password' => $this->config['database_password']
+					))
+				));
+				
+				session_start();
+				
+				if(isset($this->parameters['language']))
+					$language = $this->parameters['lnaguage'];
+				else
+					$language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+				$language = strtolower(substr($language, 0, 2));
 				if(!is_readable($this->path . '/languages/' . $language . '.php'))
 					$language = $this->config['language_default'];
 				require_once($this->path . '/languages/' . $language . '.php');

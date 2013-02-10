@@ -1,9 +1,9 @@
 <?php
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
-	 * Copyright (C) 2013  denis <denisavvakumov@gmail.com>
-	 * Copyright (C) 2013  roman <dutchakdev.com>
-	 * Copyright (C) 2013  powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 denis <denisavvakumov@gmail.com>
+	 * Copyright (C) 2013 roman <dutchakdev.com>
+	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
