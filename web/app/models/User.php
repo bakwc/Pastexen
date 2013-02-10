@@ -22,6 +22,7 @@
 		exit();
 	}
 	
+	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/Hash.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/SortedSet.php');
 	
@@ -82,7 +83,7 @@
 		 * Checks whether the login is valid. Returns false, if it is not.
 		 */
 		public static function validateLogin($login) {
-			return strlen($login) >= 6 && strlen($login) <= 25 && self::validateAlphanumeric($login);
+			return strlen($login) >= 4 && strlen($login) <= 25 && self::validateAlphanumeric($login);
 		}
 		
 		/**
