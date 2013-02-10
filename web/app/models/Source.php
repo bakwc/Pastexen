@@ -57,6 +57,8 @@
 			'cmake' => 'cmake',
 			'hs'    => 'haskell',
 			'lhs'   => 'haskell',
+			'txt'	=> 'text',
+			'dat'	=> 'text'
 		);
 		private $codeTypeDetector = null;
 		
@@ -73,7 +75,7 @@
 		
 		public function getType() {
 			$extension = strtolower(pathinfo($this->name, PATHINFO_EXTENSION));
-			if(!empty($extension) && in_array($extension, $this->codeTypes))
+			if(!empty($extension) && isset($this->codeTypes[$extension]))
 				return $this->codeTypes[$extension];
 			
 			if($this->codeTypeDetector == null) {
