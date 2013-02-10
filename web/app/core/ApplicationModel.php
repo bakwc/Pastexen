@@ -65,4 +65,8 @@
 		protected static function validateHex($string) {
 			return strspn($string, '0123456789AaBbCcDdEeFf') === strlen($string);
 		}
+		
+		protected static function validateMd5Hash($string) {
+			return strlen($string) == 32 && self::validateHex($string);
+		}
 	}
