@@ -12,24 +12,24 @@ bool Logger::configure(const QString &path)
     return _f;
 }
 
-void Logger::logger(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+//void Logger::logger(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+void Logger::logger(QtMsgType type, const char *msg)
 {
-    Q_UNUSED(context);
     switch (type) {
     case QtDebugMsg: {
-        fprintf(_f, "%s", msg.toLocal8Bit().data());
+        fprintf(_f, "%s", msg);
         break;
     }
     case QtWarningMsg: {
-        fprintf(_f, "Warning: %s", msg.toLocal8Bit().data());
+        fprintf(_f, "Warning: %s", msg);
         break;
     }
     case QtCriticalMsg: {
-        fprintf(_f, "Critical: %s", msg.toLocal8Bit().data());
+        fprintf(_f, "Critical: %s", msg);
         break;
     }
     case QtFatalMsg : {
-        fprintf(_f, "Fatal: %s", msg.toLocal8Bit().data());
+        fprintf(_f, "Fatal: %s", msg);
         break;
     }
     }

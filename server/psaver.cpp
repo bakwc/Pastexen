@@ -7,7 +7,7 @@
 #include <QEvent>
 #include <QtAlgorithms>
 #include <QDir>
-#include <QDateTime>
+#include <ctime>
 
 pSaver* pSaver::pThis = 0;
 
@@ -59,7 +59,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
                 fileType = "image";
             }
 
-            int timestamp = int(QDateTime::currentMSecsSinceEpoch() / 1000);
+            int timestamp = std::time(0);
 
             if (!_redis.Connect("127.0.0.1", 6379)) {
                 qDebug() << "redis server unavailable";

@@ -32,15 +32,15 @@ void pServer::onConnection()
     if (it == _limits.end()) {
         it = _limits.insert(addr, 0);
     } else {
-        if (it.value().loadAcquire() > pServer::LIMIT) {
+        if (it.value() > pServer::LIMIT) {
             socket->disconnectFromHost();
             socket->deleteLater();
             return;
         }
     }
-//    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value().loadAcquire() << " bytes";
+//    qDebug() << "Connected: " << socket->peerAddress().toString() << " with used limit " << it.value() << " bytes";
     new pSocket(socket, pThreadPool::getNextThread(), it.value());
-    Logger::log(socket->peerAddress().toString() + socket->peerName(), it.value().loadAcquire());
+    Logger::log(socket->peerAddress().toString() + socket->peerName(), it.value());
 }
 
 // invoked once per minute
