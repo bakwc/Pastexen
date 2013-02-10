@@ -28,6 +28,7 @@
 	final class ApplicationModel_User extends ApplicationModel {
 		private $id = null;				// user id
 		private $login = null;			// user's login
+		private $loginOld = null;		// user's login as it is stored in database
 		private $passwordHash = null;	// user's password hash
 		private $uuids = array();		// UUIDs of user's clients
 	
@@ -154,53 +155,86 @@
 		 * error occurs, an exception will be thrown.
 		 */
 		public function load() {
+			// id is unknown, but the login is known - use id lookup key to get the id of the user with selected login
 			if($this->id === null && $this->login !== null) {
 				$userLoginKey = new Rediska_Key('user_login_' . $this->login);
 				if($userLoginKey->getValue() === null)
 					throw new Exception('User with login ' . $this->login . ' does not exist in the database.');
 				$this->id = (int)$userLoginKey->getValue();
 			}
+			
+			// if the id is known - load user's information from the database
 			if($this->id !== null) {
+				// user with selected id must exist
 				if(!$this->application->rediska->exists('user_' . $this->id))
 					throw new Exception('User with id ' . $this->id . ' does not exist in the database.');
 				
+				// load user's login and password hash
 				$userKeyHash = new Rediska_Key_Hash('user_' . $this->id);
 				$this->login = $userKeyHash->login;
+				$this->loginOld = $this->login;
 				$this->passwordHash = $userKeyHash->password;
 				
+				// load user's uuids
 				$this->uuids = array();
 				$uuidsKeySet = new Rediska_Key_SortedSet('user_' . $this->id . '_uuids');
 				foreach($uuidsKeySet->toArray(true) as $uuid)
 					$this->addUuid(substr($uuid->value, strlen('uuid_')), $uuid->score);
 			}
+			
+			// if the id is unknown, we cannot do anything
 			else
 				throw new Exception('Not enough information was given to load the user data.');
 		}
 		
 		/**
 		 * Saves user's information into the database. If user's id is not known, it will try to create
-		 * a new user. User's id and login must be unique. If an error occurs, an exception will be thrown.
+		 * a new user. If user's id is known, it will try to edit information in database to make it identical
+		 * to information in this class. If an error occurs, it will throw an exception.
 		 */
 		public function save() {
-			if($this->id !== null) { // id is known - edit existing user
+			// id lookup key
+			$userLoginKey = new Rediska_Key('user_login_' . $this->login);
+		
+			// id is known - we are going to edit user's information
+			if($this->id !== null) {
+				// user with selected id must exist
 				if(!$this->application->rediska->exists('user_' . $this->id))
 					throw new Exception('User with id ' . $this->id . ' does not exist in the database.');
 			}
-			else { // id is unknown - create a new user
-				$userLoginKey = new Rediska_Key('user_login_' . $this->login);
+			
+			// id is unknown - we are going to create a new user
+			else {
+				// new login must not be taken by someone else
 				if($userLoginKey->getValue() !== null)
 					throw new Exception('User with login ' . $this->login . ' already exists in the database.');
 				
+				// get the id for the new user
 				$this->id = $this->incrementRedisCounter('users_count');
 			}
 			
+			// if user's login needs to be changed
+			if($this->loginOld !== null && $this->loginOld != $this->login) {
+				// new login must not be taken by someone else
+				if($userLoginKey->getValue() !== null)
+					throw new Exception('User with login ' . $this->login . ' already exists in the database.');
+				
+				// remove old id lookup key
+				$userLoginOldKey = new Rediska_Kay('user_login_' . $this->loginOld);
+				$userLoginOldKey->delete();
+			}
+			
+			// save user's login and password hash
 			$userKeyHash = new Rediska_Key_Hash('user_' . $this->id);
 			$userKeyHash->login = $this->login;
+			$this->loginOld = $this->login;
 			$userKeyHash->password = $this->passwordHash;
-			
+
+			// save id lookup key
 			$userLoginKey = new Rediska_Key('user_login_' . $this->login);
 			$userLoginKey->setValue($this->id);
 			
+			// reset uuids for this user
 			$uuidsKeySet = new Rediska_Key_SortedSet('user_' . $this->id . '_uuids');
 			foreach($uuidsKeySet as $uuid)
 				$uuidsKeySet->remove($uuid);
