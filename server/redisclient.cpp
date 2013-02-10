@@ -1,6 +1,9 @@
 #include "redisclient.h"
 
-TRedisClient::TRedisClient() {
+TRedisClient::TRedisClient()
+    : Socket(new QTcpSocket(this))
+    , Timeout(3000)
+{
 }
 
 void TRedisClient::SetTimeout(int timeout) {
