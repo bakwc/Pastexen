@@ -28,6 +28,7 @@
 
 <h1><?php echo $this->l('account_register_title'); ?></h1>
 <hr />
+<div class="alert alert-info"><?php echo $this->l('account_register_description'); ?></div>
 <?php
 	if(isset($success) && !$success) {
 		echo '<div class="alert alert-block alert-error">';
