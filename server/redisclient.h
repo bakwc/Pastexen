@@ -17,8 +17,8 @@ public:
     bool IsConnected();
     bool Disconnect();
 private:
-    QTcpSocket* Socket = new QTcpSocket(this);
-    int Timeout = 3000;
+    QTcpSocket* Socket;
+    int Timeout;
     bool SendRequest(QString);
     QStringList ReadResponse();
 };
