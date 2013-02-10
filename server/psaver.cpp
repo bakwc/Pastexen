@@ -17,10 +17,7 @@ pSaver::pSaver() :
     moveToThread(this);
     this->start(QThread::LowPriority);
 
-    if (!_redis.Connect("127.0.0.1", 6379)) {
-        qDebug() << "redis server unavailable";
-    }
-
+    _redis.SetTimeout(1200);
     findFiles();
 
     pThis = this;
@@ -64,6 +61,9 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
 
             int timestamp = int(QDateTime::currentMSecsSinceEpoch() / 1000);
 
+            if (!_redis.Connect("127.0.0.1", 6379)) {
+                qDebug() << "redis server unavailable";
+            } else {
             _redis.Query("HSET file_" + recordNumber + " type " + fileType);
             _redis.Query("HSET file_" + recordNumber + " name " + filename);
             _redis.Query("HSET file_" + recordNumber + " extension " + type);
@@ -76,6 +76,8 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
                          .arg(uuid)
                          .arg(timestamp)
                          .arg(recordNumber));
+            _redis.Disconnect();
+            }
         } else {
             qDebug() << "Lost db connection!";
         }
