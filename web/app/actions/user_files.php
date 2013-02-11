@@ -30,12 +30,26 @@
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /login.php';
 				$this->application->outputContent = '';
-			}
+			} else {
 		
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
-			
-			// unimplemented
-			
-			$view->render();
+                $view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
+                
+                $id = $_SESSION['authorized_user_id'];
+                
+                $user = new ApplicationModel_User($this->application);
+                try {
+                    $user->setId($id);
+                    $user->load();
+                }
+                catch(Exception $e) {
+                    // TODO: handle correctly
+                }
+                
+                $view->login = $user->GetLogin();
+                $view->uuids = $user->getUuids();
+                $view->files = $user->getFiles();
+                            
+                $view->render();
+            }
 		}
 	}

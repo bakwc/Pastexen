@@ -28,7 +28,14 @@
 
 <h1><?php echo $this->l('my_files'); ?></h1>
 <hr />
-UNIMPLEMENTED
+<?php
+        echo "Welcome, " . $login . "<BR>\n";
+
+        echo "<BR>\n";
+        foreach ($files as $timestamp => $file) {
+            echo "<a href=\"".$file["url"]."\">".$file["name"]."</a><BR>\n";
+        }
+    ?>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');

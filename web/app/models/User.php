@@ -141,6 +141,30 @@
 			return $this->uuids;
 		}
 		
+        /**
+        * Returns a list of user's files. Throws an exception if there are no file for the user.
+        */
+        public function getFiles() {
+            if(empty($this->uuids))
+				throw new Exception('No uuids are defined.');
+            $files = array();
+            foreach ($this->uuids as $key => $value) {
+                $filesKeySet = new Rediska_Key_SortedSet('uuid_' . $value);
+                foreach($filesKeySet->toArray(true) as $file) {
+                    $userKeyHash = new Rediska_Key_Hash($file->value);
+                    $fileInfo = $userKeyHash->toArray(true);
+                    if ($fileInfo["type"] == "image") {
+                        $fileInfo["url"] = $this->application->config['image_link_prefix'].$fileInfo["name"];
+                    } else {
+                        $fileInfo["url"] = $this->application->config['source_link_prefix'].$fileInfo["name"];
+                    }
+                    $files[$fileInfo["timestamp"]] = $fileInfo;
+                }
+            }
+            ksort($files);
+            return $files;
+        }
+        
 		/**
 		 * Checks whether the client UUID is valid. Returns false, if it is not.
 		 */
