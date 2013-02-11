@@ -31,12 +31,18 @@
 
 <hr />
 
-<p>Welcome, <strong><?php echo $login; ?></strong></p>
-
-<ul><?php
-	foreach($files as $file)
-		echo '<li><a href="' . $file['url'] . '">' . $file['name'] . '</a></li>';
-?></ul>
+<?php foreach($files as $file) { ?>
+	<div class="media">
+		<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) { ?>
+			<!-- TODO: make thumbnails. -->
+			<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="<?php echo $file->getUrl(); ?>" width="64" /></a>
+		<?php } ?>
+		<div class="media-body">
+			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a> <small>(<?php echo $this->date($file->getTime()); ?>)</small></h4>
+			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
+		</div>
+	</div>
+<?php } ?>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');

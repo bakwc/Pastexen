@@ -24,9 +24,11 @@
 	}
 	
 	require_once(dirname(__FILE__) . '/../models/User.php');
+	require_once(dirname(__FILE__) . '/../models/File.php');
 	
 	final class ApplicationAction_user_files extends ApplicationAction {
 		public function run() {
+			// user must be authorized
 			if(!isset($_SESSION['authorized_user_id'])) {
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /login.php';
@@ -34,6 +36,7 @@
 				return;
 			}
 			
+			// load user's information
 			$user = new ApplicationModel_User($this->application);
 			try {
 				$user->setId($_SESSION['authorized_user_id']);
@@ -43,18 +46,38 @@
                 throw new Exception('Cannot load user.', 500);
 			}
 			
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
-			$view->login = $user->getLogin();
-			
+			// get the list of files for this user
+			$files = array();
 			try {
-				$view->uuids = $user->getUuids();
-				$view->files = $user->getFiles();
+				// go through every uuid user has
+				$userUuids = $user->getUuids();
+				foreach($userUuids as $time => $uuid) {
+					try {
+						// go through every file, this uuid has
+						$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
+						foreach($userUuidFileIds as $fileId) {
+							// load file
+							$file = new ApplicationModel_File($this->application);
+							$file->setId($fileId);
+							$file->load();
+							
+							// put it into the list of user's files
+							$files[] = $file;
+						}
+					}
+					catch(Exception $e) {
+						continue; // uuid has no files (or an error occured) - skip uuid
+					}
+				}
 			}
 			catch(Exception $e) {
-				$view->uuids = array();
-				$view->files = array();
+				$files = array(); // user has no uuids or an error occured - no files
 			}
-
+			
+			// render the html
+			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
+			$view->user = $user;
+			$view->files = $files;
 			$view->render();
 		}
 	}
