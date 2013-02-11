@@ -29,7 +29,7 @@
 	final class ApplicationModel_User extends ApplicationModel {
 		private $id = null;				// user id
 		private $login = null;			// user's login
-		private $loginOld = null;		// user's login as it is stored in database
+		private $loginOld = null;		// user's login as it is stored in the database
 		private $passwordHash = null;	// user's password hash
 		private $uuids = array();		// UUIDs of user's clients
 	
@@ -44,7 +44,7 @@
 		}
 	
 		/**
-		 * Sets id. If it is invalid, throws an exception.
+		 * Sets the id. If it is invalid, throws an exception.
 		 */
 		public function setId($id) {
 			if(!is_int($id) || $id <= 0)
@@ -53,7 +53,7 @@
 		}
 		
 		/**
-		 * Returns id. If id is not known, throws an exception.
+		 * Returns the id. If id is not known, throws an exception.
 		 */
 		public function getId() {
 			if($this->id === null)
@@ -62,7 +62,7 @@
 		}
 		
 		/**
-		 * Sets login. If the login is invalid, throws an exception.
+		 * Sets the login. If the login is invalid, throws an exception.
 		 */
 		public function setLogin($login) {
 			if(!self::validateLogin($login))
@@ -71,7 +71,7 @@
 		}
 		
 		/**
-		 * Returns login. If it is not known, throws an exception.
+		 * Returns the login. If it is not known, throws an exception.
 		 */
 		public function getLogin() {
 			if($this->login === null)
@@ -87,7 +87,7 @@
 		}
 		
 		/**
-		 * Sets password hash. Throws an exception if it is not a valid md5 hash.
+		 * Sets the password hash. Throws an exception if it is not a valid md5 hash.
 		 */
 		public function setPasswordHash($hash) {
 			if(!self::validateMd5Hash($hash))
@@ -96,7 +96,7 @@
 		}
 		
 		/**
-		 * Returns password hash. Throws an exception if the hash is not known.
+		 * Returns the password hash. Throws an exception if the hash is not known.
 		 */
 		public function getPasswordHash() {
 			if($this->passwordHash === null)
@@ -142,30 +142,6 @@
 			return $this->uuids;
 		}
 		
-        /**
-        * Returns a list of user's files. Throws an exception if there are no file for the user.
-        */
-        public function getFiles() {
-            if(empty($this->uuids))
-				throw new Exception('No uuids are defined.');
-            $files = array();
-            foreach ($this->uuids as $key => $value) {
-                $filesKeySet = new Rediska_Key_SortedSet('uuid_' . $value);
-                foreach($filesKeySet->toArray(true) as $file) {
-                    $userKeyHash = new Rediska_Key_Hash($file->value);
-                    $fileInfo = $userKeyHash->toArray(true);
-                    if ($fileInfo["type"] == "image") {
-                        $fileInfo["url"] = $this->application->config['image_link_prefix'].$fileInfo["name"];
-                    } else {
-                        $fileInfo["url"] = $this->application->config['source_link_prefix'].$fileInfo["name"];
-                    }
-                    $files[$fileInfo["timestamp"]] = $fileInfo;
-                }
-            }
-            ksort($files);
-            return $files;
-        }
-        
 		/**
 		 * Checks whether the client UUID is valid. Returns false, if it is not.
 		 */
@@ -215,7 +191,8 @@
 		/**
 		 * Saves user's information into the database. If user's id is not known, it will try to create
 		 * a new user. If user's id is known, it will try to edit information in database to make it identical
-		 * to information in this class. If an error occurs, it will throw an exception.
+		 * to information in this class. If you want to change user's login, load user's information before doing
+		 * so. If an error occurs, this function will throw an exception.
 		 */
 		public function save() {
 			// id lookup key
@@ -256,13 +233,12 @@
 			$userKeyHash->password = $this->passwordHash;
 
 			// save id lookup key
-			$userLoginKey = new Rediska_Key('user_login_' . $this->login);
 			$userLoginKey->setValue($this->id);
 			
 			// reset uuids for this user
 			$uuidsKeySet = new Rediska_Key_SortedSet('user_' . $this->id . '_uuids');
 			foreach($uuidsKeySet as $uuid)
-				$uuidsKeySet->remove($uuid);
+				$uuidsKeySet->remove($uuid); // Note: do not cut off 'uuid_' prefix here.
 			foreach($this->uuids as $time => $uuid)
 				$uuidsKeySet[$time] = 'uuid_' . $uuid;
 		}
