@@ -68,6 +68,11 @@ void ConfigWidget::init()
         _ui.comboSourcesType->setCurrentIndex(srcIndex);
     }
 
+    QString uuid = _settings->value("general/uuid").toString();
+    QString regText = tr("<a href=\"http://pastexen.com/register.php?uuid=%1\">Register & attach client</a>")
+            .arg(uuid);
+    _ui.regLabel->setText(regText);
+    qDebug() << regText;
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
 }
 

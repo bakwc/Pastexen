@@ -25,7 +25,8 @@
 	$pageTitle = $source->name;
 	$jsIncludes = array('/app/static/javascript/google-prettify.js');
 	$cssIncludes = array('/app/static/styles/prettify-tomorrow' . ($isDarkColorScheme ? '-night-bright' : '') . '.css');
-	$bodyTagParameters = 'onload="prettyPrint()"';
+	if($source->getType() != 'text')
+		$bodyTagParameters = 'onload="prettyPrint()"';
 	require(dirname(__FILE__) . '/includes/header.php');
 ?>
 
@@ -78,7 +79,13 @@
 
 <hr />
 
-<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
+<?php
+	if($source->getType() == 'text') {
+?>
+	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?>"><span class="pln"><?php echo htmlspecialchars($source->getData()); ?></span></pre>
+<?php } else { ?>
+	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
+<?php } ?>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');

@@ -29,15 +29,22 @@
 			$uuid = '';
 			$uuidBad = false;
 			if(!isset($this->application->parameters['uuid']))
-				$uuidBad = true;
+				$uuid = '';
 			else {
 				$uuid = $this->application->parameters['uuid'];
-				if(!ApplicationModel_User::validateUuid($uuid))
+				if(!empty($uuid) && !ApplicationModel_User::validateUuid($uuid))
 					$uuidBad = true;
 			}
-			if($uuidBad) {
+			if($uuidBad) { // uuid is set, but it is invalid
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /';
+				$this->application->outputContent = '';
+				return;
+			}
+			
+			if(empty($uuid) && isset($_SESSION['authorized_user_id'])) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /account.php';
 				$this->application->outputContent = '';
 				return;
 			}

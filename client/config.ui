@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>301</height>
+    <height>294</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>20</x>
      <y>260</y>
      <width>201</width>
      <height>31</height>
@@ -62,9 +62,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>140</y>
+     <y>130</y>
      <width>241</width>
-     <height>111</height>
+     <height>121</height>
     </rect>
    </property>
    <property name="title">
@@ -187,6 +187,25 @@
     </property>
     <property name="checked">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="regLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>100</y>
+      <width>161</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string notr="true">&lt;a href=&quot;http://pastexen.com/&quot;&gt;Register client&lt;/a&gt;</string>
+    </property>
+    <property name="openExternalLinks">
+     <bool>true</bool>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
     </property>
    </widget>
   </widget>
