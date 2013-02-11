@@ -70,7 +70,7 @@
 		 * Checks whether a string contains only alphanumberic characters. Returns false if it is not.
 		 */
 		protected static function validateAlphanumeric($string) {
-			return strspn($string, '0123456789abcdefghijklmnopqrstuvwxyz') === strlen(strtolower($string));
+			return strspn(strtolower($string), '0123456789abcdefghijklmnopqrstuvwxyz') === strlen($string);
 		}
 		
 		/**
