@@ -2,6 +2,7 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -142,30 +143,6 @@
 			return $this->uuids;
 		}
 		
-        /**
-        * Returns a list of user's files. Throws an exception if there are no file for the user.
-        */
-        public function getFiles() {
-            if(empty($this->uuids))
-				throw new Exception('No uuids are defined.');
-            $files = array();
-            foreach ($this->uuids as $key => $value) {
-                $filesKeySet = new Rediska_Key_SortedSet('uuid_' . $value);
-                foreach($filesKeySet->toArray(true) as $file) {
-                    $userKeyHash = new Rediska_Key_Hash($file->value);
-                    $fileInfo = $userKeyHash->toArray(true);
-                    if ($fileInfo["type"] == "image") {
-                        $fileInfo["url"] = $this->application->config['image_link_prefix'].$fileInfo["name"];
-                    } else {
-                        $fileInfo["url"] = $this->application->config['source_link_prefix'].$fileInfo["name"];
-                    }
-                    $files[$fileInfo["timestamp"]] = $fileInfo;
-                }
-            }
-            ksort($files);
-            return $files;
-        }
-        
 		/**
 		 * Checks whether the client UUID is valid. Returns false, if it is not.
 		 */
@@ -266,4 +243,29 @@
 			foreach($this->uuids as $time => $uuid)
 				$uuidsKeySet[$time] = 'uuid_' . $uuid;
 		}
+		
+        /**
+         * Returns a list of user's files. Throws an exception if there are no files for the user.
+		 * TODO: Make a separate model for files and move the functionality of this method into that model.
+         */
+        public function getFiles() {
+            if(empty($this->uuids))
+				throw new Exception('No uuids are defined.');
+            $files = array();
+            foreach ($this->uuids as $key => $value) {
+                $filesKeySet = new Rediska_Key_SortedSet('uuid_' . $value);
+                foreach($filesKeySet->toArray(true) as $file) {
+                    $userKeyHash = new Rediska_Key_Hash($file->value);
+                    $fileInfo = $userKeyHash->toArray(true);
+                    if ($fileInfo["type"] == "image") {
+                        $fileInfo["url"] = $this->application->config['image_link_prefix'].$fileInfo["name"];
+                    } else {
+                        $fileInfo["url"] = $this->application->config['source_link_prefix'].$fileInfo["name"];
+                    }
+                    $files[$fileInfo["timestamp"]] = $fileInfo;
+                }
+            }
+            ksort($files);
+            return $files;
+        }
 	}

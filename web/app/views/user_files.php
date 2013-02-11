@@ -2,6 +2,7 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -27,15 +28,15 @@
 ?>
 
 <h1><?php echo $this->l('my_files'); ?></h1>
-<hr />
-<?php
-        echo "Welcome, " . $login . "<BR>\n";
 
-        echo "<BR>\n";
-        foreach ($files as $timestamp => $file) {
-            echo "<a href=\"".$file["url"]."\">".$file["name"]."</a><BR>\n";
-        }
-    ?>
+<hr />
+
+<p>Welcome, <strong><?php echo $login; ?></strong></p>
+
+<ul><?php
+	foreach($files as $file)
+		echo '<li><a href="' . $file['url'] . '">' . $file['name'] . '</a></li>';
+?></ul>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');
