@@ -58,6 +58,7 @@
 		'account_register_errors_occured'	=> 'Some problems occured during the registration or the attachment of the account:',
 		'error_login_bad'					=> 'Chosen login is invalid. Make sure that your login is longer than 4 and shorter than 25 characters and contains only letters and numbers.',
 		'error_password_wrong'				=> 'You have entered an incorrect password for this account. Please try again.',
+		'error_uuid_taken'					=> 'We are sorry, but this client is already attached to a different account.',
 		'field_login'						=> 'Login',
 		'field_login_description'			=> 'It must be longer than 4 and shorter than 25 characters and must contain only letters and numbers.',
 		'field_password'					=> 'Password',

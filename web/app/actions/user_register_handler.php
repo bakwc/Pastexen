@@ -89,6 +89,7 @@
 			
 			// if everything is ok (user has the correct password, etc)...
 			$attachUser = false;
+			$uuidTaken = false;
 			if($success) {
 				try {
 					// authorize user
@@ -102,8 +103,10 @@
 						$user->save();
 					}
 				}
-				catch(Exception $e) {
-					$success = false;
+				catch(ApplicationModelException_User $e) {
+					if($e->getCode() == ApplicationModel_User::ERROR_TAKEN_UUID)
+						$uuidTaken = true;
+					$success = !$uuidTaken;
 				}
 			}
 			
@@ -118,6 +121,7 @@
 			$view->success = $success;
 			$view->registered = $registerUser;
 			$view->uuid = $uuid;
+			$view->uuidTaken = $uuidTaken;
 			$view->login = $login;
 			$view->loginBad = $loginBad;
 			$view->passwordWrong = $passwordWrong;
