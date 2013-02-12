@@ -69,7 +69,16 @@
 		 * Converts this object to string. Used only for debugging.
 		 */
 		public function __toString() {
-			return 'File(id: ' . $this->id . ', type: "' . $this->type . '", name: "' . $this->name . '", extension: "' . $this->extension . '", systemName: "' . $this->systemName . '", time: ' . $this->time . ', description: "' . $this->description .'", uploader: "' . $this->uploader . '")';
+			return 'File(' .
+				'id: ' . $this->id . ', ' .
+				'type: "' . $this->type . '", ' .
+				'name: "' . $this->name . '", ' .
+				'extension: "' . $this->extension . '", ' .
+				'systemName: "' . $this->systemName . '", ' .
+				'time: ' . $this->time . ', ' .
+				'description: "' . $this->description .'", ' .
+				'uploader: "' . $this->uploader . '"' .
+			')';
 		}
 		
 		/**
@@ -77,7 +86,8 @@
 		 */
 		public function setId($id) {
 			if(!is_int($id) || $id <= 0)
-				throw new ApplicationModelException_File('Id must be an integer greater than 0.', self::ERROR_INVALID_ID);
+				throw new ApplicationModelException_File('Id must be an integer greater than 0.',
+					self::ERROR_INVALID_ID);
 			$this->id = $id;
 		}
 		
@@ -86,7 +96,8 @@
 		 */
 		public function getId() {
 			if($this->id === null)
-				throw new ApplicationModelException_File('Id is not defined.', self::ERROR_UNDEFINED_ID);
+				throw new ApplicationModelException_File('Id is not defined.',
+					self::ERROR_UNDEFINED_ID);
 			return $this->id;
 		}
 		
@@ -113,7 +124,8 @@
 		 */
 		public function setName($name) {
 			if(empty($name))
-				throw new ApplicationModelException_File('Name cannot be an empty string.', self::ERROR_INVALID_NAME);
+				throw new ApplicationModelException_File('Name cannot be an empty string.',
+					self::ERROR_INVALID_NAME);
 			$this->name = $name;
 		}
 		
@@ -127,11 +139,13 @@
 		}
 		
 		/**
-		 * Sets the extension. If it is an empty string, throws an exception with code self::ERROR_INVALID_EXTENSION.
+		 * Sets the extension. If it is an empty string, throws an exception with code
+		 * self::ERROR_INVALID_EXTENSION.
 		 */
 		public function setExtension($extension) {
 			if(empty($extension))
-				throw new ApplicationModelException_File('Extension cannot be an empty string.', self::ERROR_INVALID_EXTENSION);
+				throw new ApplicationModelException_File('Extension cannot be an empty string.',
+					self::ERROR_INVALID_EXTENSION);
 			$this->extension = $extension;
 		}
 		
@@ -140,7 +154,8 @@
 		 */
 		public function getExtension() {
 			if($this->extension === null)
-				throw new ApplicationModelException_File('Extension is not defined.', self::ERROR_UNDEFINED_EXTENSION);
+				throw new ApplicationModelException_File('Extension is not defined.',
+					self::ERROR_UNDEFINED_EXTENSION);
 			return $this->extension;
 		}
 		
@@ -150,17 +165,19 @@
 		 */
 		public function setSystemName($systemName) {
 			if(!self::validateSystemName($systemName))
-				throw new ApplicationModelException_File('System name is invalid.', self::ERROR_INVALID_SYSTEM_NAME);
+				throw new ApplicationModelException_File('System name is invalid.',
+					self::ERROR_INVALID_SYSTEM_NAME);
 			$this->systemName = $systemName;
 		}
 		
 		/**
-		 * Returns the name of the file in the filesystem. If it is not known, throws an exception with
-		 * code self::ERROR_UNDEFINED_SYSTEM_NAME.
+		 * Returns the name of the file in the filesystem. If it is not known, throws an exception with code
+		 * self::ERROR_UNDEFINED_SYSTEM_NAME.
 		 */
 		public function getSystemName() {
 			if($this->systemName === null)
-				throw new ApplicationModelException_File('System name is not defined.', self::ERROR_UNDEFINED_SYSTEM_NAME);
+				throw new ApplicationModelException_File('System name is not defined.',
+					self::ERROR_UNDEFINED_SYSTEM_NAME);
 			return $this->systemName;
 		}
 		
@@ -168,21 +185,24 @@
 		 * Checks whether the system name of the file is valid. Returns false, if it is not.
 		 */
 		public static function validateSystemName($systemName) {
-			return strlen($systemName) >= 2 && strlen($systemName) <= 25 && self::validateAlphanumeric(str_replace(array('.', '-'), '', $systemName));
+			return strlen($systemName) >= 2 && strlen($systemName) <= 25 &&
+				self::validateAlphanumeric(str_replace(array('.', '-'), '', $systemName));
 		}
 		
 		/**
-		 * Sets the time of the file upload. If it is not a valid timestamp, throws an exception with
-		 * code self::ERROR_INVALID_TIME.
+		 * Sets the time of the file upload. If it is not a valid timestamp, throws an exception with code
+		 * self::ERROR_INVALID_TIME.
 		 */
 		public function setTime($time) {
 			if(!is_int($time))
-				throw new ApplicationModelException_File('Upload timestamp must be an integer.', self::ERROR_INVALID_TIME);
+				throw new ApplicationModelException_File('Upload timestamp must be an integer.',
+					self::ERROR_INVALID_TIME);
 			$this->time = $time;
 		}
 		
 		/**
-		 * Returns the time of the file upload. If it is not known, throws an exception with code self::ERROR_UNDEFINED_TIME.
+		 * Returns the time of the file upload. If it is not known, throws an exception with code
+		 * self::ERROR_UNDEFINED_TIME.
 		 */
 		public function getTime() {
 			if($this->time === null)
@@ -191,12 +211,13 @@
 		}
 		
 		/**
-		 * Sets the description of the file. If it is longer than 20k symbols, throws an exception with
-		 * code self::ERROR_INVALID_DESCRIPTION. Note: the description _can_ be an empty string.
+		 * Sets the description of the file. If it is longer than 20k symbols, throws an exception with code
+		 * self::ERROR_INVALID_DESCRIPTION. Note: the description _can_ be an empty string.
 		 */
 		public function setDescription($description) {
 			if(strlen($description) > 20000)
-				throw new ApplicationModelException_File('Description must be shorter than 20000 characters.', self::ERROR_INVALID_DESCRIPTION);
+				throw new ApplicationModelException_File('Description must be shorter than 20000 characters.',
+					self::ERROR_INVALID_DESCRIPTION);
 			$this->description = $description;
 		}
 		
@@ -206,12 +227,14 @@
 		 */
 		public function getDescription() {
 			if($this->description === null)
-				throw new ApplicationModelException_File('Description is not defined.', self::ERROR_UNDFEINED_DESCRIPTION);
+				throw new ApplicationModelException_File('Description is not defined.',
+					self::ERROR_UNDFEINED_DESCRIPTION);
 			return $this->description;
 		}
 		
 		/**
-		 * Sets the uploader's UUID. If it is not a valid uuid, throws an exception with code self::ERROR_INVALID_UPLOADER.
+		 * Sets the uploader's UUID. If it is not a valid uuid, throws an exception with code
+		 * self::ERROR_INVALID_UPLOADER.
 		 */
 		public function setUploader($uuid) {
 			if(!ApplicationModel_User::validateUuid($uuid))
@@ -220,28 +243,31 @@
 		}
 		
 		/**
-		 * Returns the uploader's UUID. If it is not known, throws an exception with code self::ERROR_UNDEFINED_UPLOADER.
+		 * Returns the uploader's UUID. If it is not known, throws an exception with code
+		 * self::ERROR_UNDEFINED_UPLOADER.
 		 */
 		public function getUploader() {
 			if($this->uploader === null)
-				throw new ApplicationModelException_File('Uploader UUID is not defined.', self::ERROR_UNDEFINED_UPLOADER);
+				throw new ApplicationModelException_File('Uploader UUID is not defined.',
+					self::ERROR_UNDEFINED_UPLOADER);
 			return $this->uploader;
 		}
 
 		/**
-		 * Returns path to the file in the filesystem. Throws an exception
-		 * self::ERROR_UNDEFINED_SYSTEM_NAME, if the system name is not known.
+		 * Returns path to the file in the filesystem. Throws an exception self::ERROR_UNDEFINED_SYSTEM_NAME, if the
+		 * system name is not known.
 		 */
 		public function getPath() {
 			switch($this->getType()) {
-				case self::TYPE_IMAGE:  return $this->application->config['file_image_dir']  . '/' . $this->getSystemName(); break;
-				case self::TYPE_SOURCE: return $this->application->config['file_source_dir'] . '/' . $this->getSystemName(); break;
+				case self::TYPE_IMAGE:  $directory = $this->application->config['file_image_dir'] ; break;
+				case self::TYPE_SOURCE: $directory = $this->application->config['file_source_dir']; break;
 			}
+			return $directory . '/' . $this->getSystemName();
 		}
 		
 		/**
-		 * Returns url for this file. If the type of it or the system name is not known, throws an exception
-		 * with code self::ERROR_UNDEFINED_TYPE or self::ERROR_UNDEFINED_SYSTEM_NAME.
+		 * Returns url for this file. If the type of it or the system name is not known, throws an exception with
+		 * code self::ERROR_UNDEFINED_TYPE or self::ERROR_UNDEFINED_SYSTEM_NAME.
 		 */
 		public function getUrl() {
 			switch($this->getType()) {
@@ -253,16 +279,18 @@
 		
 		/**
 		 * Returns the name of the programming language in which the source should have been written. Throws an
-		 * exception with code self::ERROR_INVALID_TYPE if the file's type is not a source code. It also throws
-		 * an exception with code self::ERROR_NOTFOUND_FILE if the file cannot be found.
+		 * exception with code self::ERROR_INVALID_TYPE if the file's type is not a source code. It also throws an
+		 * exception with code self::ERROR_NOTFOUND_FILE if the file cannot be found.
 		 */
 		public function getProgrammingLanguage() {
 			if($this->getType() != self::TYPE_SOURCE)
-				throw new ApplicationModelException_File('This method supports only source code type of files.'. self::ERROR_INVALID_TYPE);
+				throw new ApplicationModelException_File('This method supports only source code type of files.',
+					self::ERROR_INVALID_TYPE);
 		
 			$filePath = $this->getPath();
 			if(!is_file($filePath))
-				throw new ApplicationModelException_File('Cannot access file ' . $filePath . '.', self::ERROR_NOTFOUND_FILE);
+				throw new ApplicationModelException_File('Cannot access file ' . $filePath . '.',
+					self::ERROR_NOTFOUND_FILE);
 			$sourceText = substr(file_get_contents($filePath), 0, 20000);
 			
 			$languages = array(
@@ -309,26 +337,30 @@
 				return $languages[$systemExtension];
 			
 			$detector = new ProgrammingLanguageDetector();
-			$detector->importKnowledgeBase(file_get_contents(dirname(__FILE__) . '/../lib/ProgrammingLanguageDetector/knowledge_base.dat'));
+			$detector->importKnowledgeBase(file_get_contents(dirname(__FILE__) .
+				'/../lib/ProgrammingLanguageDetector/knowledge_base.dat'));
 			return $detector->detect($sourceText);
 		}
 		
 		/**
 		 * Returns gd image which can be used as a thumbnail for the file. Throws an exception with code
-		 * self::ERROR_INVALID_THUMBNAIL_SIZE if the requested thumbnail is too big or too small. If a file
-		 * does not exist, an exception with code self::ERROR_NOTFOUND_FILE will be thrown.
+		 * self::ERROR_INVALID_THUMBNAIL_SIZE if the requested thumbnail is too big or too small. If a file does not
+		 * exist, an exception with code self::ERROR_NOTFOUND_FILE will be thrown.
 		 */
 		public function getThumbnail($size = 64) {
 			if($size < $this->application->config['file_thumbnail_min_size'])
-				throw new ApplicationModelException_File('The thumbnail is too small.', self::ERROR_INVALID_THUMBNAIL_SIZE);
+				throw new ApplicationModelException_File('The thumbnail is too small.',
+					self::ERROR_INVALID_THUMBNAIL_SIZE);
 			
 			if($size > $this->application->config['file_thumbnail_max_size'])
-				throw new ApplicationModelException_File('The thumbnail is too big.', self::ERROR_INVALID_THUMBNAIL_SIZE);
+				throw new ApplicationModelException_File('The thumbnail is too big.',
+					self::ERROR_INVALID_THUMBNAIL_SIZE);
 		
 			$filePath = $this->getPath();
 			
 			if(!is_file($filePath))
-				throw new ApplicationModelException_File('Cannot access file ' . $filePath . '.', self::ERROR_NOTFOUND_FILE);
+				throw new ApplicationModelException_File('Cannot access file ' . $filePath . '.',
+					self::ERROR_NOTFOUND_FILE);
 			
 			switch($this->getType()) {
 				case self::TYPE_IMAGE:
@@ -354,7 +386,8 @@
 					$bgColorGd = imageColorResolve($imageGd, $bgColor[0], $bgColor[1], $bgColor[2]);
 					imageFilledRectangle($imageGd, 0, 0, $size - 1, $size - 1, $bgColorGd);
 					
-					imageCopyResampled($imageGd, $pictureImageGd, $pictureNewX, $pictureNewY, 0, 0, $pictureNewWidth, $pictureNewHeight, $pictureWidth, $pictureHeight);
+					imageCopyResampled($imageGd, $pictureImageGd, $pictureNewX, $pictureNewY, 0, 0,
+						$pictureNewWidth, $pictureNewHeight, $pictureWidth, $pictureHeight);
 					
 					imageDestroy($pictureImageGd);
 					
@@ -362,10 +395,10 @@
 				
 				case self::TYPE_SOURCE:
 					$codeImageGd = imageCreate($size * 2, $size * 2); // Note: truecolor image is not necessary here.
-					$codeBgColor = $this->application->config['file_source_thumbnail_bgcolor'];
-					$codeFgColor = $this->application->config['file_source_thumbnail_fgcolor'];
-					$codeBgColorGd = imageColorResolve($codeImageGd, $codeBgColor[0], $codeBgColor[1], $codeBgColor[2]);
-					$codeFgColorGd = imageColorResolve($codeImageGd, $codeFgColor[0], $codeFgColor[1], $codeFgColor[2]);
+					$bgColor = $this->application->config['file_source_thumbnail_bgcolor'];
+					$fgColor = $this->application->config['file_source_thumbnail_fgcolor'];
+					$codeBgColorGd = imageColorResolve($codeImageGd, $bgColor[0], $bgColor[1], $bgColor[2]);
+					$codeFgColorGd = imageColorResolve($codeImageGd, $fgColor[0], $fgColor[1], $fgColor[2]);
 
 					$sourceText = substr(file_get_contents($filePath), 0, 20000);
 					$sourceText = str_replace("\t", '    ', $sourceText);
@@ -386,7 +419,8 @@
 					}
 					
 					$imageGd = imageCreateTrueColor($size, $size);
-					imageCopyResampled($imageGd, $codeImageGd, 0, 0, 0, 0, $size, $size, imageSx($codeImageGd), imageSy($codeImageGd));
+					imageCopyResampled($imageGd, $codeImageGd, 0, 0, 0, 0, $size, $size,
+						imageSx($codeImageGd), imageSy($codeImageGd));
 					
 					imageDestroy($codeImageGd);
 					
@@ -407,14 +441,18 @@
 			if($this->id === null && $this->systemName !== null) {
 				$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
 				if($fileSysNameKey->getValue() === null)
-					throw new ApplicationModelException_File('File with system name ' . $this->systemName . ' does not exist in the database.', self::ERROR_NOTFOUND_SYSTEM_NAME);
+					throw new ApplicationModelException_File(
+						'File with system name ' . $this->systemName . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_SYSTEM_NAME);
 				$this->id = (int)$fileSysNameKey->getValue();
 			}
 			
 			// if the id is known, load the information from the database
 			if($this->id !== null) {
 				if(!$this->application->rediska->exists('file_' . $this->id))
-					throw new ApplicationModelException_File('File with id ' . $this->id . ' does not exist in the database.', self::ERROR_NOTFOUND_ID);
+					throw new ApplicationModelException_File(
+						'File with id ' . $this->id . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_ID);
 				
 				// load some information from the database
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
@@ -438,16 +476,19 @@
 			
 			// if the id is unknown, we cannot do anything
 			else
-				throw new ApplicationModelException_File('Not enough information was given to load the file\'s information.', self::ERROR_NOTFOUND_ID);
+				throw new ApplicationModelException_File(
+					'Not enough information was given to load the file\'s information.',
+					self::ERROR_NOTFOUND_ID);
 		}
 		
 		/**
 		 * Saves file's information into the database. If file's id is not known, it will try to create a new file.
-		 * If file's id is known, it will try to edit information in the database to make it identical to information
-		 * in this class. If you want to change file's system name or uploader's uuid, load file's information before
-		 * doing that. If there is no file with selected id and exception with code self::ERROR_NOTFOUND_ID will be
-		 * thrown. If this function tries to create a new file or change the system name of the existing one but it
-		 * is already taken, an exception with code self::ERROR_TAKEN_SYSTEM_NAME will be thown.
+		 * If file's id is known, it will try to edit information in the database to make it identical to
+		 * information in this class. If you want to change file's system name or uploader's uuid, load file's
+		 * information before doing that. If there is no file with selected id and exception with code
+		 * self::ERROR_NOTFOUND_ID will be thrown. If this function tries to create a new file or change the system
+		 * name of the existing one but it is already taken, an exception with code self::ERROR_TAKEN_SYSTEM_NAME
+		 * will be thown.
 		 */
 		public function save() {
 			// id lookup key
@@ -457,14 +498,17 @@
 			if($this->id !== null) {
 				// file with selected id must exist
 				if(!$this->application->rediska->exists('file_' . $this->id))
-					throw new ApplicationModelException_File('File with id ' . $this->id . ' does not exist in the database.', self::ERROR_NOTFOUND_ID);
+					throw new ApplicationModelException_File(
+						'File with id ' . $this->id . ' does not exist in the database.', self::ERROR_NOTFOUND_ID);
 			}
 			
 			// if id is unknown - we will be creating a new file
 			else {
 				// file's system name must not be taken by any other file
 				if($fileSysNameKey->getValue() !== null)
-					throw new ApplicationModelException_File('File with system name ' . $this->systemName . ' already exists in the database.', self::ERROR_TAKEN_SYSTEM_NAME);
+					throw new ApplicationModelException_File(
+						'File with system name ' . $this->systemName . ' already exists in the database.',
+						self::ERROR_TAKEN_SYSTEM_NAME);
 				
 				// get the id of the new file
 				$this->id = $this->incrementRedisCounter('records_count');
@@ -474,7 +518,9 @@
 			if($this->systemNameOld !== null && $this->systemNameOld != $this->systemName) {
 				// new system name must not be taken by another file
 				if($fileSysNameKey->getValue() !== null)
-					throw new ApplicationModelException_File('File with system name ' . $this->systemName . ' already exists in the database.', self::ERROR_TAKEN_SYSTEM_NAME);
+					throw new ApplicationModelException_File(
+						'File with system name ' . $this->systemName . ' already exists in the database.',
+						self::ERROR_TAKEN_SYSTEM_NAME);
 				
 				// remove old id lookup key
 				$fileSysNameOldKey = new Rediska_Key('file_path_' . $this->systemNameOld);
@@ -516,8 +562,8 @@
 		
 		/**
 		 * Returns ids of all files which have a specified uploader's UUID. Throws an exception with code
-		 * self::ERROR_INVALID_UPLOADER if the UUID is invalid. If there are no files for selected UUID, an
-		 * empty array will be returned.
+		 * self::ERROR_INVALID_UPLOADER if the UUID is invalid. If there are no files for selected UUID, an empty
+		 * array will be returned.
 		 */
 		public static function getIdsForUploader(&$application, $uuid) {
 			// uuid must be valid
