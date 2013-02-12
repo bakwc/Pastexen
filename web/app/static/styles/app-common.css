@@ -21,6 +21,11 @@ body {
 	margin-top: 20px;
 }
 
+/* useful stuff */
+.align-center {
+	text-align: center;
+}
+
 /* social like buttons */
 .social .vkontakte-like-button {
 	float: left;
@@ -61,10 +66,5 @@ ol.linenums {
 .hero-unit {
 	background-color: white;
 	padding: 30px;
-	text-align: center;
-}
-
-/* download section */
-.download-section {
 	text-align: center;
 }

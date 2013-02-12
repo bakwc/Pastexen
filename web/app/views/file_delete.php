@@ -2,7 +2,6 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
-	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -23,31 +22,33 @@
 		exit();
 	}
 	
-	$pageTitle = $this->l('my_files');
+	$pageTitle = $this->l('file_delete');
 	require(dirname(__FILE__) . '/includes/header.php');
 ?>
 
-<h1><?php echo $this->l('my_files'); ?></h1>
+<h1><?php echo $this->l('file_delete'); ?></h1>
 
 <hr />
 
-<?php foreach($files as $file) { ?>
+<h2><?php echo $this->l('file_delete_confirmation'); ?></h2>
+
+<div class="well">
 	<div class="media">
-		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
+		<a class="pull-left"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
 		<div class="media-body">
-			<div>
-				<div class="pull-left"><h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4></div>
-				<div class="btn-group pull-left">
-					<a class="btn btn-mini btn-info" href="/app/index.php?action=file_rename&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_rename'); ?></a>
-					<a class="btn btn-mini btn-danger" href="/app/index.php?action=file_delete&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_delete'); ?></a>
-				</div>
-				<div class="clearfix"></div>
-			</div>
+			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4>
 			<p class="muted"><small><?php echo $this->date($file->getTime()); ?></small></p>
 			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
 		</div>
 	</div>
-<?php } ?>
+</div>
+
+<div class="align-center">
+	<div class="btn-group">
+		<a class="btn btn-danger btn-large" href="/app/index.php?action=file_delete_handler&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_delete'); ?></a>
+		<a class="btn btn-large" href="/account.php"><?php echo $this->l('action_cancel'); ?></a>
+	</div>
+</div>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');

@@ -47,7 +47,7 @@
 			
 			<hr />
 
-			<div class="download-section">
+			<div class="align-center">
 				<h1><?php echo $this->l('action_download'); ?>:</h1>
 				<div class="btn-group">
 					<?php

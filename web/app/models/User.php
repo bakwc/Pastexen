@@ -308,6 +308,12 @@
 		}
 		
 		/**
+		 * Deletes user from the database. Unimplemented.
+		 */
+		public function delete() {
+		}
+		
+		/**
 		 * Returns the id of the user to which the selected UUID belongs. If selected UUID does not exist, an
 		 * exception with code self::ERROR_NOTFOUND_UUID will be thrown.
 		 */

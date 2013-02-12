@@ -31,6 +31,7 @@
 		'action_open_raw'					=> 'Необработанный текст',
 		'action_rename'						=> 'Переименовать',
 		'action_delete'						=> 'Удалить',
+		'action_cancel'						=> 'Отмена',
 		'action_continue'					=> 'Продолжить',
 		'action_login'						=> 'Вход',
 		'action_logout'						=> 'Выход',
@@ -65,4 +66,6 @@
 		'field_login_description'			=> 'Должен содержать от 4 до 25 букв латинского алфавита и цифр.',
 		'field_password'					=> 'Пароль',
 		'my_files'							=> 'Мои файлы',
+		'file_delete'						=> 'Удаление файла',
+		'file_delete_confirmation'			=> 'Вы действительно уверены, что хотите удалить этот файл?',
 	);

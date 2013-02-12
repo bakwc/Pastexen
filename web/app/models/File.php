@@ -85,9 +85,8 @@
 		 * Sets the id. If it is invalid, throws an exception with code self::ERROR_INVALID_ID.
 		 */
 		public function setId($id) {
-			if(!is_int($id) || $id <= 0)
-				throw new ApplicationModelException_File('Id must be an integer greater than 0.',
-					self::ERROR_INVALID_ID);
+			if(!self::validateId($id))
+				throw new ApplicationModelException_File('Id is invalid.', self::ERROR_INVALID_ID);
 			$this->id = $id;
 		}
 		
@@ -99,6 +98,13 @@
 				throw new ApplicationModelException_File('Id is not defined.',
 					self::ERROR_UNDEFINED_ID);
 			return $this->id;
+		}
+		
+		/**
+		 * Checks whether the id of the file is valid. Returns false, if it is not.
+		 */
+		public static function validateId($id) {
+			return is_int($id) && $id > 0;
 		}
 		
 		/**
@@ -434,7 +440,8 @@
 		 * id first. Then it will try to load the information for the file from the database. If file with selected
 		 * system name or id does not exist, an exception with code self::ERROR_NOTFOUND_SYSTEM_NAME or
 		 * self::ERROR_NOTFOUND_ID will be thrown. If there is an invalid type stored in the database an exception
-		 * with code self::ERROR_INVALID_TYPE will be thrown.
+		 * with code self::ERROR_INVALID_TYPE will be thrown. It the function is called w/o id and system name set,
+		 * it will throw an exception with code self::ERROR_UNDEFINED_ID.
 		 */
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
@@ -478,7 +485,7 @@
 			else
 				throw new ApplicationModelException_File(
 					'Not enough information was given to load the file\'s information.',
-					self::ERROR_NOTFOUND_ID);
+					self::ERROR_UNDEFINED_ID);
 		}
 		
 		/**
@@ -558,6 +565,53 @@
 			$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
 			$filesUuidKeySet->remove('file_' . $this->id);
 			$filesUuidKeySet[$this->time] = 'file_' . $this->id;
+		}
+		
+		/**
+		 * Deletes the file from the database. The file's id or system name must be set before this function is
+		 * called. If the id is unknown, but the system name is known, this function will try to find the file's id
+		 * first. Then it will try to delete the information for the file from the database. If file with selected
+		 * system name or id does not exist, an exception with code self::ERROR_NOTFOUND_SYSTEM_NAME or
+		 * self::ERROR_NOTFOUND_ID will be thrown. If both system name and file id were not set when this function
+		 * is called, an exception with code self::ERROR_UNDEFINED_ID will be thrown.
+		 */
+		public function delete() {
+			// id lookup key
+			$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
+		
+			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
+			if($this->id === null && $this->systemName !== null) {
+				if($fileSysNameKey->getValue() === null)
+					throw new ApplicationModelException_File(
+						'File with system name ' . $this->systemName . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_SYSTEM_NAME);
+				$this->id = (int)$fileSysNameKey->getValue();
+			}
+			
+			// if the id is known, delete the information from the database
+			if($this->id !== null) {
+				if(!$this->application->rediska->exists('file_' . $this->id))
+					throw new ApplicationModelException_File(
+						'File with id ' . $this->id . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_ID);
+				
+				// delete file's information
+				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
+				$fileKeyHash->delete();
+				
+				// remove id lookup key
+				$fileSysNameKey->delete();
+				
+				// remove file from user's upload list
+				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
+				$filesUuidKeySet->remove('file_' . $this->id);
+			}
+			
+			// if the id is unknown, we cannot do anything
+			else
+				throw new ApplicationModelException_File(
+					'Not enough information was given to delete the file\'s information.',
+					self::ERROR_UNDEFINED_ID);
 		}
 		
 		/**

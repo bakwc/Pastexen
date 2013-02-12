@@ -31,6 +31,7 @@
 		'action_open_raw'					=> 'Raw',
 		'action_rename'						=> 'Rename',
 		'action_delete'						=> 'Delete',
+		'action_cancel'						=> 'Cancel',
 		'action_continue'					=> 'Continue',
 		'action_login'						=> 'Log In',
 		'action_logout'						=> 'Log Out',
@@ -65,4 +66,6 @@
 		'field_login_description'			=> 'It must be longer than 4 and shorter than 25 characters and must contain only letters and numbers.',
 		'field_password'					=> 'Password',
 		'my_files'							=> 'My files',
+		'file_delete'						=> 'Delete a file',
+		'file_delete_confirmation'			=> 'Are you sure that you want to delete this file?',
 	);

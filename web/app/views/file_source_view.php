@@ -44,8 +44,8 @@
 			echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">' . $this->l('action_switch_to_dark') . '</a>';
 	?>
 	<?php if($owner !== null && isset($_SESSION['authorized_user_id']) && $owner->getId() === $_SESSION['authorized_user_id']) { ?>
-		<a class="btn btn-info" href="/app/index.php?action=file_rename&file=<?php echo urlencode($file->getSystemName()); ?>"><?php echo $this->l('action_rename'); ?></a>
-		<a class="btn btn-danger" href="/app/index.php?action=file_delete&file=<?php echo urlencode($file->getSystemName()); ?>"><?php echo $this->l('action_delete'); ?></a>
+		<a class="btn btn-info" href="/app/index.php?action=file_rename&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_rename'); ?></a>
+		<a class="btn btn-danger" href="/app/index.php?action=file_delete&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_delete'); ?></a>
 	<?php } ?>
 </div>
 <div id="fb-root"></div>

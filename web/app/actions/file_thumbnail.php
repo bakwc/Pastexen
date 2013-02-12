@@ -26,21 +26,24 @@
 	
 	final class ApplicationAction_file_thumbnail extends ApplicationAction {
 		public function run() {
+			// file id must be defined and valid
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('System name of the file must be set.', 400);
+				throw new Exception('File identifier is missing.', 400);
+			$fileId = (int)$this->application->parameters['file'];
+			if(!ApplicationModel_File::validateId($fileId))
+				throw new Exception('Id of the file is invalid.', 400);
 			
-			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
-				throw new Exception('System name of the file is invalid.', 400);
-			
+			// load file's information
 			try {
 				$file = new ApplicationModel_File($this->application);
-				$file->setSystemName($this->application->parameters['file']);
+				$file->setId($fileId);
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
 				throw new Exception('File is not found.', 404);
 			}
 			
+			// determine size of the thumbnail
 			$minSize = $this->application->config['file_thumbnail_min_size'];
 			$maxSize = $this->application->config['file_thumbnail_max_size'];
 			if(!isset($this->application->parameters['size']))
@@ -48,6 +51,7 @@
 			else
 				$size = min(max($minSize, (int)$this->application->parameters['size']), $maxSize);
 			
+			// create a thumbnail
 			try {
 				$imageGd = $file->getThumbnail($size);
 			}
@@ -55,6 +59,7 @@
 				throw new Exception('An error occured.', 500);
 			}
 			
+			// return it to the user
 			$this->application->outputHeaders = array(
 				'Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30 * 6)) . ' GMT', // 6 months
 				'Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT',
