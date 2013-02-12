@@ -23,7 +23,8 @@ release/*
 *.Release
 binary/*
 *.user
-
+*.exe
+*_plugin_import.cpp
 
 *build*
 
