@@ -37,7 +37,7 @@
 			try {
 				$file->load();
 			}
-			catch(Exception $e) {
+			catch(ApplicationModelException_File $e) {
 				$file->setType(ApplicationModel_File::TYPE_SOURCE);
 				if(!is_file($file->getPath()))
 					throw new Exception('File is not found.', 404);

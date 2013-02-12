@@ -37,7 +37,7 @@
 				$file->setSystemName($this->application->parameters['file']);
 				$file->load();
 			}
-			catch(Exception $e) {
+			catch(ApplicationModelException_File $e) {
 				throw new Exception('File is not found.', 404);
 			}
 			
@@ -51,7 +51,7 @@
 			try {
 				$imageGd = $file->getThumbnail($size);
 			}
-			catch(Exception $e) {
+			catch(ApplicationModelException_File $e) {
 				throw new Exception('An error occured.', 500);
 			}
 			

@@ -42,36 +42,30 @@
 				$user->setId($_SESSION['authorized_user_id']);
 				$user->load();
 			}
-			catch(Exception $e) {
+			catch(ApplicationModelException_User $e) {
                 throw new Exception('Cannot load user.', 500);
 			}
 			
 			// get the list of files for this user
 			$files = array();
-			try {
-				// go through every uuid user has
-				$userUuids = $user->getUuids();
-				foreach($userUuids as $time => $uuid) {
+			$userUuids = $user->getUuids();
+			foreach($userUuids as $time => $uuid) {
+				// go through every file, this uuid has
+				$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
+				foreach($userUuidFileIds as $fileId) {
 					try {
-						// go through every file, this uuid has
-						$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
-						foreach($userUuidFileIds as $fileId) {
-							// load file
-							$file = new ApplicationModel_File($this->application);
-							$file->setId($fileId);
-							$file->load();
-							
-							// put it into the list of user's files
-							$files[] = $file;
-						}
+						// load file
+						$file = new ApplicationModel_File($this->application);
+						$file->setId($fileId);
+						$file->load();
+					
+						// put it into the list of user's files
+						$files[] = $file;
 					}
-					catch(Exception $e) {
-						continue; // uuid has no files (or an error occured) - skip uuid
+					catch(ApplicationModelException_File $e) {
+						// skip this file
 					}
 				}
-			}
-			catch(Exception $e) {
-				$files = array(); // user has no uuids or an error occured - no files
 			}
 			
 			// render the html
