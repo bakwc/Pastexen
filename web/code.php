@@ -18,9 +18,9 @@
 	 */
 
 	if(isset($_GET['download']))
-		$action = 'source_download';
+		$action = 'file_source_download';
 	elseif(isset($_GET['raw']))
-		$action = 'source_raw';
+		$action = 'file_source_raw';
 	else
-		$action = 'source_view';
+		$action = 'file_source_view';
 	require(dirname(__FILE__) . '/app/index.php');
