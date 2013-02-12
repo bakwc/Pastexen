@@ -230,6 +230,9 @@
 		 * exception if the file's type is not a source code or if the file cannot be found.
 		 */
 		public function getProgrammingLanguage() {
+			if($this->getType() != self::TYPE_SOURCE)
+				throw new Exception('This method supports only source code type of files.');
+		
 			$filePath = $this->getPath();
 			if(!is_file($filePath))
 				throw new Exception('Cannot access file ' . $filePath . '.');
