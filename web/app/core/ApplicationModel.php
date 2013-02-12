@@ -22,6 +22,8 @@
 		exit();
 	}
 	
+	require_once(dirname(__FILE__) . '/ApplicationModelException.php');
+	
 	abstract class ApplicationModel {
 		protected $application; // instance of Application class
 		

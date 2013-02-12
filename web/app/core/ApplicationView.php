@@ -33,10 +33,16 @@
 			$this->variables = array();
 		}
 		
+		/**
+		 * Sets a variable which will be available to the view script.
+		 */
 		public function __set($variable, $value) {
 			$this->variables[$variable] = $value;
 		}
 		
+		/**
+		 * Runs the view script and puts its output into application's output buffer.
+		 */
 		public function render() {
 			if(!is_readable($this->path))
 				throw new Exception('Cannot find template file!', 500);
@@ -51,8 +57,9 @@
 			$this->application->outputContent = ob_get_clean();
 		}
 		
-		// string l(string $languageStringName [, string $argument [, string $... ]])
-		// returns a formatted language string, like sprintf()
+		/**
+		 * Returns a formatted language string. Works the same way as sprintf().
+		 */
 		private function l($languageStringName) {
 			if(!isset($this->application->languageStrings[$languageStringName]))
 				return '%' . $languageStringName . '%';
@@ -61,5 +68,12 @@
 				array($this->application->languageStrings[$languageStringName]),
 				array_slice($functionArguments, 1)
 			));
+		}
+		
+		/**
+		 * Returns a formatted date string from the timestamp.
+		 */
+		private function date($timestamp) {
+			return date($this->l('date_format'), $timestamp);
 		}
 	}

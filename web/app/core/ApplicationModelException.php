@@ -22,23 +22,5 @@
 		exit();
 	}
 	
-	require_once(dirname(__FILE__) . '/../models/Source.php');
-	
-	final class ApplicationAction_source_raw extends ApplicationAction {
-		public function run() {
-			if(!isset($this->application->parameters['file']))
-				throw new Exception('File identifier is missing.', 400);
-			
-			try {
-				$source = new ApplicationModel_Source($this->application->parameters['file'], $this->application->config['sources_dir']);
-			}
-			catch(Exception $e) {
-				throw new Exception('File was not found.', 404);
-			}
-			
-			$this->application->outputHeaders = array(
-				'Content-Type:text/plain; charset=utf-8'
-			);
-			$this->application->outputContent = $source->getData();
-		}
+	abstract class ApplicationModelException extends Exception {
 	}

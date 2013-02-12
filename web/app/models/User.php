@@ -27,9 +27,22 @@
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/SortedSet.php');
 	
 	final class ApplicationModel_User extends ApplicationModel {
+		const ERROR_INVALID_ID				= 10001;
+		const ERROR_INVALID_LOGIN			= 10002;
+		const ERROR_INVALID_PASSWORD_HASH	= 10003;
+		const ERROR_INVALID_UUID			= 10004;
+		const ERROR_INVALID_UUID_TIMESTAMP	= 10005;
+		const ERROR_UNDEFINED_ID			= 10101;
+		const ERROR_UNDEFINED_LOGIN			= 10102;
+		const ERROR_UNDEFINED_PASSWORD_HASH	= 10103;
+		const ERROR_NOTFOUND_ID				= 10201;
+		const ERROR_NOTFOUND_LOGIN			= 10202;
+		const ERROR_TAKEN_LOGIN				= 10301;
+		const ERROR_TAKEN_UUID				= 10302;
+	
 		private $id = null;				// user id
 		private $login = null;			// user's login
-		private $loginOld = null;		// user's login as it is stored in database
+		private $loginOld = null;		// user's login as it is stored in the database
 		private $passwordHash = null;	// user's password hash
 		private $uuids = array();		// UUIDs of user's clients
 	
@@ -44,38 +57,38 @@
 		}
 	
 		/**
-		 * Sets id. If it is invalid, throws an exception.
+		 * Sets the id. If it is invalid, throws an exception with code self::ERROR_INVALID_ID.
 		 */
 		public function setId($id) {
 			if(!is_int($id) || $id <= 0)
-				throw new Exception('Id must be an integer greater than 0.');
+				throw new ApplicationModelException_User('Id must be an integer greater than 0.', self::ERROR_INVALID_ID);
 			$this->id = $id;
 		}
 		
 		/**
-		 * Returns id. If id is not known, throws an exception.
+		 * Returns the id. If id is not known, throws an exception with code self::ERROR_UNDEFINED_ID.
 		 */
 		public function getId() {
 			if($this->id === null)
-				throw new Exception('Id is not defined.');
+				throw new ApplicationModelException_User('Id is not defined.', self::ERROR_UNDEFINED_ID);
 			return $this->id;
 		}
 		
 		/**
-		 * Sets login. If the login is invalid, throws an exception.
+		 * Sets the login. If the login is invalid, throws an exception with code self::ERROR_INVALID_LOGIN.
 		 */
 		public function setLogin($login) {
 			if(!self::validateLogin($login))
-				throw new Exception('Login is invalid.');
+				throw new ApplicationModelException_User('Login is invalid.', self::ERROR_INVALID_LOGIN);
 			$this->login = strtolower($login);
 		}
 		
 		/**
-		 * Returns login. If it is not known, throws an exception.
+		 * Returns the login. If it is not known, throws an exception with code self::ERROR_UNDEFINED_LOGIN.
 		 */
 		public function getLogin() {
 			if($this->login === null)
-				throw new Exception('Login is not defined.');
+				throw new ApplicationModelException_User('Login is not defined.', self::ERROR_UNDEFINED_LOGIN);
 			return $this->login;
 		}
 		
@@ -87,20 +100,20 @@
 		}
 		
 		/**
-		 * Sets password hash. Throws an exception if it is not a valid md5 hash.
+		 * Sets the password hash. Throws an exception with code self::ERROR_INVALID_PASSWORD_HASH if it is not a valid md5 hash.
 		 */
 		public function setPasswordHash($hash) {
 			if(!self::validateMd5Hash($hash))
-				throw new Exception('Password hash is invalid.');
+				throw new ApplicationModelException_User('Password hash is invalid.', self::ERROR_INVALID_PASSWORD_HASH);
 			$this->passwordHash = $hash;
 		}
 		
 		/**
-		 * Returns password hash. Throws an exception if the hash is not known.
+		 * Returns the password hash. Throws an exception with code self::ERROR_UNDEFINED_PASSWORD_HASH if the hash is not known.
 		 */
 		public function getPasswordHash() {
 			if($this->passwordHash === null)
-				throw new Exception('Password hash is not defined.');
+				throw new ApplicationModelException_User('Password hash is not defined.', self::ERROR_UNDEFINED_PASSWORD_HASH);
 			return $this->passwordHash;
 		}
 		
@@ -114,13 +127,14 @@
 		/**
 		 * Adds a client's UUID to the list of user's clients. UUIDs and their timestamps must be unique for one user.
 		 * You cannot add two same UUIDs or two different UUIDs with same timestamps to one user. Throws an exception
-		 * if the uuid or its timestamp is invalid.
+		 * with code self::ERROR_INVALID_UUID if the uuid is invalid. It also throws an exception with code
+		 * self::ERROR_INVALID_UUID_TIMESTAMP if the timestamp of the uuid is invalid.
 		 */
 		public function addUuid($uuid, $time) {
 			if(!self::validateUuid($uuid))
-				throw new Exception('UUID is invalid.');
+				throw new ApplicationModelException_User('UUID is invalid.', self::ERROR_INVALID_UUID);
 			if(!is_int($time))
-				throw new Exception('Timestamp must be an integer.');
+				throw new ApplicationModelException_User('Timestamp must be an integer.', self::ERROR_INVALID_UUID_TIMESTAMP);
 		
 			// if there is the same uuid, we must remove it
 			$sameUuidTime = array_search($uuid, $this->uuids);
@@ -132,40 +146,14 @@
 		}
 		
 		/**
-		 * Returns a list of user's clients UUIDs. Throws an exception if there are no UUIDs for the user.
+		 * Returns a list of user's clients UUIDs. Returns an empty array if there are no UUIDs for the user.
 		 * The list is an associative array where the keys are timestamps of the moment when UUID was attached
 		 * to the user and values are the UUID strings.
 		 */
 		public function getUuids() {
-			if(empty($this->uuids))
-				throw new Exception('No uuids are defined.');
 			return $this->uuids;
 		}
 		
-        /**
-        * Returns a list of user's files. Throws an exception if there are no file for the user.
-        */
-        public function getFiles() {
-            if(empty($this->uuids))
-				throw new Exception('No uuids are defined.');
-            $files = array();
-            foreach ($this->uuids as $key => $value) {
-                $filesKeySet = new Rediska_Key_SortedSet('uuid_' . $value);
-                foreach($filesKeySet->toArray(true) as $file) {
-                    $userKeyHash = new Rediska_Key_Hash($file->value);
-                    $fileInfo = $userKeyHash->toArray(true);
-                    if ($fileInfo["type"] == "image") {
-                        $fileInfo["url"] = $this->application->config['image_link_prefix'].$fileInfo["name"];
-                    } else {
-                        $fileInfo["url"] = $this->application->config['source_link_prefix'].$fileInfo["name"];
-                    }
-                    $files[$fileInfo["timestamp"]] = $fileInfo;
-                }
-            }
-            ksort($files);
-            return $files;
-        }
-        
 		/**
 		 * Checks whether the client UUID is valid. Returns false, if it is not.
 		 */
@@ -176,15 +164,16 @@
 		/**
 		 * Loads the user's information from the database. The user's login or id must be set before this
 		 * function is called. If the id is unknown, but the login is known, this function will try to find the
-		 * user's id first. Then, it will try to load the information for this user from the database. If an
-		 * error occurs, an exception will be thrown.
+		 * user's id first. Then, it will try to load the information for this user from the database. If user with
+		 * selected id or login is not found an exception with code self::ERROR_NOTFOUND_ID or self::ERROR_NOTFOUND_LOGIN
+		 * will be thrown. An exception with code self::ERROR_UNDEFINED_ID will be throw if the id is not known.
 		 */
 		public function load() {
 			// id is unknown, but the login is known - use id lookup key to get the id of the user with selected login
 			if($this->id === null && $this->login !== null) {
 				$userLoginKey = new Rediska_Key('user_login_' . $this->login);
 				if($userLoginKey->getValue() === null)
-					throw new Exception('User with login ' . $this->login . ' does not exist in the database.');
+					throw new ApplicationModelException_User('User with login ' . $this->login . ' does not exist in the database.', self::ERROR_NOTFOUND_LOGIN);
 				$this->id = (int)$userLoginKey->getValue();
 			}
 			
@@ -192,7 +181,7 @@
 			if($this->id !== null) {
 				// user with selected id must exist
 				if(!$this->application->rediska->exists('user_' . $this->id))
-					throw new Exception('User with id ' . $this->id . ' does not exist in the database.');
+					throw new ApplicationModelException_User('User with id ' . $this->id . ' does not exist in the database.', self::ERROR_NOTFOUND_ID);
 				
 				// load user's login and password hash
 				$userKeyHash = new Rediska_Key_Hash('user_' . $this->id);
@@ -209,13 +198,17 @@
 			
 			// if the id is unknown, we cannot do anything
 			else
-				throw new Exception('Not enough information was given to load the user data.');
+				throw new ApplicationModelException_User('Not enough information was given to load the user data.', self::ERROR_UNDEFINED_ID);
 		}
 		
 		/**
-		 * Saves user's information into the database. If user's id is not known, it will try to create
-		 * a new user. If user's id is known, it will try to edit information in database to make it identical
-		 * to information in this class. If an error occurs, it will throw an exception.
+		 * Saves user's information into the database. If user's id is not known, it will try to create a new user.
+		 * If user's id is known, it will try to edit information in database to make it identical to information in
+		 * this class. If you want to change user's login, load user's information before doing so. If the user with
+		 * selected id does not exist, it will throw an exception with code self::ERROR_NOTFOUND_ID. If the function
+		 * tries to create a user with taken login, an exception with code self::ERROR_TAKEN_LOGIN will be thrown.
+		 * If the user tries to take somebody else's UUID, an exception with code self::ERROR_TAKEN_UUID will be
+		 * thrown.
 		 */
 		public function save() {
 			// id lookup key
@@ -225,24 +218,32 @@
 			if($this->id !== null) {
 				// user with selected id must exist
 				if(!$this->application->rediska->exists('user_' . $this->id))
-					throw new Exception('User with id ' . $this->id . ' does not exist in the database.');
+					throw new ApplicationModelException_User('User with id ' . $this->id . ' does not exist in the database.', self::ERROR_NOTFOUND_ID);
 			}
 			
 			// id is unknown - we are going to create a new user
 			else {
 				// new login must not be taken by someone else
 				if($userLoginKey->getValue() !== null)
-					throw new Exception('User with login ' . $this->login . ' already exists in the database.');
-				
-				// get the id for the new user
-				$this->id = $this->incrementRedisCounter('users_count');
+					throw new ApplicationModelException_User('User with login ' . $this->login . ' already exists in the database.', self::ERROR_TAKEN_LOGIN);
 			}
 			
-			// if user's login needs to be changed
+			// make sure that the user does not want to take somebody else's uuid
+			foreach($this->uuids as $time => $uuid) {
+				$userUuidKey = new Rediska_Key('user_uuid_' . $uuid);
+				if($userUuidKey->getValue() !== null && $userUuidKey->getValue() != $this->id)
+					throw new ApplicationModelException_User('UUID ' . $uuid . ' is taken by somebody else.', self::ERROR_TAKEN_UUID);
+			}
+			
+			// if we are creating a new user - get the new id for him
+			if($this->id === null)
+				$this->id = $this->incrementRedisCounter('users_count');
+			
+			// if user's login needs to be changed (for new users, this will not be active)
 			if($this->loginOld !== null && $this->loginOld != $this->login) {
 				// new login must not be taken by someone else
 				if($userLoginKey->getValue() !== null)
-					throw new Exception('User with login ' . $this->login . ' already exists in the database.');
+					throw new ApplicationModelException_User('User with login ' . $this->login . ' already exists in the database.', self::ERROR_TAKEN_LOGIN);
 				
 				// remove old id lookup key
 				$userLoginOldKey = new Rediska_Key('user_login_' . $this->loginOld);
@@ -256,14 +257,33 @@
 			$userKeyHash->password = $this->passwordHash;
 
 			// save id lookup key
-			$userLoginKey = new Rediska_Key('user_login_' . $this->login);
 			$userLoginKey->setValue($this->id);
 			
-			// reset uuids for this user
+			// for every old uuid of the user:
 			$uuidsKeySet = new Rediska_Key_SortedSet('user_' . $this->id . '_uuids');
-			foreach($uuidsKeySet as $uuid)
-				$uuidsKeySet->remove($uuid);
-			foreach($this->uuids as $time => $uuid)
+			foreach($uuidsKeySet as $uuid) {
+				// cut off uuid_ prefix
+				$uuid = substr($uuid, strlen('uuid_'));
+			
+				// remove old id lookup key
+				$userUuidOldKey = new Rediska_Key('user_uuid_' . $uuid);
+				$userUuidOldKey->delete();
+			
+				// remove uuid from the list
+				$uuidsKeySet->remove('uuid_' . $uuid);
+			}
+			
+			// for every new uuid for this user:
+			foreach($this->uuids as $time => $uuid) {
+				// create a new id lookup key
+				$userUuidKey = new Rediska_Key('user_uuid_' . $uuid);
+				$userUuidKey->setValue($this->id);
+			
+				// add it to the list
 				$uuidsKeySet[$time] = 'uuid_' . $uuid;
+			}
 		}
+	}
+	
+	final class ApplicationModelException_User extends ApplicationModelException {
 	}

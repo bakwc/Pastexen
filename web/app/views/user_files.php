@@ -2,6 +2,7 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -27,15 +28,18 @@
 ?>
 
 <h1><?php echo $this->l('my_files'); ?></h1>
-<hr />
-<?php
-        echo "Welcome, " . $login . "<BR>\n";
 
-        echo "<BR>\n";
-        foreach ($files as $timestamp => $file) {
-            echo "<a href=\"".$file["url"]."\">".$file["name"]."</a><BR>\n";
-        }
-    ?>
+<hr />
+
+<?php foreach($files as $file) { ?>
+	<div class="media">
+		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getSystemName(); ?>" /></a>
+		<div class="media-body">
+			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a> <small>(<?php echo $this->date($file->getTime()); ?>)</small></h4>
+			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
+		</div>
+	</div>
+<?php } ?>
 
 <?php
 	require(dirname(__FILE__) . '/includes/footer.php');

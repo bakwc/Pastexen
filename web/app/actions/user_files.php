@@ -2,6 +2,7 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
+	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -23,33 +24,60 @@
 	}
 	
 	require_once(dirname(__FILE__) . '/../models/User.php');
+	require_once(dirname(__FILE__) . '/../models/File.php');
 	
 	final class ApplicationAction_user_files extends ApplicationAction {
 		public function run() {
+			// user must be authorized
 			if(!isset($_SESSION['authorized_user_id'])) {
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /login.php';
 				$this->application->outputContent = '';
-			} else {
-		
-                $view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
-                
-                $id = $_SESSION['authorized_user_id'];
-                
-                $user = new ApplicationModel_User($this->application);
-                try {
-                    $user->setId($id);
-                    $user->load();
-                }
-                catch(Exception $e) {
-                    // TODO: handle correctly
-                }
-                
-                $view->login = $user->GetLogin();
-                $view->uuids = $user->getUuids();
-                $view->files = $user->getFiles();
-                            
-                $view->render();
-            }
+				return;
+			}
+			
+			// load user's information
+			$user = new ApplicationModel_User($this->application);
+			try {
+				$user->setId($_SESSION['authorized_user_id']);
+				$user->load();
+			}
+			catch(Exception $e) {
+                throw new Exception('Cannot load user.', 500);
+			}
+			
+			// get the list of files for this user
+			$files = array();
+			try {
+				// go through every uuid user has
+				$userUuids = $user->getUuids();
+				foreach($userUuids as $time => $uuid) {
+					try {
+						// go through every file, this uuid has
+						$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
+						foreach($userUuidFileIds as $fileId) {
+							// load file
+							$file = new ApplicationModel_File($this->application);
+							$file->setId($fileId);
+							$file->load();
+							
+							// put it into the list of user's files
+							$files[] = $file;
+						}
+					}
+					catch(Exception $e) {
+						continue; // uuid has no files (or an error occured) - skip uuid
+					}
+				}
+			}
+			catch(Exception $e) {
+				$files = array(); // user has no uuids or an error occured - no files
+			}
+			
+			// render the html
+			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
+			$view->user = $user;
+			$view->files = $files;
+			$view->render();
 		}
 	}

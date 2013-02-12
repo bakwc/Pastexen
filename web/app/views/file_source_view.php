@@ -22,15 +22,17 @@
 		exit();
 	}
 	
-	$pageTitle = $source->name;
+	$pageTitle = $file->getName();
 	$jsIncludes = array('/app/static/javascript/google-prettify.js');
 	$cssIncludes = array('/app/static/styles/prettify-tomorrow' . ($isDarkColorScheme ? '-night-bright' : '') . '.css');
-	if($source->getType() != 'text')
+	if($file->getProgrammingLanguage() != 'text')
 		$bodyTagParameters = 'onload="prettyPrint()"';
 	require(dirname(__FILE__) . '/includes/header.php');
 ?>
 
-<div id="fb-root"></div>
+<h1><?php echo $file->getName() . '.' . $file->getExtension(); ?></h1>
+
+<hr />
 
 <div class="btn-group pull-left">
 	<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
@@ -42,6 +44,7 @@
 			echo '<a class="btn" href="' . htmlspecialchars(ApplicationUtils::urlStripParameter($url, 'light')) . '">' . $this->l('action_switch_to_dark') . '</a>';
 	?>
 </div>
+<div id="fb-root"></div>
 <div class="pull-right social">
 	<div id="vk_like" class="vkontakte-like-button"></div>
 	<script type="text/javascript" src="//vk.com/js/api/openapi.js?60"></script>
@@ -80,11 +83,11 @@
 <hr />
 
 <?php
-	if($source->getType() == 'text') {
+	if($file->getProgrammingLanguage() == 'text') {
 ?>
-	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?>"><span class="pln"><?php echo htmlspecialchars($source->getData()); ?></span></pre>
+	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?>"><span class="pln"><?php echo htmlspecialchars($fileData); ?></span></pre>
 <?php } else { ?>
-	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $source->getType(); ?>"><?php echo htmlspecialchars($source->getData()); ?></pre>
+	<pre class="prettyprint <?php echo $isDarkColorScheme ? 'dark' : 'light'; ?> linenums lang-<?php echo $file->getProgrammingLanguage(); ?>"><?php echo htmlspecialchars($fileData); ?></pre>
 <?php } ?>
 
 <?php
