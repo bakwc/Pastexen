@@ -35,7 +35,15 @@
 	<div class="media">
 		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getSystemName(); ?>" /></a>
 		<div class="media-body">
-			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a> <small>(<?php echo $this->date($file->getTime()); ?>)</small></h4>
+			<div>
+				<div class="pull-left"><h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4></div>
+				<div class="btn-group pull-left">
+					<a class="btn btn-mini btn-info" href="/app/index.php?action=file_rename&file=<?php echo urlencode($file->getSystemName()); ?>"><?php echo $this->l('action_rename'); ?></a>
+					<a class="btn btn-mini btn-danger" href="/app/index.php?action=file_delete&file=<?php echo urlencode($file->getSystemName()); ?>"><?php echo $this->l('action_delete'); ?></a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<p class="muted"><small><?php echo $this->date($file->getTime()); ?></small></p>
 			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
 		</div>
 	</div>
