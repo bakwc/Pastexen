@@ -27,10 +27,10 @@
 	final class ApplicationAction_file_source_view extends ApplicationAction {
 		public function run() {
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('File identifier is missing.', 400);
+				throw new ApplicationException('File identifier is missing.', 400);
 			
 			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
-				throw new Exception('System name of the file is invalid.', 400);
+				throw new ApplicationException('System name of the file is invalid.', 400);
 			
 			$file = new ApplicationModel_File($this->application);
 			$file->setSystemName($this->application->parameters['file']);
@@ -49,7 +49,7 @@
 			}
 			
 			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
-				throw new Exception('Incorrect file type.', 403);
+				throw new ApplicationException('Incorrect file type.', 403);
 			
 			try {
 				$owner = new ApplicationModel_User($this->application);

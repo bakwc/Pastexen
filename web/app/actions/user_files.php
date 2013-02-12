@@ -43,7 +43,7 @@
 				$user->load();
 			}
 			catch(ApplicationModelException_User $e) {
-                throw new Exception('Cannot load user.', 500);
+                throw new ApplicationException('Cannot load user.', 500);
 			}
 			
 			// get the list of files for this user

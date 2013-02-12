@@ -22,6 +22,8 @@
 		exit();
 	}
 	
+	error_reporting(E_ALL);
+	
 	require_once(dirname(__FILE__) . '/User.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/Hash.php');
@@ -129,9 +131,8 @@
 		 * Sets the filename. If it is empty, throws an exception with code self::ERROR_INVALID_NAME.
 		 */
 		public function setName($name) {
-			if(empty($name))
-				throw new ApplicationModelException_File('Name cannot be an empty string.',
-					self::ERROR_INVALID_NAME);
+			if(!self::validateName($name))
+				throw new ApplicationModelException_File('Name is invalid.', self::ERROR_INVALID_NAME);
 			$this->name = $name;
 		}
 		
@@ -145,13 +146,19 @@
 		}
 		
 		/**
+		 * Checks whether the filename is valid. Returns false, if it is not.
+		 */
+		public static function validateName($name) {
+			return is_string($name) && strlen($name) >= 5 && strlen($name) <= 25;
+		}
+		
+		/**
 		 * Sets the extension. If it is an empty string, throws an exception with code
 		 * self::ERROR_INVALID_EXTENSION.
 		 */
 		public function setExtension($extension) {
-			if(empty($extension))
-				throw new ApplicationModelException_File('Extension cannot be an empty string.',
-					self::ERROR_INVALID_EXTENSION);
+			if(!self::validateExtension($extension))
+				throw new ApplicationModelException_File('Extension is invalid.', self::ERROR_INVALID_EXTENSION);
 			$this->extension = $extension;
 		}
 		
@@ -163,6 +170,13 @@
 				throw new ApplicationModelException_File('Extension is not defined.',
 					self::ERROR_UNDEFINED_EXTENSION);
 			return $this->extension;
+		}
+		
+		/**
+		 * Checks whether the extension is valid. Returns false, if it is not.
+		 */
+		public static function validateExtension($extension) {
+			return is_string($extension) && strlen($extension) <= 10;
 		}
 		
 		/**
@@ -191,7 +205,7 @@
 		 * Checks whether the system name of the file is valid. Returns false, if it is not.
 		 */
 		public static function validateSystemName($systemName) {
-			return strlen($systemName) >= 2 && strlen($systemName) <= 25 &&
+			return is_string($systemName) && strlen($systemName) >= 2 && strlen($systemName) <= 25 &&
 				self::validateAlphanumeric(str_replace(array('.', '-'), '', $systemName));
 		}
 		
@@ -221,8 +235,8 @@
 		 * self::ERROR_INVALID_DESCRIPTION. Note: the description _can_ be an empty string.
 		 */
 		public function setDescription($description) {
-			if(strlen($description) > 20000)
-				throw new ApplicationModelException_File('Description must be shorter than 20000 characters.',
+			if(!self::validateDescription($description))
+				throw new ApplicationModelException_File('Description is invalid.',
 					self::ERROR_INVALID_DESCRIPTION);
 			$this->description = $description;
 		}
@@ -234,8 +248,15 @@
 		public function getDescription() {
 			if($this->description === null)
 				throw new ApplicationModelException_File('Description is not defined.',
-					self::ERROR_UNDFEINED_DESCRIPTION);
+					self::ERROR_UNDEFINED_DESCRIPTION);
 			return $this->description;
+		}
+		
+		/**
+		 * Checks whether the description of the file is valid. Returns false, if it is not.
+		 */
+		public static function validateDescription($description) {
+			return is_string($description) && strlen($description) <= 20000;
 		}
 		
 		/**

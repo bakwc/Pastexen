@@ -27,10 +27,10 @@
 	final class ApplicationAction_file_source_download extends ApplicationAction {
 		public function run() {
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('File identifier is missing.', 400);
+				throw new ApplicationException('File identifier is missing.', 400);
 			
 			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
-				throw new Exception('System name of the file is invalid.', 400);
+				throw new ApplicationException('System name of the file is invalid.', 400);
 			
 			$file = new ApplicationModel_File($this->application);
 			$file->setSystemName($this->application->parameters['file']);
@@ -40,13 +40,13 @@
 			catch(ApplicationModelException_File $e) {
 				$file->setType(ApplicationModel_File::TYPE_SOURCE);
 				if(!is_file($file->getPath()))
-					throw new Exception('File is not found.', 404);
+					throw new ApplicationException('File is not found.', 404);
 				$file->setName(basename($file->getSystemName(), '.' . pathinfo($file->getSystemName(), PATHINFO_EXTENSION)));
 				$file->setExtension('auto');
 			}
 			
 			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
-				throw new Exception('Incorrect file type.', 403);
+				throw new ApplicationException('Incorrect file type.', 403);
 			
 			$this->application->outputHeaders = array(
 				'Content-type: application/force-download',

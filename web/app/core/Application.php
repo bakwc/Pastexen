@@ -81,19 +81,19 @@
 				require_once($this->path . '/languages/' . $language . '.php');
 				
 				if(strspn($this->action, 'abcdefghijklmnopqrstuvwxyz0123456789_-') !== strlen($this->action))
-					throw new Exception('Invalid action name!', 400);
+					throw new ApplicationException('Invalid action name!', 400);
 				
 				$actionPath = $this->path . '/actions/' . $this->action . '.php';
 				
 				if(!is_readable($actionPath))
-					throw new Exception('Cannot find requested action!', 404);
+					throw new ApplicationException('Cannot find requested action!', 404);
 				
 				require_once($actionPath);
 				$actionClassName = 'ApplicationAction_' . $this->action;
 				$action = new $actionClassName($this);
 				$action->run();
 			}
-			catch(Exception $e) {
+			catch(ApplicationException $e) {
 				// http://www.iana.org/assignments/http-status-codes
 				$httpStatuses = array(
 					/* RFC2616 */ 100 => 'Continue',                                 /* RFC2616 */ 406 => 'Not Acceptable',
@@ -124,9 +124,6 @@
 					/* RFC2616 */ 404 => 'Not Found',                                /* RFC5842 */ 508 => 'Loop Detected',
 					/* RFC2616 */ 405 => 'Method Not Allowed',                       /* RFC2774 */ 510 => 'Not Extended',
 				);
-			
-				$isSerious = $e->getCode() >= 500 && $e->getCode() < 600;
-				
 				$this->outputHeaders = array('HTTP/1.1 ' . $e->getCode() . ' ' . $httpStatuses[$e->getCode()]);
 				$this->outputContent =
 					'<html>' .
@@ -142,10 +139,13 @@
 							'</style>' .
 						'</head>' .
 						'<body>' .
-								'<h1>' . $httpStatuses[$e->getCode()] . '</h1>' .
-								($this->config['production'] && $isSerious ? '' : '<p>' . $e->getMessage() . '</p>') .
+								'<h1>HTTP ' . $e->getCode() . ' - ' . $httpStatuses[$e->getCode()] . '</h1>' .
+								'<p>' . $e->getMessage() . '</p>' .
 						'</body>' .
 					'</html>';
+			}
+			catch(Exception $e) {
+				$this->outputContent = 'Uncaught exception.'; // though, it is not really "uncaught"
 			}
 		}
 		

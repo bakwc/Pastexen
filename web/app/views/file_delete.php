@@ -37,7 +37,6 @@
 		<a class="pull-left"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
 		<div class="media-body">
 			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4>
-			<p class="muted"><small><?php echo $this->date($file->getTime()); ?></small></p>
 			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
 		</div>
 	</div>

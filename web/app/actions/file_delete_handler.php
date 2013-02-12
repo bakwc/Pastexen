@@ -29,10 +29,10 @@
 		public function run() {
 			// file id must be defined and valid
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('File identifier is missing.', 400);
+				throw new ApplicationException('File identifier is missing.', 400);
 			$fileId = (int)$this->application->parameters['file'];
 			if(!ApplicationModel_File::validateId($fileId))
-				throw new Exception('Id of the file is invalid.', 400);
+				throw new ApplicationException('Id of the file is invalid.', 400);
 		
 			// user must be authorized
 			if(!isset($_SESSION['authorized_user_id'])) {
@@ -49,7 +49,7 @@
 				$user->load();
 			}
 			catch(ApplicationModelException_User $e) {
-                throw new Exception('Cannot load user.', 500);
+                throw new ApplicationException('Cannot load user.', 500);
 			}
 			
 			// load file's information
@@ -59,7 +59,7 @@
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
-                throw new Exception('File is not found.', 404);
+                throw new ApplicationException('File is not found.', 404);
 			}
 			
 			// load file owner's information
@@ -69,12 +69,12 @@
 				$owner->load();
 			}
 			catch(ApplicationModelException_User $e) {
-				throw new Exception('Cannot load file\'s owner.', 500);
+				throw new ApplicationException('Cannot load file\'s owner.', 500);
 			};
 			
 			// authorized user must be the owner of the file
 			if($user->getId() != $owner->getId())
-				throw new Exception('Cannot delete file which belongs to a different user.', 403);
+				throw new ApplicationException('Cannot delete file which belongs to a different user.', 403);
 			
 			// delete the file from the database and filesystem
 			unlink($file->getPath());

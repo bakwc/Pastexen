@@ -28,10 +28,10 @@
 		public function run() {
 			// file id must be defined and valid
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('File identifier is missing.', 400);
+				throw new ApplicationException('File identifier is missing.', 400);
 			$fileId = (int)$this->application->parameters['file'];
 			if(!ApplicationModel_File::validateId($fileId))
-				throw new Exception('Id of the file is invalid.', 400);
+				throw new ApplicationException('Id of the file is invalid.', 400);
 			
 			// load file's information
 			try {
@@ -40,7 +40,7 @@
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
-				throw new Exception('File is not found.', 404);
+				throw new ApplicationException('File is not found.', 404);
 			}
 			
 			// determine size of the thumbnail
@@ -56,7 +56,7 @@
 				$imageGd = $file->getThumbnail($size);
 			}
 			catch(ApplicationModelException_File $e) {
-				throw new Exception('An error occured.', 500);
+				throw new ApplicationException('An error occured.', 500);
 			}
 			
 			// return it to the user

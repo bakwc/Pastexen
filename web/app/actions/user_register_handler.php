@@ -35,12 +35,8 @@
 				if(!empty($uuid) && !ApplicationModel_User::validateUuid($uuid))
 					$uuidBad = true;
 			}
-			if($uuidBad) { // invalid uuid is set
-				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
-				$this->application->outputHeaders[] = 'Location: /';
-				$this->application->outputContent = '';
-				return;
-			}
+			if($uuidBad) // invalid uuid is set
+				throw new ApplicationException('Invalid client uuid.', 400);
 
 			$login = '';
 			$loginBad = false;
