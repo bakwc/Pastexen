@@ -285,5 +285,5 @@
 		}
 	}
 	
-	final class ApplicationModelException_User {
+	final class ApplicationModelException_User extends ApplicationModelException {
 	}
