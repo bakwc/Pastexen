@@ -22,7 +22,7 @@
 		exit();
 	}
 	
-	final class ApplicationAction_file_rename_handler extends ApplicationAction {
+	final class ApplicationAction_file_edit extends ApplicationAction {
 		public function run() {
 			// unimplemented
 		}

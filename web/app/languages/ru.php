@@ -29,7 +29,7 @@
 		'menu_index'						=> 'Главная',
 		'action_download'					=> 'Скачать',
 		'action_open_raw'					=> 'Необработанный текст',
-		'action_rename'						=> 'Переименовать',
+		'action_edit'						=> 'Редактировать',
 		'action_delete'						=> 'Удалить',
 		'action_cancel'						=> 'Отмена',
 		'action_continue'					=> 'Продолжить',

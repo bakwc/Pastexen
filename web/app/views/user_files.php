@@ -38,7 +38,7 @@
 			<div>
 				<div class="pull-left"><h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4></div>
 				<div class="btn-group pull-left">
-					<a class="btn btn-mini btn-info" href="/app/index.php?action=file_rename&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_rename'); ?></a>
+					<a class="btn btn-mini btn-info" href="/app/index.php?action=file_edit&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_edit'); ?></a>
 					<a class="btn btn-mini btn-danger" href="/app/index.php?action=file_delete&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_delete'); ?></a>
 				</div>
 				<div class="clearfix"></div>

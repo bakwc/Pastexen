@@ -29,7 +29,7 @@
 		'menu_index'						=> 'Home',
 		'action_download'					=> 'Download',
 		'action_open_raw'					=> 'Raw',
-		'action_rename'						=> 'Rename',
+		'action_edit'						=> 'Edit',
 		'action_delete'						=> 'Delete',
 		'action_cancel'						=> 'Cancel',
 		'action_continue'					=> 'Continue',
