@@ -123,11 +123,11 @@
 		}
 		
 		/**
-		 * Sets the name of the file in the filesystem. If it is an empty string, throws an exception.
+		 * Sets the name of the file in the filesystem. If it is invalid, an exception will be thrown.
 		 */
 		public function setSystemName($systemName) {
-			if(empty($systemName))
-				throw new Exception('System name cannot be an empty string.');
+			if(!self::validateSystemName($systemName))
+				throw new Exception('System name is invalid.');
 			$this->systemName = $systemName;
 		}
 		
@@ -138,6 +138,13 @@
 			if($this->systemName === null)
 				throw new Exception('System name is not defined.');
 			return $this->systemName;
+		}
+		
+		/**
+		 * Checks whether the system name of the file is valid. Returns false, if it is not.
+		 */
+		public static function validateSystemName($systemName) {
+			return strlen($systemName) >= 2 && strlen($systemName) <= 25 && self::validateAlphanumeric(str_replace('.', '', $systemName));
 		}
 		
 		/**
@@ -194,9 +201,19 @@
 				throw new Exception('Uploader UUID is not defined.');
 			return $this->uploader;
 		}
+
+		/**
+		 * Returns path to the file in the filesystem. Throws an exception, if the system name is not known.
+		 */
+		public function getPath() {
+			switch($this->getType()) {
+				case self::TYPE_IMAGE:  return $this->application->config['file_image_dir']  . '/' . $this->getSystemName(); break;
+				case self::TYPE_SOURCE: return $this->application->config['file_source_dir'] . '/' . $this->getSystemName(); break;
+			}
+		}
 		
 		/**
-		 * Returns url for this file. If the type of it or its system name is not known,
+		 * Returns url for this file. If the type of it or the system name is not known,
 		 * throws an exception.
 		 */
 		public function getUrl() {
@@ -206,7 +223,87 @@
 			}
 			return sprintf($linkTemplate, $this->getSystemName());
 		}
+		
+		/**
+		 * Returns gd image which can be used as a thumbnail for the file. Throws an exception if the requested
+		 * thumbnail is too big, too small, or if a file does not exist.
+		 */
+		public function getThumbnail($size = 64) {
+			if($size < $this->application->config['file_thumbnail_min_size'])
+				throw new Exception('The thumbnail is too small.');
+			
+			if($size > $this->application->config['file_thumbnail_max_size'])
+				throw new Exception('The thumbnail is too big.');
+		
+			$filePath = $this->getPath();
+			
+			if(!is_file($filePath))
+				throw new Exception('Cannot access file ' . $filePath . '.');
+			
+			switch($this->getType()) {
+				case self::TYPE_IMAGE:
+					$pictureImageGd = imageCreateFromPNG($filePath);
+					$pictureWidth  = imageSx($pictureImageGd);
+					$pictureHeight = imageSy($pictureImageGd);
+					
+					$scale = $size / max($pictureWidth, $pictureHeight);
+					$pictureNewWidth  = ceil($pictureWidth  * $scale);
+					$pictureNewHeight = ceil($pictureHeight * $scale);
+					
+					if($pictureWidth > $pictureHeight) {
+						$pictureNewX = 0;
+						$pictureNewY = ($size - $pictureNewHeight) / 2;
+					}
+					else {
+						$pictureNewX = ($size - $pictureNewWidth ) / 2;
+						$pictureNewY = 0;
+					}
+					
+					$imageGd = imageCreateTrueColor($size, $size);
+					$bgColor = $this->application->config['file_image_thumbnail_bgcolor'];
+					$bgColorGd = imageColorResolve($imageGd, $bgColor[0], $bgColor[1], $bgColor[2]);
+					imageFilledRectangle($imageGd, 0, 0, $size - 1, $size - 1, $bgColorGd);
+					
+					imageCopyResampled($imageGd, $pictureImageGd, $pictureNewX, $pictureNewY, 0, 0, $pictureNewWidth, $pictureNewHeight, $pictureWidth, $pictureHeight);
+					
+					imageDestroy($pictureImageGd);
+					
+					return $imageGd;
+				
+				case self::TYPE_SOURCE:
+					$codeImageGd = imageCreate($size * 2, $size * 2); // Note: truecolor image is not necessary here.
+					$codeBgColor = $this->application->config['file_source_thumbnail_bgcolor'];
+					$codeFgColor = $this->application->config['file_source_thumbnail_fgcolor'];
+					$codeBgColorGd = imageColorResolve($codeImageGd, $codeBgColor[0], $codeBgColor[1], $codeBgColor[2]);
+					$codeFgColorGd = imageColorResolve($codeImageGd, $codeFgColor[0], $codeFgColor[1], $codeFgColor[2]);
 
+					$sourceText = substr(file_get_contents($filePath), 0, 20000);
+					$sourceText = str_replace("\t", '    ', $sourceText);
+					$sourceText = str_replace("\r", '', $sourceText);
+					
+					$fontGd = 4; // gd fonts 2 and 4 work the best
+					$x = 0;
+					$y = 0;
+					for($i = 0, $sourceSz = strlen($sourceText); $i < $sourceSz; ++$i) {
+						if($sourceText{$i} == "\n") {
+							$x = 0;
+							$y += imageFontHeight($fontGd);
+						}
+						elseif($sourceText{$i} >= ' ' && $sourceText{$i} <= '~') {
+							imageString($codeImageGd, $fontGd, $x, $y, $sourceText{$i}, $codeFgColorGd);
+							$x += imageFontWidth($fontGd);
+						}
+					}
+					
+					$imageGd = imageCreateTrueColor($size, $size);
+					imageCopyResampled($imageGd, $codeImageGd, 0, 0, 0, 0, $size, $size, imageSx($codeImageGd), imageSy($codeImageGd));
+					
+					imageDestroy($codeImageGd);
+					
+					return $imageGd;
+			}
+		}
+		
 		/**
 		 * Loads file's information from the database. The file's id or system name must be set before this function
 		 * is called. If the id is unknown, but the system name is known, this function will try to find the file's

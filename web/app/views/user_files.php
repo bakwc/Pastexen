@@ -33,10 +33,7 @@
 
 <?php foreach($files as $file) { ?>
 	<div class="media">
-		<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) { ?>
-			<!-- TODO: make thumbnails. -->
-			<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="<?php echo $file->getUrl(); ?>" width="64" /></a>
-		<?php } ?>
+		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getSystemName(); ?>" /></a>
 		<div class="media-body">
 			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a> <small>(<?php echo $this->date($file->getTime()); ?>)</small></h4>
 			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
