@@ -504,3 +504,6 @@
 			return $fileIds;
 		}
 	}
+	
+	final class ApplicationModelException_File extends ApplicationModelException {
+	}
