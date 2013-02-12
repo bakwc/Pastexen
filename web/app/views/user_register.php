@@ -37,6 +37,8 @@
 			echo '<br />' . $this->l('error_login_bad');
 		if($passwordWrong)
 			echo '<br />' . $this->l('error_password_wrong');
+		if($uuidTaken)
+			echo '<br />' . $this->l('error_uuid_taken');
 		echo '</div>';
 	}
 ?>

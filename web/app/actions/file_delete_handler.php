@@ -2,7 +2,6 @@
 	/*
 	 * Pastexen web frontend - https://github.com/bakwc/Pastexen
 	 * Copyright (C) 2013 powder96 <https://github.com/powder96>
-	 * Copyright (C) 2013 bakwc <https://github.com/bakwc>
 	 *
 	 * This program is free software: you can redistribute it and/or modify
 	 * it under the terms of the GNU General Public License as published by
@@ -26,8 +25,15 @@
 	require_once(dirname(__FILE__) . '/../models/User.php');
 	require_once(dirname(__FILE__) . '/../models/File.php');
 	
-	final class ApplicationAction_user_files extends ApplicationAction {
+	final class ApplicationAction_file_delete_handler extends ApplicationAction {
 		public function run() {
+			// file id must be defined and valid
+			if(!isset($this->application->parameters['file']))
+				throw new Exception('File identifier is missing.', 400);
+			$fileId = (int)$this->application->parameters['file'];
+			if(!ApplicationModel_File::validateId($fileId))
+				throw new Exception('Id of the file is invalid.', 400);
+		
 			// user must be authorized
 			if(!isset($_SESSION['authorized_user_id'])) {
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
@@ -46,32 +52,37 @@
                 throw new Exception('Cannot load user.', 500);
 			}
 			
-			// get the list of files for this user
-			$files = array();
-			$userUuids = $user->getUuids();
-			foreach($userUuids as $time => $uuid) {
-				// go through every file, this uuid has
-				$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
-				foreach($userUuidFileIds as $fileId) {
-					try {
-						// load file
-						$file = new ApplicationModel_File($this->application);
-						$file->setId($fileId);
-						$file->load();
-					
-						// put it into the list of user's files
-						$files[] = $file;
-					}
-					catch(ApplicationModelException_File $e) {
-						// skip this file
-					}
-				}
+			// load file's information
+			$file = new ApplicationModel_File($this->application);
+			try {
+				$file->setId($fileId);
+				$file->load();
+			}
+			catch(ApplicationModelException_File $e) {
+                throw new Exception('File is not found.', 404);
 			}
 			
-			// render the html
-			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
-			$view->user = $user;
-			$view->files = $files;
-			$view->render();
+			// load file owner's information
+			try {
+				$owner = new ApplicationModel_User($this->application);
+				$owner->setId(ApplicationModel_User::getIdForUuid($this->application, $file->getUploader()));
+				$owner->load();
+			}
+			catch(ApplicationModelException_User $e) {
+				throw new Exception('Cannot load file\'s owner.', 500);
+			};
+			
+			// authorized user must be the owner of the file
+			if($user->getId() != $owner->getId())
+				throw new Exception('Cannot delete file which belongs to a different user.', 403);
+			
+			// delete the file from the database and filesystem
+			unlink($file->getPath());
+			$file->delete();
+			
+			// redirect user back to his account
+			$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+			$this->application->outputHeaders[] = 'Location: /account.php';
+			$this->application->outputContent = '';
 		}
 	}

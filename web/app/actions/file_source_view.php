@@ -37,7 +37,7 @@
 			try {
 				$file->load();
 			}
-			catch(Exception $e) {
+			catch(ApplicationModelException_File $e) {
 				$file->setType(ApplicationModel_File::TYPE_SOURCE);
 				if(!is_file($file->getPath()))
 					throw new Exception('File is not found.', 404);
@@ -51,10 +51,19 @@
 			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
 				throw new Exception('Incorrect file type.', 403);
 			
+			try {
+				$owner = new ApplicationModel_User($this->application);
+				$owner->setId(ApplicationModel_User::getIdForUuid($this->application, $file->getUploader()));
+				$owner->load();
+			}
+			catch(ApplicationModelException_User $e) {
+				$owner = null;
+			}
+			
 			$view = new ApplicationView($this->application, $this->application->path . '/views/file_source_view.php');
 			
 			$view->url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-			
+			$view->owner = $owner;
 			$view->file = $file;
 			$view->fileData = file_get_contents($file->getPath());
 
