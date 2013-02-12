@@ -29,6 +29,8 @@
 		'menu_index'						=> 'Home',
 		'action_download'					=> 'Download',
 		'action_open_raw'					=> 'Raw',
+		'action_rename'						=> 'Rename',
+		'action_delete'						=> 'Delete',
 		'action_continue'					=> 'Continue',
 		'action_login'						=> 'Log In',
 		'action_logout'						=> 'Log Out',

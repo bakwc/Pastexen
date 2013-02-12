@@ -29,6 +29,8 @@
 		'menu_index'						=> 'Главная',
 		'action_download'					=> 'Скачать',
 		'action_open_raw'					=> 'Необработанный текст',
+		'action_rename'						=> 'Переименовать',
+		'action_delete'						=> 'Удалить',
 		'action_continue'					=> 'Продолжить',
 		'action_login'						=> 'Вход',
 		'action_logout'						=> 'Выход',

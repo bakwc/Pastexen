@@ -37,6 +37,7 @@
 		const ERROR_UNDEFINED_PASSWORD_HASH	= 10103;
 		const ERROR_NOTFOUND_ID				= 10201;
 		const ERROR_NOTFOUND_LOGIN			= 10202;
+		const ERROR_NOTFOUND_UUID			= 10203;
 		const ERROR_TAKEN_LOGIN				= 10301;
 		const ERROR_TAKEN_UUID				= 10302;
 	
@@ -304,6 +305,22 @@
 				// add it to the list
 				$uuidsKeySet[$time] = 'uuid_' . $uuid;
 			}
+		}
+		
+		/**
+		 * Returns the id of the user to which the selected UUID belongs. If selected UUID does not exist, an
+		 * exception with code self::ERROR_NOTFOUND_UUID will be thrown.
+		 */
+		public static function getIdForUuid(&$application, $uuid) {
+			// uuid must be valid
+			if(!ApplicationModel_User::validateUuid($uuid))
+				throw new ApplicationModelException_File('UUID is invalid.', self::ERROR_INVALID_UUID);
+			
+			// use id lookup key
+			$userUuidKey = new Rediska_Key('user_uuid_' . $uuid);
+			if($userUuidKey->getValue() === null)
+				throw new ApplicationModelException_File('UUID is invalid.', self::ERROR_NOTFOUND_UUID);
+			return $userUuidKey->getValue();
 		}
 	}
 	
