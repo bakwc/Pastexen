@@ -49,7 +49,7 @@
 					$user->setLogin($login);
 					$user->load();
 				}
-				catch(Exception $e) {
+				catch(ApplicationModelException_User $e) {
 					$success = false;
 				}
 			}

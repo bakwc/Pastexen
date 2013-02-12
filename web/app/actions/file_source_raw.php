@@ -22,26 +22,31 @@
 		exit();
 	}
 	
-	require_once(dirname(__FILE__) . '/../models/Source.php');
+	require_once(dirname(__FILE__) . '/../models/File.php');
 	
-	final class ApplicationAction_source_download extends ApplicationAction {
+	final class ApplicationAction_file_source_raw extends ApplicationAction {
 		public function run() {
 			if(!isset($this->application->parameters['file']))
 				throw new Exception('File identifier is missing.', 400);
 			
+			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
+				throw new Exception('System name of the file is invalid.', 400);
+			
+			$file = new ApplicationModel_File($this->application);
+			$file->setSystemName($this->application->parameters['file']);
 			try {
-				$source = new ApplicationModel_Source($this->application->parameters['file'], $this->application->config['sources_dir']);
+				$file->load();
 			}
 			catch(Exception $e) {
-				throw new Exception('File was not found.', 404);
+				$file->setType(ApplicationModel_File::TYPE_SOURCE);
+				if(!is_file($file->getPath()))
+					throw new Exception('File is not found.', 404);
 			}
 			
-			$filename = basename($source->name, pathinfo($source->name, PATHINFO_EXTENSION)) . $source->getType();
-			$this->application->outputHeaders = array(
-				'Content-type: application/force-download',
-				'Content-Disposition: attachment; filename="' . $filename . '"',
-				'Content-Length: ' . filesize($source->path)
-			);
-			$this->application->outputContent = $source->getData();
+			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
+				throw new Exception('Incorrect file type.', 403);
+			
+			$this->application->outputHeaders[] = 'Content-Type:text/plain; charset=utf-8';
+			$this->application->outputContent = file_get_contents($file->getPath());
 		}
 	}

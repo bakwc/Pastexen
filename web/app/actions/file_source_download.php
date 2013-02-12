@@ -24,45 +24,35 @@
 	
 	require_once(dirname(__FILE__) . '/../models/File.php');
 	
-	final class ApplicationAction_file_thumbnail extends ApplicationAction {
+	final class ApplicationAction_file_source_download extends ApplicationAction {
 		public function run() {
 			if(!isset($this->application->parameters['file']))
-				throw new Exception('System name of the file must be set.', 400);
+				throw new Exception('File identifier is missing.', 400);
 			
 			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
 				throw new Exception('System name of the file is invalid.', 400);
 			
+			$file = new ApplicationModel_File($this->application);
+			$file->setSystemName($this->application->parameters['file']);
 			try {
-				$file = new ApplicationModel_File($this->application);
-				$file->setSystemName($this->application->parameters['file']);
 				$file->load();
 			}
 			catch(Exception $e) {
-				throw new Exception('File is not found.', 404);
+				$file->setType(ApplicationModel_File::TYPE_SOURCE);
+				if(!is_file($file->getPath()))
+					throw new Exception('File is not found.', 404);
+				$file->setName(basename($file->getSystemName(), '.' . pathinfo($file->getSystemName(), PATHINFO_EXTENSION)));
+				$file->setExtension('auto');
 			}
 			
-			$minSize = $this->application->config['file_thumbnail_min_size'];
-			$maxSize = $this->application->config['file_thumbnail_max_size'];
-			if(!isset($this->application->parameters['size']))
-				$size = $maxSize;
-			else
-				$size = min(max($minSize, (int)$this->application->parameters['size']), $maxSize);
-			
-			try {
-				$imageGd = $file->getThumbnail($size);
-			}
-			catch(Exception $e) {
-				throw new Exception('An error occured.', 500);
-			}
+			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
+				throw new Exception('Incorrect file type.', 403);
 			
 			$this->application->outputHeaders = array(
-				'Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30 * 6)) . ' GMT', // 6 months
-				'Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT',
-				'Cache-Control: public',
-				'Content-type: image/png'
+				'Content-type: application/force-download',
+				'Content-Disposition: attachment; filename="' . $file->getName() . '.' . $file->getProgrammingLanguage() .  '"',
+				'Content-Length: ' . filesize($file->getPath())
 			);
-			ob_start();
-			imagePNG($imageGd);
-			$this->application->outputContent = ob_get_clean();
+			$this->application->outputContent = file_get_contents($file->getPath());
 		}
 	}

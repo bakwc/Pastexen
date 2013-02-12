@@ -26,6 +26,7 @@
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/Hash.php');
 	require_once(dirname(__FILE__) . '/../lib/Rediska/Rediska/Key/SortedSet.php');
+	require_once(dirname(__FILE__) . '/../lib/ProgrammingLanguageDetector/ProgrammingLanguageDetector.php');
 	
 	final class ApplicationModel_File extends ApplicationModel {
 		// file types
@@ -144,7 +145,7 @@
 		 * Checks whether the system name of the file is valid. Returns false, if it is not.
 		 */
 		public static function validateSystemName($systemName) {
-			return strlen($systemName) >= 2 && strlen($systemName) <= 25 && self::validateAlphanumeric(str_replace('.', '', $systemName));
+			return strlen($systemName) >= 2 && strlen($systemName) <= 25 && self::validateAlphanumeric(str_replace(array('.', '-'), '', $systemName));
 		}
 		
 		/**
@@ -222,6 +223,67 @@
 				case self::TYPE_SOURCE: $linkTemplate = $this->application->config['file_source_link']; break;
 			}
 			return sprintf($linkTemplate, $this->getSystemName());
+		}
+		
+		/**
+		 * Returns the name of the programming language in which the source should have been written. Throws an
+		 * exception if the file's type is not a source code or if the file cannot be found.
+		 */
+		public function getProgrammingLanguage() {
+			if($this->getType() != self::TYPE_SOURCE)
+				throw new Exception('This method supports only source code type of files.');
+		
+			$filePath = $this->getPath();
+			if(!is_file($filePath))
+				throw new Exception('Cannot access file ' . $filePath . '.');
+			$sourceText = substr(file_get_contents($filePath), 0, 20000);
+			
+			$languages = array(
+				// file extension => programming language
+				'php'   => 'php',
+				'cpp'   => 'cpp',
+				'c'     => 'cpp',
+				'h'     => 'cpp',
+				'py'    => 'python',
+				'java'  => 'java',
+				'm'     => 'objectivec',
+				'l'     => 'objectivec',
+				'pl'    => 'perl',
+				'xml'   => 'xml',
+				'html'  => 'xml',
+				'js'    => 'javascript',
+				'css'   => 'css',
+				'json'  => 'json',
+				'as'    => 'actionscript',
+				'vb'    => 'vbscript',
+				'http'  => 'http',
+				'cs'    => 'cs',
+				'd'     => 'd',
+				'sql'   => 'sql',
+				'st'    => 'smalltalk',
+				'lisp'  => 'lisp',
+				'cl'    => 'lisp',
+				'ini'   => 'ini',
+				'conf'  => 'apache',
+				'sh'    => 'bash',
+				'bat'   => 'dos',
+				'cmake' => 'cmake',
+				'hs'    => 'haskell',
+				'lhs'   => 'haskell',
+				'txt'	=> 'text',
+				'dat'	=> 'text'
+			);
+			
+			if(isset($languages[$this->extension]))
+				return $languages[$this->extension];
+			
+			$systemExtension = strtolower(pathinfo($this->systemName, PATHINFO_EXTENSION));
+			if(isset($languages[$systemExtension]))
+				return $languages[$systemExtension];
+			
+			$detector = new ProgrammingLanguageDetector();
+			$detector->importKnowledgeBase(file_get_contents(dirname(__FILE__) . '/../lib/ProgrammingLanguageDetector/knowledge_base.dat'));
+			return $detector->detect($sourceText);
 		}
 		
 		/**

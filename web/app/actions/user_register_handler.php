@@ -68,7 +68,7 @@
 					$user->setLogin($login);
 					$user->load();
 				}
-				catch(Exception $e) {
+				catch(ApplicationModelException_User $e) {
 					// selected login does not exist - create a new user
 					$registerUser = true;
 				}
