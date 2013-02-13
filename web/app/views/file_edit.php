@@ -48,7 +48,7 @@
 	<input type="hidden" name="file" value="<?php echo $file->getId(); ?>" />
 	<div class="well">
 		<div class="media">
-			<a class="pull-left"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
+			<a class="pull-left"><img class="media-object" src="<?php echo $file->getThumbnailUrl(); ?>" /></a>
 			<div class="media-body">
 				<div class="input-prepend pull-left">
 					<span class="add-on"><?php echo $this->l('field_filename'); ?></span>

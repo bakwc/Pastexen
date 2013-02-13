@@ -34,7 +34,7 @@
 
 <div class="well">
 	<div class="media">
-		<a class="pull-left"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
+		<a class="pull-left"><img class="media-object" src="<?php echo $file->getThumbnailUrl(); ?>" /></a>
 		<div class="media-body">
 			<h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4>
 			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
