@@ -456,6 +456,16 @@
 		}
 		
 		/**
+		 * Returns url of the thumbnail. Note: it has no connection to self::getThumbnail() which returns gd image
+		 * of the thumbnail. This method only returns the url, where the thumbnail is supposed to be; a separate
+		 * program will have to generate and place it there. Throws an exception with code
+		 * self::ERROR_UNDEFINED_SYSTEM_NAME if the system name of the file is unknown.
+		 */
+		public function getThumbnailUrl() {
+			return sprintf($this->application->config['file_thumbnail_link'], $this->getSystemName());
+		}
+		
+		/**
 		 * Loads file's information from the database. The file's id or system name must be set before this function
 		 * is called. If the id is unknown, but the system name is known, this function will try to find the file's
 		 * id first. Then it will try to load the information for the file from the database. If file with selected
@@ -467,12 +477,12 @@
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
-				if($fileSysNameKey->getValue() === null)
+				$fileSysNameHash = new Rediska_Key_Hash('file_path');
+				if($fileSysNameHash[$this->systemName] === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameKey->getValue();
+				$this->id = (int)$fileSysNameHash[$this->systemName];
 			}
 			
 			// if the id is known, load the information from the database
@@ -519,8 +529,9 @@
 		 * will be thown.
 		 */
 		public function save() {
-			// id lookup key
-			$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
+			// id lookup hash
+			$systemName = $this->systemName;
+			$fileSysNameHash = new Rediska_Key_Hash('file_path');
 			
 			// if id is known - we will be editing file's information
 			if($this->id !== null) {
@@ -533,7 +544,7 @@
 			// if id is unknown - we will be creating a new file
 			else {
 				// file's system name must not be taken by any other file
-				if($fileSysNameKey->getValue() !== null)
+				if($fileSysNameHash->$systemName !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
@@ -545,14 +556,14 @@
 			// if file's system name needs to be changed
 			if($this->systemNameOld !== null && $this->systemNameOld != $this->systemName) {
 				// new system name must not be taken by another file
-				if($fileSysNameKey->getValue() !== null)
+				if($fileSysNameHash->$systemName !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
 				
-				// remove old id lookup key
-				$fileSysNameOldKey = new Rediska_Key('file_path_' . $this->systemNameOld);
-				$fileSysNameOldKey->delete();
+				// remove old id lookup field
+				$systemNameOld = $this->systemNameOld;
+				unset($fileSysNameHash->$systemNameOld);
 			}
 			
 			// if uploader's uuid needs to be changed
@@ -580,7 +591,7 @@
 			}
 			
 			// save id lookup key
-			$fileSysNameKey->setValue($this->id);
+			$fileSysNameHash->$systemName = $this->id;
 			
 			// reset uploader's uuid
 			$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
@@ -597,16 +608,17 @@
 		 * is called, an exception with code self::ERROR_UNDEFINED_ID will be thrown.
 		 */
 		public function delete() {
-			// id lookup key
-			$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
+			// id lookup hash
+			$systemName = $this->systemName;
+			$fileSysNameHash = new Rediska_Key_Hash('file_path');
 		
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				if($fileSysNameKey->getValue() === null)
+				if($fileSysNameHash->$systemName === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameKey->getValue();
+				$this->id = (int)$fileSysNameHash->$systemName;
 			}
 			
 			// if the id is known, delete the information from the database
@@ -620,8 +632,8 @@
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 				$fileKeyHash->delete();
 				
-				// remove id lookup key
-				$fileSysNameKey->delete();
+				// remove id lookup field
+				unset($fileSysNameHash->$systemName);
 				
 				// remove file from user's upload list
 				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
