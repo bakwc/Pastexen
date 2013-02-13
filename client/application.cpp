@@ -382,7 +382,6 @@ bool Application::checkEllapsed()
 }
 
 void Application::timerEvent(QTimerEvent *) {
-    qDebug() << "ON_TIMER!";
     this->killTimer(_timerId);
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
@@ -402,8 +401,6 @@ void Application::timerEvent(QTimerEvent *) {
 #elif defined(Q_OS_WIN)
     text = QApplication::clipboard()->text();
 #endif
-
-    qDebug() << text;
 
     if (text.count() == 0) {
         _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);

@@ -72,7 +72,6 @@ void ConfigWidget::init()
     QString regText = tr("<a href=\"http://pastexen.com/register.php?uuid=%1\">Register & attach client</a>")
             .arg(uuid);
     _ui.regLabel->setText(regText);
-    qDebug() << regText;
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
 }
 
