@@ -17,6 +17,8 @@ client/Makefile*
 server/Makefile*
 speedserver/Makefile*
 
+Makefile
+
 debug/*
 release/*
 *.Debug

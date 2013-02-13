@@ -75,6 +75,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
                 _redis->Query("HSET file_" + recordNumber + " name " + filename);
                 _redis->Query("HSET file_" + recordNumber + " extension " + type);
                 _redis->Query("HSET file_" + recordNumber + " path " + path);
+                _redis->Query("HSET file_" + recordNumber + " uuid " + uuid);
                 _redis->Query("HSET fileid " + filename + " " + recordNumber);
                 _redis->Query(QString("HSET file_path %1 %2")
                          .arg(path)
@@ -88,6 +89,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
                          .arg(uuid)
                          .arg(timestamp)
                          .arg(recordNumber));
+                _redis->Query("SADD thmb_tasks " + recordNumber);
                 _redis->Disconnect();
             } else {
                 qDebug() << "Wrong redis response";
