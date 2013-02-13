@@ -27,6 +27,7 @@
 	require_once(dirname(__FILE__) . '/ApplicationView.php');
 	require_once(dirname(__FILE__) . '/ApplicationAction.php');
 	require_once(dirname(__FILE__) . '/ApplicationUtils.php');
+	require_once(dirname(__FILE__) . '/ApplicationException.php');
 	
 	final class Application {
 		public $path;
@@ -145,7 +146,8 @@
 					'</html>';
 			}
 			catch(Exception $e) {
-				$this->outputContent = 'Uncaught exception: '.$e->getMessage(); // though, it is not really "uncaught"
+				$this->outputContent = 'Uncaught exception: ' . $e->getMessage();	// it is not really "uncaught"
+																					// also, it is not safe to print out every exception
 			}
 		}
 		

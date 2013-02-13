@@ -201,17 +201,6 @@
 			return $this->systemName;
 		}
 		
-        /**
-         * Returns the relative link to the files thumbnail
-         */
-        public function getThmbLink() {
-            if($this->systemName === null)
-                throw new ApplicationModelException_File('System name is not defined.',
-					self::ERROR_UNDEFINED_SYSTEM_NAME);
-            $thmbLink = "/thmb/".basename($this->systemName).".png";
-            return $thmbLink;
-        }
-
 		/**
 		 * Checks whether the system name of the file is valid. Returns false, if it is not.
 		 */
@@ -478,14 +467,12 @@
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-                $fileSysNameHash = new Rediska_Key_Hash('file_path');
-                
-				//$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
-				if($fileSysNameHash[$this->systemName] === null)
+				$fileSysNameKey = new Rediska_Key('file_path_' . $this->systemName);
+				if($fileSysNameKey->getValue() === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash[$this->systemName];
+				$this->id = (int)$fileSysNameKey->getValue();
 			}
 			
 			// if the id is known, load the information from the database
