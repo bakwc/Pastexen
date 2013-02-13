@@ -31,9 +31,21 @@
 
 <hr />
 
-<?php foreach($files as $file) { ?>
+<?php foreach($files as $file) { 
+    try {
+        $thmbLink = $file->getThmbLink();
+    } catch (Exception $e) {
+        $thmbLink = "/thmb/general.png";
+    }
+    try {
+        $description = $file->getDescription();
+    } catch (Exception $e) {
+        // TODO: make description editable on click (use some ajax)
+        $description = "No description available";
+    }
+?>
 	<div class="media">
-		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="/app/index.php?action=file_thumbnail&file=<?php echo $file->getId(); ?>" /></a>
+		<a class="pull-left" href="<?php echo $file->getUrl(); ?>"><img class="media-object" src="<?php echo $thmbLink ?>" /></a>
 		<div class="media-body">
 			<div>
 				<div class="pull-left"><h4 class="media-heading"><a href="<?php echo $file->getUrl(); ?>"><?php echo htmlspecialchars($file->getName() . '.' . $file->getExtension()); ?></a></h4></div>
@@ -44,7 +56,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<p class="muted"><small><?php echo $this->date($file->getTime()); ?></small></p>
-			<p><?php echo htmlspecialchars($file->getDescription()); ?></p>
+			<p><?php echo htmlspecialchars($description); ?></p>
 		</div>
 	</div>
 <?php } ?>
