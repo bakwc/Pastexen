@@ -17,7 +17,7 @@ TApplication::TApplication(int argc, char *argv[])
 
 void TApplication::timerEvent(QTimerEvent *) {
     QVector<size_t> tasks;
-    if (!Redis.Connect("172.28.0.11", 6379)) {
+    if (!Redis.Connect("127.0.0.1", 6379)) {
         qDebug() << "redis server unavailable";
     } else {
         QStringList record = Redis.Query("SPOP thmb_tasks");
@@ -89,9 +89,7 @@ QImage TApplication::GenerateTxtThmb(const QString& fileName) {
     font.setPointSize(5);
     painter.setFont(font);
     for (int i = 0; i < (text.size() > 8 ? 8 : text.size()); i++) {
-        qDebug() << text[i];
         painter.drawText(8, 9 + i * 7, text[i]);
     }
-
     return thmb.toImage();
 }
