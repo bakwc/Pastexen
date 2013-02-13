@@ -477,12 +477,13 @@
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
+				$systemName = $this->systemName;
 				$fileSysNameHash = new Rediska_Key_Hash('file_path');
-				if($fileSysNameHash[$this->systemName] === null)
+				if($fileSysNameHash->$systemName === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash[$this->systemName];
+				$this->id = (int)$fileSysNameHash->$systemName;
 			}
 			
 			// if the id is known, load the information from the database
