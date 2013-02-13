@@ -145,7 +145,7 @@
 					'</html>';
 			}
 			catch(Exception $e) {
-				$this->outputContent = 'Uncaught exception.'; // though, it is not really "uncaught"
+				$this->outputContent = 'Uncaught exception: '.$e->getMessage(); // though, it is not really "uncaught"
 			}
 		}
 		

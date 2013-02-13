@@ -56,7 +56,7 @@
 				$owner->setId(ApplicationModel_User::getIdForUuid($this->application, $file->getUploader()));
 				$owner->load();
 			}
-			catch(ApplicationModelException_User $e) {
+			catch(Exception $e) {
 				$owner = null;
 			}
 			
