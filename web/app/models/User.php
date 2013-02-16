@@ -143,7 +143,8 @@
 		 */
 		public function addUuid($uuid, $time) {
 			if(!self::validateUuid($uuid))
-				throw new ApplicationModelException_User('UUID is invalid.', self::ERROR_INVALID_UUID);
+				throw new ApplicationModelException_User('UUID "' . $uuid . '" is invalid.',
+					self::ERROR_INVALID_UUID);
 			if(!is_int($time))
 				throw new ApplicationModelException_User('Timestamp must be an integer.',
 					self::ERROR_INVALID_UUID_TIMESTAMP);
@@ -214,7 +215,7 @@
 			
 			// if the id is unknown, we cannot do anything
 			else
-				throw new ApplicationModelException_User('Not enough information was given to load the user data.',
+				throw new ApplicationModelException_User('Not enough information was given to load user\'s data.',
 					self::ERROR_UNDEFINED_ID);
 		}
 		

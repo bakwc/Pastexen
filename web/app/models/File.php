@@ -616,7 +616,7 @@
 			$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 			$fileKeyHash->name = $this->name;
 			$fileKeyHash->extension = $this->extension;
-			$fileKeyHash->path = $this->getPath();
+			$fileKeyHash->path = $path;
 			$this->systemNameOld = $this->systemName;
 			$fileKeyHash->timestamp = $this->time;
 			$fileKeyHash->description = $this->getDescription();
