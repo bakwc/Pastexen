@@ -66,7 +66,7 @@
 						// skip this file
 						
 						// temp:
-						throw new ApplicationException($e->getMessage());
+						throw new ApplicationException($e->getMessage(), 400);
 					}
 				}
 			}
