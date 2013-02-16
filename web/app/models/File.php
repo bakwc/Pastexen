@@ -56,10 +56,6 @@
 		const TYPE_IMAGE  = 0; // image
 		const TYPE_SOURCE = 1; // source code
 	
-		// prefix, added to the system name to get the physical location of the file
-		const PATH_IMAGE_PREFIX  = '/data/images';
-		const PATH_SOURCE_PREFIX = '/data/sources';
-	
 		private $id = null;				// file id
 		private $type = null;			// file type (self::TYPE_* constant)
 		private $name = null;			// file name, given by the user
@@ -286,20 +282,6 @@
 					self::ERROR_UNDEFINED_UPLOADER);
 			return $this->uploader;
 		}
-
-		/**
-		 * Sets path to the file in the filesystem. Actually, it changes the system name to match the filepath.
-		 * Throws an exception with code self::ERROR_UNDEFINED_TYPE if the type of the file is unknown. Throws an
-		 * exception with code self::ERROR_INVALID_SYSTEM_NAME if the system name which matches the path is invalid.
-		 * system name is not known.
-		 */
-		public function setPath($path) {
-			switch($this->getType()) {
-				case self::TYPE_IMAGE:  $systemName = substr($path, strlen(self::PATH_IMAGE_PREFIX )); break;
-				case self::TYPE_SOURCE: $systemName = substr($path, strlen(self::PATH_SOURCE_PREFIX)); break;
-			}
-			$this->setSystemName($systemName);
-		}
 		
 		/**
 		 * Returns path to the file in the filesystem. Throws an exception w/code self::ERROR_UNDEFINED_SYSTEM_NAME,
@@ -308,26 +290,10 @@
 		 */
 		public function getPath() {
 			switch($this->getType()) {
-				case self::TYPE_IMAGE:  $directory = self::PATH_IMAGE_PREFIX; break;
-				case self::TYPE_SOURCE: $directory = self::PATH_SOURCE_PREFIX; break;
+				case self::TYPE_IMAGE:  $directory = $this->application->config['file_image_dir'] ; break;
+				case self::TYPE_SOURCE: $directory = $this->application->config['file_source_dir']; break;
 			}
 			return $directory . '/' . $this->getSystemName();
-		}
-		
-		/**
-		 * Returns path to the file in the filesystem, as it is stored in the database. Throws an exception w/code
-		 * self::ERROR_UNDEFINED_SYSTEM_NAME, if the system name is not known. Throws an exception with code
-		 * self::ERROR_UNDEFINED_TYPE if the type of the file is unknown.
-		 */
-		public function getOldPath() {
-			if($this->systemNameOld === null)
-				throw new ApplicationModelException_File('Old system name is not defined.',
-					self::ERROR_UNDEFINED_SYSTEM_NAME);
-			switch($this->getType()) {
-				case self::TYPE_IMAGE:  $directory = self::PATH_IMAGE_PREFIX; break;
-				case self::TYPE_SOURCE: $directory = self::PATH_SOURCE_PREFIX; break;
-			}
-			return $directory . '/' . $this->systemNameOld;
 		}
 		
 		/**
@@ -408,95 +374,8 @@
 		}
 		
 		/**
-		 * Returns gd image which can be used as a thumbnail for the file. Throws an exception with code
-		 * self::ERROR_INVALID_THUMBNAIL_SIZE if the requested thumbnail is too big or too small. If a file does not
-		 * exist, an exception with code self::ERROR_NOTFOUND_FILE will be thrown.
-		 */
-		public function getThumbnail($size = 64) {
-			if($size < $this->application->config['file_thumbnail_min_size'])
-				throw new ApplicationModelException_File('The thumbnail is too small.',
-					self::ERROR_INVALID_THUMBNAIL_SIZE);
-			
-			if($size > $this->application->config['file_thumbnail_max_size'])
-				throw new ApplicationModelException_File('The thumbnail is too big.',
-					self::ERROR_INVALID_THUMBNAIL_SIZE);
-		
-			$filePath = $this->getPath();
-			
-			if(!is_file($filePath))
-				throw new ApplicationModelException_File('Cannot access file ' . $filePath . '.',
-					self::ERROR_NOTFOUND_FILE);
-			
-			switch($this->getType()) {
-				case self::TYPE_IMAGE:
-					$pictureImageGd = imageCreateFromPNG($filePath);
-					$pictureWidth  = imageSx($pictureImageGd);
-					$pictureHeight = imageSy($pictureImageGd);
-					
-					$scale = $size / max($pictureWidth, $pictureHeight);
-					$pictureNewWidth  = ceil($pictureWidth  * $scale);
-					$pictureNewHeight = ceil($pictureHeight * $scale);
-					
-					if($pictureWidth > $pictureHeight) {
-						$pictureNewX = 0;
-						$pictureNewY = ($size - $pictureNewHeight) / 2;
-					}
-					else {
-						$pictureNewX = ($size - $pictureNewWidth ) / 2;
-						$pictureNewY = 0;
-					}
-					
-					$imageGd = imageCreateTrueColor($size, $size);
-					$bgColor = $this->application->config['file_image_thumbnail_bgcolor'];
-					$bgColorGd = imageColorResolve($imageGd, $bgColor[0], $bgColor[1], $bgColor[2]);
-					imageFilledRectangle($imageGd, 0, 0, $size - 1, $size - 1, $bgColorGd);
-					
-					imageCopyResampled($imageGd, $pictureImageGd, $pictureNewX, $pictureNewY, 0, 0,
-						$pictureNewWidth, $pictureNewHeight, $pictureWidth, $pictureHeight);
-					
-					imageDestroy($pictureImageGd);
-					
-					return $imageGd;
-				
-				case self::TYPE_SOURCE:
-					$codeImageGd = imageCreate($size * 2, $size * 2); // Note: truecolor image is not necessary here.
-					$bgColor = $this->application->config['file_source_thumbnail_bgcolor'];
-					$fgColor = $this->application->config['file_source_thumbnail_fgcolor'];
-					$codeBgColorGd = imageColorResolve($codeImageGd, $bgColor[0], $bgColor[1], $bgColor[2]);
-					$codeFgColorGd = imageColorResolve($codeImageGd, $fgColor[0], $fgColor[1], $fgColor[2]);
-
-					$sourceText = substr(file_get_contents($filePath), 0, 20000);
-					$sourceText = str_replace("\t", '    ', $sourceText);
-					$sourceText = str_replace("\r", '', $sourceText);
-					
-					$fontGd = 4; // gd fonts 2 and 4 work the best
-					$x = 0;
-					$y = 0;
-					for($i = 0, $sourceSz = strlen($sourceText); $i < $sourceSz; ++$i) {
-						if($sourceText{$i} == "\n") {
-							$x = 0;
-							$y += imageFontHeight($fontGd);
-						}
-						elseif($sourceText{$i} >= ' ' && $sourceText{$i} <= '~') {
-							imageString($codeImageGd, $fontGd, $x, $y, $sourceText{$i}, $codeFgColorGd);
-							$x += imageFontWidth($fontGd);
-						}
-					}
-					
-					$imageGd = imageCreateTrueColor($size, $size);
-					imageCopyResampled($imageGd, $codeImageGd, 0, 0, 0, 0, $size, $size,
-						imageSx($codeImageGd), imageSy($codeImageGd));
-					
-					imageDestroy($codeImageGd);
-					
-					return $imageGd;
-			}
-		}
-		
-		/**
-		 * Returns url of the thumbnail. Note: it has no connection to self::getThumbnail() which returns gd image
-		 * of the thumbnail. This method only returns the url, where the thumbnail is supposed to be; a separate
-		 * program will have to generate and place it there. Throws an exception with code
+		 * Returns url of the thumbnail. This method only returns the url, where the thumbnail is supposed to be; a
+		 * separate program will have to generate and place it there. Throws an exception with code
 		 * self::ERROR_UNDEFINED_SYSTEM_NAME if the system name of the file is unknown.
 		 */
 		public function getThumbnailUrl() {
@@ -515,13 +394,13 @@
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				$path = $this->getPath();
-				$filePathHash = new Rediska_Key_Hash('file_path');
-				if($filePathHash->$path === null)
+				$systemName = $this->systemName;
+				$fileSysNameHash = new Rediska_Key_Hash('file_path');
+				if($fileSysNameHash->$systemName === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$filePathHash->$path;
+				$this->id = (int)$fileSysNameHash->$systemName;
 			}
 			
 			// if the id is known, load the information from the database
@@ -535,7 +414,7 @@
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 				$this->name = $fileKeyHash->name;
 				$this->extension = $fileKeyHash->extension;
-				$this->setPath($fileKeyHash->path);
+				$this->systemName = $fileKeyHash->path;
 				$this->systemNameOld = $this->systemName;
 				$this->time = (int)$fileKeyHash->timestamp;
 				$this->setDescription($fileKeyHash->description);
@@ -569,8 +448,8 @@
 		 */
 		public function save() {
 			// id lookup hash
-			$path = $this->getPath();
-			$filePathHash = new Rediska_Key_Hash('file_path');
+			$systemName = $this->systemName;
+			$fileSysNameHash = new Rediska_Key_Hash('file_path');
 			
 			// if id is known - we will be editing file's information
 			if($this->id !== null) {
@@ -583,7 +462,7 @@
 			// if id is unknown - we will be creating a new file
 			else {
 				// file's system name must not be taken by any other file
-				if($filePathHash->$path !== null)
+				if($fileSysNameHash->$systemName !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
@@ -595,14 +474,14 @@
 			// if file's system name needs to be changed
 			if($this->systemNameOld !== null && $this->systemNameOld != $this->systemName) {
 				// new system name must not be taken by another file
-				if($filePathHash->$path !== null)
+				if($fileSysNameHash->$systemName !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
 				
 				// remove old id lookup field
-				$pathOld = $this->getOldPath();
-				unset($filePathHash->$pathOld);
+				$systemNameOld = $this->systemNameOld;
+				unset($fileSysNameHash->$systemNameOld);
 			}
 			
 			// if uploader's uuid needs to be changed
@@ -616,7 +495,7 @@
 			$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 			$fileKeyHash->name = $this->name;
 			$fileKeyHash->extension = $this->extension;
-			$fileKeyHash->path = $path;
+			$fileKeyHash->path = $this->systemName;
 			$this->systemNameOld = $this->systemName;
 			$fileKeyHash->timestamp = $this->time;
 			$fileKeyHash->description = $this->getDescription();
@@ -630,7 +509,7 @@
 			}
 			
 			// save id lookup key
-			$filePathHash->$path = $this->id;
+			$fileSysNameHash->$systemName = $this->id;
 			
 			// reset uploader's uuid
 			$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
@@ -648,16 +527,16 @@
 		 */
 		public function delete() {
 			// id lookup hash
-			$path = $this->getPath();
-			$filePathHash = new Rediska_Key_Hash('file_path');
-		
+			$systemName = $this->systemName;
+			$fileSysNameHash = new Rediska_Key_Hash('file_path');
+			
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				if($filePathHash->$path === null)
+				if($fileSysNameHash->$systemName === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$filePathHash->$path;
+				$this->id = (int)$fileSysNameHash->$systemName;
 			}
 			
 			// if the id is known, delete the information from the database
@@ -672,7 +551,7 @@
 				$fileKeyHash->delete();
 				
 				// remove id lookup field
-				unset($filePathHash->$path);
+				unset($fileSysNameHash->$systemName);
 				
 				// remove file from user's upload list
 				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
