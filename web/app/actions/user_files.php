@@ -64,6 +64,9 @@
 					}
 					catch(ApplicationModelException_File $e) {
 						// skip this file
+						
+						// temp:
+						throw new ApplicationException($e->getMessage());
 					}
 				}
 			}
