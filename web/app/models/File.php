@@ -56,6 +56,10 @@
 		const TYPE_IMAGE  = 0; // image
 		const TYPE_SOURCE = 1; // source code
 	
+		// prefix, added to the system name to get the physical location of the file
+		const PATH_IMAGE_PREFIX  = '/data/images';
+		const PATH_SOURCE_PREFIX = '/data/sources';
+	
 		private $id = null;				// file id
 		private $type = null;			// file type (self::TYPE_* constant)
 		private $name = null;			// file name, given by the user
@@ -232,9 +236,12 @@
 		
 		/**
 		 * Sets the description of the file. If it is longer than 20k symbols, throws an exception with code
-		 * self::ERROR_INVALID_DESCRIPTION. Note: the description _can_ be an empty string.
+		 * self::ERROR_INVALID_DESCRIPTION. Note: the description _can_ be an empty string. If description is null,
+		 * it will be saved as an empty string.
 		 */
 		public function setDescription($description) {
+			if($description === null)
+				$description = '';
 			if(!self::validateDescription($description))
 				throw new ApplicationModelException_File('Description is invalid.',
 					self::ERROR_INVALID_DESCRIPTION);
@@ -281,15 +288,46 @@
 		}
 
 		/**
-		 * Returns path to the file in the filesystem. Throws an exception self::ERROR_UNDEFINED_SYSTEM_NAME, if the
+		 * Sets path to the file in the filesystem. Actually, it changes the system name to match the filepath.
+		 * Throws an exception with code self::ERROR_UNDEFINED_TYPE if the type of the file is unknown. Throws an
+		 * exception with code self::ERROR_INVALID_SYSTEM_NAME if the system name which matches the path is invalid.
 		 * system name is not known.
+		 */
+		public function setPath($path) {
+			switch($this->getType()) {
+				case self::TYPE_IMAGE:  $systemName = substr($path, strlen(self::PATH_IMAGE_PREFIX )); break;
+				case self::TYPE_SOURCE: $systemName = substr($path, strlen(self::PATH_SOURCE_PREFIX)); break;
+			}
+			$this->setSystemName($systemName);
+		}
+		
+		/**
+		 * Returns path to the file in the filesystem. Throws an exception w/code self::ERROR_UNDEFINED_SYSTEM_NAME,
+		 * if the system name is not known. Throws an exception with code self::ERROR_UNDEFINED_TYPE if the type of
+		 * the file is unknown.
 		 */
 		public function getPath() {
 			switch($this->getType()) {
-				case self::TYPE_IMAGE:  $directory = $this->application->config['file_image_dir'] ; break;
-				case self::TYPE_SOURCE: $directory = $this->application->config['file_source_dir']; break;
+				case self::TYPE_IMAGE:  $directory = self::PATH_IMAGE_PREFIX; break;
+				case self::TYPE_SOURCE: $directory = self::PATH_SOURCE_PREFIX; break;
 			}
 			return $directory . '/' . $this->getSystemName();
+		}
+		
+		/**
+		 * Returns path to the file in the filesystem, as it is stored in the database. Throws an exception w/code
+		 * self::ERROR_UNDEFINED_SYSTEM_NAME, if the system name is not known. Throws an exception with code
+		 * self::ERROR_UNDEFINED_TYPE if the type of the file is unknown.
+		 */
+		public function getOldPath() {
+			if($this->systemNameOld === null)
+				throw new ApplicationModelException_File('Old system name is not defined.',
+					self::ERROR_UNDEFINED_SYSTEM_NAME);
+			switch($this->getType()) {
+				case self::TYPE_IMAGE:  $directory = self::PATH_IMAGE_PREFIX; break;
+				case self::TYPE_SOURCE: $directory = self::PATH_SOURCE_PREFIX; break;
+			}
+			return $directory . '/' . $this->systemNameOld;
 		}
 		
 		/**
@@ -477,13 +515,13 @@
 		public function load() {
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				$systemName = $this->systemName;
-				$fileSysNameHash = new Rediska_Key_Hash('file_path');
-				if($fileSysNameHash->$systemName === null)
+				$path = $this->getPath();
+				$filePathHash = new Rediska_Key_Hash('file_path');
+				if($filePathHash->$path === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash->$systemName;
+				$this->id = (int)$filePathHash->$path;
 			}
 			
 			// if the id is known, load the information from the database
@@ -497,11 +535,11 @@
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 				$this->name = $fileKeyHash->name;
 				$this->extension = $fileKeyHash->extension;
-				$this->systemName = $fileKeyHash->path;
+				$this->setPath($fileKeyHash->path);
 				$this->systemNameOld = $this->systemName;
 				$this->time = (int)$fileKeyHash->timestamp;
-				$this->description = $fileKeyHash->description;
-				$this->uploader = substr($fileKeyHash->uuid, strlen('uuid_'));
+				$this->setDescription($fileKeyHash->description);
+				$this->uploader = $fileKeyHash->uuid;
 				$this->uploaderOld = $this->uploader;
 				
 				// get file's type
@@ -531,8 +569,8 @@
 		 */
 		public function save() {
 			// id lookup hash
-			$systemName = $this->systemName;
-			$fileSysNameHash = new Rediska_Key_Hash('file_path');
+			$path = $this->getPath();
+			$filePathHash = new Rediska_Key_Hash('file_path');
 			
 			// if id is known - we will be editing file's information
 			if($this->id !== null) {
@@ -545,7 +583,7 @@
 			// if id is unknown - we will be creating a new file
 			else {
 				// file's system name must not be taken by any other file
-				if($fileSysNameHash->$systemName !== null)
+				if($filePathHash->$path !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
@@ -557,14 +595,14 @@
 			// if file's system name needs to be changed
 			if($this->systemNameOld !== null && $this->systemNameOld != $this->systemName) {
 				// new system name must not be taken by another file
-				if($fileSysNameHash->$systemName !== null)
+				if($filePathHash->$path !== null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' already exists in the database.',
 						self::ERROR_TAKEN_SYSTEM_NAME);
 				
 				// remove old id lookup field
-				$systemNameOld = $this->systemNameOld;
-				unset($fileSysNameHash->$systemNameOld);
+				$pathOld = $this->getOldPath();
+				unset($filePathHash->$pathOld);
 			}
 			
 			// if uploader's uuid needs to be changed
@@ -578,11 +616,11 @@
 			$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 			$fileKeyHash->name = $this->name;
 			$fileKeyHash->extension = $this->extension;
-			$fileKeyHash->path = $this->systemName;
+			$fileKeyHash->path = $this->getPath();
 			$this->systemNameOld = $this->systemName;
 			$fileKeyHash->timestamp = $this->time;
-			$fileKeyHash->description = $this->description;
-			$fileKeyHash->uuid = 'uuid_' . $this->uploader;
+			$fileKeyHash->description = $this->getDescription();
+			$fileKeyHash->uuid = $this->uploader;
 			$this->uploaderOld = $this->uploader;
 			
 			// save file's type
@@ -592,7 +630,7 @@
 			}
 			
 			// save id lookup key
-			$fileSysNameHash->$systemName = $this->id;
+			$filePathHash->$path = $this->id;
 			
 			// reset uploader's uuid
 			$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
@@ -610,16 +648,16 @@
 		 */
 		public function delete() {
 			// id lookup hash
-			$systemName = $this->systemName;
-			$fileSysNameHash = new Rediska_Key_Hash('file_path');
+			$path = $this->getPath();
+			$filePathHash = new Rediska_Key_Hash('file_path');
 		
 			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
 			if($this->id === null && $this->systemName !== null) {
-				if($fileSysNameHash->$systemName === null)
+				if($filePathHash->$path === null)
 					throw new ApplicationModelException_File(
 						'File with system name ' . $this->systemName . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash->$systemName;
+				$this->id = (int)$filePathHash->$path;
 			}
 			
 			// if the id is known, delete the information from the database
@@ -634,7 +672,7 @@
 				$fileKeyHash->delete();
 				
 				// remove id lookup field
-				unset($fileSysNameHash->$systemName);
+				unset($filePathHash->$path);
 				
 				// remove file from user's upload list
 				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
