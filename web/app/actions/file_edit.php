@@ -80,6 +80,7 @@
 			$view = new ApplicationView($this->application, $this->application->path . '/views/file_edit.php');
 			$view->user = $user;
 			$view->file = $file;
+			$view->allowedExtensions = $this->application->config['file_extensions'];
 			$view->render();
 		}
 	}
