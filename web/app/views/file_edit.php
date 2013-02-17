@@ -59,19 +59,21 @@
 							echo htmlspecialchars($file->getName());
 					?>" required />
 				</div>
-				<div class="input-prepend pull-left">
-					<span class="add-on"><?php echo $this->l('field_extension'); ?></span>
-					<select name="extension" class="select-chosen span1" tabindex="2" <?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) echo 'disabled="disabled"'; ?>>
-						<?php
-							foreach($allowedExtensions as $allowedExtension => $allowedLanguage) {
-								$optionName = $allowedExtension . ' (' . (strtoupper($allowedLangauge{0}) . substr($allowedLanguage, 1)) . ')';
-								if($allowedExtension == $file->getExtenstion())
-									echo '<option value="' . $allowedExtension . '" selected>' . $optionName . '</option>';
-								else
-									echo '<option value="' . $allowedExtension . '">' . $optionName . '</option>';
-							}
-						?>
-					</select>
+				<div class="pull-left">
+					<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) echo '.' . $file->getExtension(); ?>
+					<?php else { ?>
+						<select data-placeholder="<?php echo $this->l('field_extension'); ?>" name="extension" class="select-chosen span2" tabindex="2" >
+							<?php
+								foreach($allowedExtensions as $allowedExtension => $allowedLanguage) {
+									$optionName = $allowedExtension . ' (' . (strtoupper($allowedLanguage{0}) . substr($allowedLanguage, 1)) . ')';
+									if($allowedExtension == $file->getExtension())
+										echo '<option value="' . $allowedExtension . '" selected>' . $optionName . '</option>';
+									else
+										echo '<option value="' . $allowedExtension . '">' . $optionName . '</option>';
+								}
+							?>
+						</select>
+					<?php } ?>
 				</div>
 				<div class="clearfix"></div>
 				
