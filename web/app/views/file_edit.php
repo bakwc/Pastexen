@@ -61,15 +61,17 @@
 				</div>
 				<div class="input-prepend pull-left">
 					<span class="add-on"><?php echo $this->l('field_extension'); ?></span>
-					<input type="text" class="span1" name="extension" value="<?php
-						if(isset($extension) && !empty($extension))
-							echo htmlspecialchars($extension);
-						else
-							echo htmlspecialchars($file->getExtension());
-					?>" <?php
-						if($file->getType() == ApplicationModel_File::TYPE_IMAGE)
-							echo 'disabled="disabled"';
-					?> required />
+					<select name="extension" class="select-chosen span1" tabindex="2" <?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) echo 'disabled="disabled"'; ?>>
+						<?php
+							foreach($allowedExtensions as $allowedExtension => $allowedLanguage) {
+								$optionName = $allowedExtension . ' (' . (strtoupper($allowedLangauge{0}) . substr($allowedLanguage, 1)) . ')';
+								if($allowedExtension == $file->getExtenstion())
+									echo '<option value="' . $allowedExtension . '" selected>' . $optionName . '</option>';
+								else
+									echo '<option value="' . $allowedExtension . '">' . $optionName . '</option>';
+							}
+						?>
+					</select>
 				</div>
 				<div class="clearfix"></div>
 				

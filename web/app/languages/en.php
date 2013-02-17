@@ -75,6 +75,6 @@
 		'file_edit'							=> 'Edit file\'s information',
 		'file_edit_errors_occured'			=> 'Some errors occured while editing file\'s information:',
 		'error_filename_bad'				=> 'The name of the file is invalid. Make sure that it is between 1 and 25 characters long.',
-		'error_extension_bad'				=> 'The extension of the file is invalid. Make sure that it is between 1 and 10 characters long.',
+		'error_extension_bad'				=> 'Disallowed file extension.',
 		'error_description_bad'				=> 'The description is too long. Make sure that it contains less than 20000 characters.'
 	);

@@ -173,10 +173,10 @@
 		}
 		
 		/**
-		 * Checks whether the extension is valid. Returns false, if it is not.
+		 * Checks whether the extension is in the list of allowed extensions. Returns false, if it is not.
 		 */
 		public static function validateExtension($extension) {
-			return is_string($extension) && strlen($extension) <= 10;
+			return isset($this->application->config['file_extensions'][$extension]);
 		}
 		
 		/**
@@ -342,48 +342,12 @@
 					self::ERROR_NOTFOUND_FILE);
 			$sourceText = substr(file_get_contents($filePath), 0, 20000);
 			
-			$languages = array(
-				// file extension => programming language
-				'php'   => 'php',
-				'cpp'   => 'cpp',
-				'c'     => 'cpp',
-				'h'     => 'cpp',
-				'py'    => 'python',
-				'java'  => 'java',
-				'm'     => 'objectivec',
-				'l'     => 'objectivec',
-				'pl'    => 'perl',
-				'xml'   => 'xml',
-				'html'  => 'xml',
-				'js'    => 'javascript',
-				'css'   => 'css',
-				'json'  => 'json',
-				'as'    => 'actionscript',
-				'vb'    => 'vbscript',
-				'http'  => 'http',
-				'cs'    => 'cs',
-				'd'     => 'd',
-				'sql'   => 'sql',
-				'st'    => 'smalltalk',
-				'lisp'  => 'lisp',
-				'cl'    => 'lisp',
-				'ini'   => 'ini',
-				'conf'  => 'apache',
-				'sh'    => 'bash',
-				'bat'   => 'dos',
-				'cmake' => 'cmake',
-				'hs'    => 'haskell',
-				'lhs'   => 'haskell',
-				'txt'	=> 'text',
-				'dat'	=> 'text'
-			);
-			
-			if(isset($languages[$this->extension]))
-				return $languages[$this->extension];
+			if(isset($this->application->config['file_extensions'][$this->extension]))
+				return $this->application->config['file_extensions'][$this->extension];
 			
 			$systemExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-			if(isset($languages[$systemExtension]))
-				return $languages[$systemExtension];
+			if(isset($this->application->config['file_extensions'][$systemExtension]))
+				return $this->application->config['file_extensions'][$systemExtension];
 			
 			$detector = new ProgrammingLanguageDetector();
 			$detector->importKnowledgeBase(file_get_contents(dirname(__FILE__) .

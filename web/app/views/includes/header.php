@@ -40,19 +40,25 @@
 			$jsIncludes = array_merge(array(
 				'/app/static/javascript/jquery-1.7.1.min.js',
 				'/app/static/javascript/bootstrap-transition.js',
-				'/app/static/javascript/bootstrap-dropdown.js'
+				'/app/static/javascript/bootstrap-dropdown.js',
+				'/app/static/javascript/chosen.jquery.min.js',
+				'/app/static/javascript/app.js',
 				), $jsIncludes);
 			foreach($jsIncludes as $js)
 				echo '<script src="' . $js . '"></script>';
+
+			if(!isset($cssIncludes))
+				$cssIncludes = array();
+			$cssIncludes = array_merge(array(
+				'/app/static/styles/twitter-bootstrap-2.2.2.css',
+				'/app/static/styles/harvesthq-chosen-0.9.11.css'
+				), $cssIncludes, array(
+				'/app/static/styles/app-common.css',
+				'/app/static/styles/app-navbar.css'
+				));
+			foreach($cssIncludes as $css)
+				echo '<link href="' . $css . '" rel="stylesheet" />';
 		?>
-		<link href="/app/static/styles/twitter-bootstrap-2.2.2.css" rel="stylesheet" />
-		<?php
-			if(isset($cssIncludes))
-				foreach($cssIncludes as $css)
-					echo '<link href="' . $css . '" rel="stylesheet" />';
-		?>
-		<link href="/app/static/styles/app-common.css" rel="stylesheet" />
-		<link href="/app/static/styles/app-navbar.css" rel="stylesheet" />
 	</head>
 	<body <?php if(isset($bodyTagParameters)) echo $bodyTagParameters; ?>>
 		<div class="navbar navbar-fixed-top">
