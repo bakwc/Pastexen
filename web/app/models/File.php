@@ -184,7 +184,7 @@
 		 * self::ERROR_INVALID_PATH will be thrown.
 		 */
 		public function setPath($path) {
-			if(!self::validatePath($path)
+			if(!self::validatePath($path))
 				throw new ApplicationModelException_File('Path is invalid.',
 					self::ERROR_INVALID_PATH);
 			$this->path = $path;
@@ -214,7 +214,7 @@
 		 * self::ERROR_INVALID_SYSTEM_NAME.
 		 */
 		public function setSystemName($systemName) {
-			if(!self::validateSystemName($systemName)
+			if(!self::validateSystemName($systemName))
 				throw new ApplicationModelException_File('System name is invalid.',
 					self::ERROR_INVALID_SYSTEM_NAME);
 			switch($this->getType()) {
