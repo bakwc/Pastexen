@@ -149,7 +149,7 @@
 		 * Checks whether the filename is valid. Returns false, if it is not.
 		 */
 		public static function validateName($name) {
-			return is_string($name) && strlen($name) >= 5 && strlen($name) <= 25;
+			return is_string($name) && strlen($name) >= 1 && strlen($name) <= 25;
 		}
 		
 		/**
