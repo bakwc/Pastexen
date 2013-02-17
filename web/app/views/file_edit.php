@@ -60,9 +60,10 @@
 					?>" required />
 				</div>
 				<div class="pull-left">
-					<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE) echo '.' . $file->getExtension(); ?>
-					<?php else { ?>
-						<select data-placeholder="<?php echo $this->l('field_extension'); ?>" name="extension" class="select-chosen span2" tabindex="2" >
+					<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE)
+						echo '.' . $file->getExtension();
+						else { ?>
+						<select data-placeholder="<?php echo $this->l('field_extension'); ?>" name="extension" class="select-chosen" tabindex="2">
 							<?php
 								foreach($allowedExtensions as $allowedExtension => $allowedLanguage) {
 									$optionName = $allowedExtension . ' (' . (strtoupper($allowedLanguage{0}) . substr($allowedLanguage, 1)) . ')';
@@ -73,7 +74,7 @@
 								}
 							?>
 						</select>
-					<?php } ?>
+					<?php	} ?>
 				</div>
 				<div class="clearfix"></div>
 				

@@ -96,7 +96,7 @@
 					$extensionBad = true;
 				else {
 					$extension = $this->application->parameters['extension'];
-					if(!ApplicationModel_File::validateExtension($extension))
+					if(!$file->validateExtension($extension))
 						$extensionBad = true;
 				}
 			}

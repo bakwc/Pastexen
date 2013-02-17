@@ -157,7 +157,7 @@
 		 * self::ERROR_INVALID_EXTENSION.
 		 */
 		public function setExtension($extension) {
-			if(!self::validateExtension($extension))
+			if(!$this->validateExtension($extension))
 				throw new ApplicationModelException_File('Extension is invalid.', self::ERROR_INVALID_EXTENSION);
 			$this->extension = $extension;
 		}
@@ -175,8 +175,11 @@
 		/**
 		 * Checks whether the extension is in the list of allowed extensions. Returns false, if it is not.
 		 */
-		public static function validateExtension($extension) {
-			return isset($this->application->config['file_extensions'][$extension]);
+		public function validateExtension($extension) {
+			if($this->getType() == self::TYPE_SOURCE)
+				return isset($this->application->config['file_extensions'][$extension]);
+			else
+				return is_string($extension) && !empty($extension) && strlen($extension) < 10;
 		}
 		
 		/**
@@ -185,7 +188,7 @@
 		 */
 		public function setPath($path) {
 			if(!self::validatePath($path))
-				throw new ApplicationModelException_File('Path is invalid.',
+				throw new ApplicationModelException_File('Path "' . $path . '" is invalid.',
 					self::ERROR_INVALID_PATH);
 			$this->path = $path;
 		}
