@@ -74,6 +74,5 @@
 			'lhs'   => 'haskell',
 			'txt'	=> 'text',
 			'dat'	=> 'text'
-			),
 		)
 	);
