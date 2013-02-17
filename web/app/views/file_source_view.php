@@ -30,11 +30,8 @@
 	require(dirname(__FILE__) . '/includes/header.php');
 ?>
 
-<h1><?php echo $file->getName() . '.' . $file->getExtension(); ?></h1>
-
-<hr />
-
-<div class="btn-group pull-left">
+<h1 class="pull-left"><?php echo $file->getName() . '.' . $file->getExtension(); ?></h1>
+<div class="btn-group pull-right">
 	<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
 	<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw"><?php echo $this->l('action_open_raw'); ?></a>
 	<?php
@@ -48,6 +45,10 @@
 		<a class="btn btn-danger" href="/app/index.php?action=file_delete&file=<?php echo $file->getId(); ?>"><?php echo $this->l('action_delete'); ?></a>
 	<?php } ?>
 </div>
+<div class="clearfix"></div>
+
+<hr />
+
 <div id="fb-root"></div>
 <div class="pull-right social">
 	<div id="vk_like" class="vkontakte-like-button"></div>
