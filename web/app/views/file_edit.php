@@ -63,7 +63,7 @@
 					<?php if($file->getType() == ApplicationModel_File::TYPE_IMAGE)
 						echo '.' . $file->getExtension();
 						else { ?>
-						<select data-placeholder="<?php echo $this->l('field_extension'); ?>" name="extension" class="select-chosen" tabindex="2">
+						<select data-placeholder="<?php echo $this->l('field_extension'); ?>" name="extension" class="span2" tabindex="2">
 							<?php
 								foreach($allowedExtensions as $allowedExtension => $allowedLanguage) {
 									$optionName = $allowedExtension . ' (' . (strtoupper($allowedLanguage{0}) . substr($allowedLanguage, 1)) . ')';

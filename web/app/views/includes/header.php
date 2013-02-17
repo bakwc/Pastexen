@@ -50,8 +50,7 @@
 			if(!isset($cssIncludes))
 				$cssIncludes = array();
 			$cssIncludes = array_merge(array(
-				'/app/static/styles/twitter-bootstrap-2.2.2.css',
-				'/app/static/styles/harvesthq-chosen-0.9.11.css'
+				'/app/static/styles/twitter-bootstrap-2.2.2.css'
 				), $cssIncludes, array(
 				'/app/static/styles/app-common.css',
 				'/app/static/styles/app-navbar.css'
