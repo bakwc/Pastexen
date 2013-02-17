@@ -35,13 +35,13 @@
 			
 			// load file's information
 			$file = new ApplicationModel_File($this->application);
+			$file->setType(ApplicationModel_File::TYPE_SOURCE);
 			$file->setSystemName($systemName);
 			try {
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
 				// file does not exist in the database, but if the file exists in the filesystem, then fill the model with default data
-				$file->setType(ApplicationModel_File::TYPE_SOURCE);
 				$file->setTime(time());
 				$file->setDescription('');
 				$file->setUploader('000000000000000000000000000000000000000000000000');
@@ -59,10 +59,6 @@
 				if(!is_file($file->getPath()))
 					throw new ApplicationException('File is not found.', 404);
 			}
-			
-			// this action works only for sources
-			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
-				throw new ApplicationException('This page supports only source code files.', 403);
 			
 			// load file's owner
 			try {

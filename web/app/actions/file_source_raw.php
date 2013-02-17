@@ -28,23 +28,20 @@
 		public function run() {
 			if(!isset($this->application->parameters['file']))
 				throw new ApplicationException('File identifier is missing.', 400);
-			
 			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
 				throw new ApplicationException('System name of the file is invalid.', 400);
+			$systemName = $this->application->parameters['file'];
 			
 			$file = new ApplicationModel_File($this->application);
-			$file->setSystemName($this->application->parameters['file']);
+			$file->setType(ApplicationModel_File::TYPE_SOURCE);
+			$file->setSystemName($systemName);
 			try {
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
-				$file->setType(ApplicationModel_File::TYPE_SOURCE);
 				if(!is_file($file->getPath()))
 					throw new ApplicationException('File is not found.', 404);
 			}
-			
-			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
-				throw new ApplicationException('Incorrect file type.', 403);
 			
 			$this->application->outputHeaders[] = 'Content-Type:text/plain; charset=utf-8';
 			$this->application->outputContent = file_get_contents($file->getPath());

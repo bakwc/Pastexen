@@ -28,25 +28,30 @@
 		public function run() {
 			if(!isset($this->application->parameters['file']))
 				throw new ApplicationException('File identifier is missing.', 400);
-			
 			if(!ApplicationModel_File::validateSystemName($this->application->parameters['file']))
 				throw new ApplicationException('System name of the file is invalid.', 400);
+			$systemName = $this->application->parameters['file'];
 			
 			$file = new ApplicationModel_File($this->application);
-			$file->setSystemName($this->application->parameters['file']);
+			$file->setType(ApplicationModel_File::TYPE_SOURCE);
+			$file->setSystemName($systemName);
 			try {
 				$file->load();
 			}
 			catch(ApplicationModelException_File $e) {
 				$file->setType(ApplicationModel_File::TYPE_SOURCE);
+				$file->setExtension('auto');
+				try {
+					$file->setName(basename($file->getSystemName(), '.' . pathinfo($file->getSystemName(), PATHINFO_EXTENSION)));
+				}
+				catch(ApplicationModelException_File $e) {
+					// we have got problems with file's name
+					$file->setName('untitled');
+				}
+				
 				if(!is_file($file->getPath()))
 					throw new ApplicationException('File is not found.', 404);
-				$file->setName(basename($file->getSystemName(), '.' . pathinfo($file->getSystemName(), PATHINFO_EXTENSION)));
-				$file->setExtension('auto');
 			}
-			
-			if($file->getType() != ApplicationModel_File::TYPE_SOURCE)
-				throw new ApplicationException('Incorrect file type.', 403);
 			
 			$this->application->outputHeaders = array(
 				'Content-type: application/force-download',

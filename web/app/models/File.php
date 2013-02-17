@@ -35,7 +35,7 @@
 		const ERROR_INVALID_TYPE			= 10002;
 		const ERROR_INVALID_NAME			= 10003;
 		const ERROR_INVALID_EXTENSION		= 10004;
-		const ERROR_INVALID_SYSTEM_NAME		= 10005;
+		const ERROR_INVALID_PATH			= 10005;
 		const ERROR_INVALID_TIME			= 10006;
 		const ERROR_INVALID_DESCIPTION		= 10007;
 		const ERROR_INVALID_UPLOADER		= 10008;
@@ -44,14 +44,14 @@
 		const ERROR_UNDEFINED_TYPE			= 10102;
 		const ERROR_UNDEFINED_NAME			= 10103;
 		const ERROR_UNDEFINED_EXTENSION		= 10104;
-		const ERROR_UNDEFINED_SYSTEM_NAME	= 10105;
+		const ERROR_UNDEFINED_PATH			= 10105;
 		const ERROR_UNDEFINED_TIME			= 10106;
 		const ERROR_UNDEFINED_DESCRIPTION	= 10107;
 		const ERROR_UNDEFINED_UPLOADER		= 10108;
 		const ERROR_NOTFOUND_FILE			= 10201;
 		const ERROR_NOTFOUND_ID				= 10202;
-		const ERROR_NOTFOUND_SYSTEM_NAME	= 10203;
-		const ERROR_TAKEN_SYSTEM_NAME		= 10301;
+		const ERROR_NOTFOUND_PATH			= 10203;
+		const ERROR_TAKEN_PATH				= 10301;
 		
 		const TYPE_IMAGE  = 0; // image
 		const TYPE_SOURCE = 1; // source code
@@ -60,8 +60,8 @@
 		private $type = null;			// file type (self::TYPE_* constant)
 		private $name = null;			// file name, given by the user
 		private $extension = null;		// file extension, given by the user
-		private $systemName = null;		// name of the file in the filesystem
-		private $systemNameOld = null;	// name of the file in the filesystem as it is stored in the database
+		private $path = null;			// path to the file in the filesystem
+		private $pathOld = null;		// path to the file in the filesystem as it is stored in the database
 		private $time = null;			// upload time
 		private $description = null;	// description, given by the user
 		private $uploader = null;		// uuid of the uploader
@@ -76,7 +76,7 @@
 				'type: "' . $this->type . '", ' .
 				'name: "' . $this->name . '", ' .
 				'extension: "' . $this->extension . '", ' .
-				'systemName: "' . $this->systemName . '", ' .
+				'path: "' . $this->path . '", ' .
 				'time: ' . $this->time . ', ' .
 				'description: "' . $this->description .'", ' .
 				'uploader: "' . $this->uploader . '"' .
@@ -180,25 +180,56 @@
 		}
 		
 		/**
-		 * Sets the name of the file in the filesystem. If it is invalid, an exception with code
-		 * self::ERROR_INVALID_SYSTEM_NAME will be thrown.
+		 * Sets the path to the file in the filesystem. If it is invalid, an exception with code
+		 * self::ERROR_INVALID_PATH will be thrown.
 		 */
-		public function setSystemName($systemName) {
-			if(!self::validateSystemName($systemName))
-				throw new ApplicationModelException_File('System name is invalid.',
-					self::ERROR_INVALID_SYSTEM_NAME);
-			$this->systemName = $systemName;
+		public function setPath($path) {
+			if(!self::validatePath($path)
+				throw new ApplicationModelException_File('Path is invalid.',
+					self::ERROR_INVALID_PATH);
+			$this->path = $path;
 		}
 		
 		/**
-		 * Returns the name of the file in the filesystem. If it is not known, throws an exception with code
-		 * self::ERROR_UNDEFINED_SYSTEM_NAME.
+		 * Returns the path to the file in the filesystem. If it is not known, throws an exception with code
+		 * self::ERROR_UNDEFINED_PATH.
+		 */
+		public function getPath() {
+			if($this->path === null)
+				throw new ApplicationModelException_File('Path is not defined.',
+					self::ERROR_UNDEFINED_PATH);
+			return $this->path;
+		}
+		
+		/**
+		 * Checks whether the path to the file is valid. Returns false, if it is not.
+		 */
+		public static function validatePath($path) {
+			return is_string($path) && strlen($path) >= 2 && strlen($path) <= 60 &&
+				self::validateAlphanumeric(str_replace(array('.', '-', '/'), '', $path));
+		}
+		
+		/**
+		 * Sets the system name of the file. If it is invalid, throws an exception with code
+		 * self::ERROR_INVALID_SYSTEM_NAME.
+		 */
+		public function setSystemName($systemName) {
+			if(!self::validateSystemName($systemName)
+				throw new ApplicationModelException_File('System name is invalid.',
+					self::ERROR_INVALID_SYSTEM_NAME);
+			switch($this->getType()) {
+				case self::TYPE_IMAGE:  $dir = $this->application->config['file_image_dir' ]; break;
+				case self::TYPE_SOURCE: $dir = $this->application->config['file_source_dir']; break;
+			}
+			$this->setPath($dir . '/' . $systemName);
+		}
+		
+		/**
+		 * Returns the system name of the file. If file's path is not known, throws an exception with code
+		 * self::ERROR_UNDEFINED_PATH.
 		 */
 		public function getSystemName() {
-			if($this->systemName === null)
-				throw new ApplicationModelException_File('System name is not defined.',
-					self::ERROR_UNDEFINED_SYSTEM_NAME);
-			return $this->systemName;
+			return basename($this->getPath());
 		}
 		
 		/**
@@ -284,21 +315,8 @@
 		}
 		
 		/**
-		 * Returns path to the file in the filesystem. Throws an exception w/code self::ERROR_UNDEFINED_SYSTEM_NAME,
-		 * if the system name is not known. Throws an exception with code self::ERROR_UNDEFINED_TYPE if the type of
-		 * the file is unknown.
-		 */
-		public function getPath() {
-			switch($this->getType()) {
-				case self::TYPE_IMAGE:  $directory = $this->application->config['file_image_dir'] ; break;
-				case self::TYPE_SOURCE: $directory = $this->application->config['file_source_dir']; break;
-			}
-			return $directory . '/' . $this->getSystemName();
-		}
-		
-		/**
-		 * Returns url for this file. If the type of it or the system name is not known, throws an exception with
-		 * code self::ERROR_UNDEFINED_TYPE or self::ERROR_UNDEFINED_SYSTEM_NAME.
+		 * Returns url for this file. If the type of it or the path to the file is not known, throws an exception
+		 * with code self::ERROR_UNDEFINED_TYPE or self::ERROR_UNDEFINED_PATH.
 		 */
 		public function getUrl() {
 			switch($this->getType()) {
@@ -363,7 +381,7 @@
 			if(isset($languages[$this->extension]))
 				return $languages[$this->extension];
 			
-			$systemExtension = strtolower(pathinfo($this->systemName, PATHINFO_EXTENSION));
+			$systemExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 			if(isset($languages[$systemExtension]))
 				return $languages[$systemExtension];
 			
@@ -376,31 +394,31 @@
 		/**
 		 * Returns url of the thumbnail. This method only returns the url, where the thumbnail is supposed to be; a
 		 * separate program will have to generate and place it there. Throws an exception with code
-		 * self::ERROR_UNDEFINED_SYSTEM_NAME if the system name of the file is unknown.
+		 * self::ERROR_UNDEFINED_PATH if the path to the file is unknown.
 		 */
 		public function getThumbnailUrl() {
 			return sprintf($this->application->config['file_thumbnail_link'], $this->getSystemName());
 		}
 		
 		/**
-		 * Loads file's information from the database. The file's id or system name must be set before this function
-		 * is called. If the id is unknown, but the system name is known, this function will try to find the file's
-		 * id first. Then it will try to load the information for the file from the database. If file with selected
-		 * system name or id does not exist, an exception with code self::ERROR_NOTFOUND_SYSTEM_NAME or
-		 * self::ERROR_NOTFOUND_ID will be thrown. If there is an invalid type stored in the database an exception
-		 * with code self::ERROR_INVALID_TYPE will be thrown. It the function is called w/o id and system name set,
-		 * it will throw an exception with code self::ERROR_UNDEFINED_ID.
+		 * Loads file's information from the database. The file's id or path to it must be set before this function
+		 * is called. If the id is unknown, but the path is known, this function will try to find the file's id
+		 * first. Then it will try to load the information for the file from the database. If file with selected
+		 * path or id does not exist, an exception with code self::ERROR_NOTFOUND_PATH or self::ERROR_NOTFOUND_ID
+		 * will be thrown. If there is an invalid type stored in the database an exception with code
+		 * self::ERROR_INVALID_TYPE will be thrown. It the function is called w/o id and path set, it will throw an
+		 * exception with code self::ERROR_UNDEFINED_ID.
 		 */
 		public function load() {
-			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
-			if($this->id === null && $this->systemName !== null) {
-				$systemName = $this->systemName;
-				$fileSysNameHash = new Rediska_Key_Hash('file_path');
-				if($fileSysNameHash->$systemName === null)
+			// if the id is unknown, but the path is - use id lookup key to get the id of the file.
+			if($this->id === null && $this->path !== null) {
+				$path = $this->path;
+				$filePathHash = new Rediska_Key_Hash('file_path');
+				if($filePathHash->$path === null)
 					throw new ApplicationModelException_File(
-						'File with system name ' . $this->systemName . ' does not exist in the database.',
-						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash->$systemName;
+						'File with path ' . $this->path . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_PATH);
+				$this->id = (int)$filePathHash->$path;
 			}
 			
 			// if the id is known, load the information from the database
@@ -414,8 +432,8 @@
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 				$this->name = $fileKeyHash->name;
 				$this->extension = $fileKeyHash->extension;
-				$this->systemName = $fileKeyHash->path;
-				$this->systemNameOld = $this->systemName;
+				$this->path = $fileKeyHash->path;
+				$this->pathOld = $this->path;
 				$this->time = (int)$fileKeyHash->timestamp;
 				$this->setDescription($fileKeyHash->description);
 				$this->uploader = $fileKeyHash->uuid;
@@ -440,16 +458,15 @@
 		/**
 		 * Saves file's information into the database. If file's id is not known, it will try to create a new file.
 		 * If file's id is known, it will try to edit information in the database to make it identical to
-		 * information in this class. If you want to change file's system name or uploader's uuid, load file's
-		 * information before doing that. If there is no file with selected id and exception with code
-		 * self::ERROR_NOTFOUND_ID will be thrown. If this function tries to create a new file or change the system
-		 * name of the existing one but it is already taken, an exception with code self::ERROR_TAKEN_SYSTEM_NAME
-		 * will be thown.
+		 * information in this class. If you want to change file's path or uploader's uuid, load file's information
+		 * before doing so. If there is no file with selected id and exception with code self::ERROR_NOTFOUND_ID
+		 * will be thrown. If this function tries to create a new file or change the path the existing one but it is
+		 * already taken, an exception with code self::ERROR_TAKEN_PATH will be thown.
 		 */
 		public function save() {
 			// id lookup hash
-			$systemName = $this->systemName;
-			$fileSysNameHash = new Rediska_Key_Hash('file_path');
+			$path = $this->path;
+			$filePathHash = new Rediska_Key_Hash('file_path');
 			
 			// if id is known - we will be editing file's information
 			if($this->id !== null) {
@@ -461,27 +478,27 @@
 			
 			// if id is unknown - we will be creating a new file
 			else {
-				// file's system name must not be taken by any other file
-				if($fileSysNameHash->$systemName !== null)
+				// file's path must not be taken by any other file
+				if($filePathHash->$path !== null)
 					throw new ApplicationModelException_File(
-						'File with system name ' . $this->systemName . ' already exists in the database.',
-						self::ERROR_TAKEN_SYSTEM_NAME);
+						'File with path ' . $this->path . ' already exists in the database.',
+						self::ERROR_TAKEN_PATH);
 				
 				// get the id of the new file
 				$this->id = $this->incrementRedisCounter('records_count');
 			}
 			
-			// if file's system name needs to be changed
-			if($this->systemNameOld !== null && $this->systemNameOld != $this->systemName) {
-				// new system name must not be taken by another file
-				if($fileSysNameHash->$systemName !== null)
+			// if file's path needs to be changed
+			if($this->pathOld !== null && $this->pathOld != $this->path) {
+				// new path must not be taken by another file
+				if($filePathHash->$path !== null)
 					throw new ApplicationModelException_File(
-						'File with system name ' . $this->systemName . ' already exists in the database.',
-						self::ERROR_TAKEN_SYSTEM_NAME);
+						'File with path ' . $this->path . ' already exists in the database.',
+						self::ERROR_TAKEN_PATH);
 				
 				// remove old id lookup field
-				$systemNameOld = $this->systemNameOld;
-				unset($fileSysNameHash->$systemNameOld);
+				$pathOld = $this->pathOld;
+				unset($filePathHash->$pathOld);
 			}
 			
 			// if uploader's uuid needs to be changed
@@ -495,8 +512,8 @@
 			$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
 			$fileKeyHash->name = $this->name;
 			$fileKeyHash->extension = $this->extension;
-			$fileKeyHash->path = $this->systemName;
-			$this->systemNameOld = $this->systemName;
+			$fileKeyHash->path = $this->path;
+			$this->pathOld = $this->path;
 			$fileKeyHash->timestamp = $this->time;
 			$fileKeyHash->description = $this->getDescription();
 			$fileKeyHash->uuid = $this->uploader;
@@ -509,7 +526,7 @@
 			}
 			
 			// save id lookup key
-			$fileSysNameHash->$systemName = $this->id;
+			$filePathHash->$path = $this->id;
 			
 			// reset uploader's uuid
 			$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
@@ -518,25 +535,25 @@
 		}
 		
 		/**
-		 * Deletes the file from the database. The file's id or system name must be set before this function is
-		 * called. If the id is unknown, but the system name is known, this function will try to find the file's id
-		 * first. Then it will try to delete the information for the file from the database. If file with selected
-		 * system name or id does not exist, an exception with code self::ERROR_NOTFOUND_SYSTEM_NAME or
-		 * self::ERROR_NOTFOUND_ID will be thrown. If both system name and file id were not set when this function
-		 * is called, an exception with code self::ERROR_UNDEFINED_ID will be thrown.
+		 * Deletes the file from the database. The file's id or path of the file must be set before this function is
+		 * called. If the id is unknown, but the path is known, this function will try to find the file's id first.
+		 * Then it will try to delete the information for the file from the database. If file with selected path or
+		 * id does not exist, an exception with code self::ERROR_NOTFOUND_PATH or self::ERROR_NOTFOUND_ID will be
+		 * thrown. If both path and file id were not set when this function is called, an exception with code
+		 * self::ERROR_UNDEFINED_ID will be thrown.
 		 */
 		public function delete() {
 			// id lookup hash
-			$systemName = $this->systemName;
-			$fileSysNameHash = new Rediska_Key_Hash('file_path');
+			$path = $this->path;
+			$filePathHash = new Rediska_Key_Hash('file_path');
 			
-			// if the id is unknown, but the system name is - use id lookup key to get the id of the file.
-			if($this->id === null && $this->systemName !== null) {
-				if($fileSysNameHash->$systemName === null)
+			// if the id is unknown, but the path is - use id lookup key to get the id of the file.
+			if($this->id === null && $this->path !== null) {
+				if($filePathHash->$path === null)
 					throw new ApplicationModelException_File(
-						'File with system name ' . $this->systemName . ' does not exist in the database.',
-						self::ERROR_NOTFOUND_SYSTEM_NAME);
-				$this->id = (int)$fileSysNameHash->$systemName;
+						'File with path ' . $this->path . ' does not exist in the database.',
+						self::ERROR_NOTFOUND_PATH);
+				$this->id = (int)$filePathHash->$path;
 			}
 			
 			// if the id is known, delete the information from the database
@@ -551,7 +568,7 @@
 				$fileKeyHash->delete();
 				
 				// remove id lookup field
-				unset($fileSysNameHash->$systemName);
+				unset($filePathHash->$path);
 				
 				// remove file from user's upload list
 				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
