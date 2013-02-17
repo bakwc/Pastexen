@@ -41,7 +41,6 @@
 				'/app/static/javascript/jquery-1.7.1.min.js',
 				'/app/static/javascript/bootstrap-transition.js',
 				'/app/static/javascript/bootstrap-dropdown.js',
-				'/app/static/javascript/chosen.jquery.min.js',
 				'/app/static/javascript/app.js',
 				), $jsIncludes);
 			foreach($jsIncludes as $js)
