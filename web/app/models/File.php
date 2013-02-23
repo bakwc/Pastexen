@@ -559,11 +559,12 @@
 			if(!ApplicationModel_User::validateUuid($uuid))
 				throw new ApplicationModelException_File('Uploader UUID is invalid.', self::ERROR_INVALID_UPLOADER);
 			
-			// get id of every file with a selected uuid
 			$fileIds = array();
 			$filesKeySet = new Rediska_Key_SortedSet('uuid_' . $uuid);
-			foreach($filesKeySet as $fileId)
-				$fileIds[] = (int)substr($fileId, strlen('file_'));
+			$fileIdsSet = $filesKeySet->getByRank(false, 0, 20, true);
+			foreach($fileIdsSet as $fileId) {
+                                $fileIds[] = (int)substr($fileId, strlen('file_'));
+			}
 			
 			return $fileIds;
 		}
