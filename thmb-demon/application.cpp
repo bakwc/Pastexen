@@ -64,7 +64,7 @@ QImage TApplication::GenerateImgThmb(const QString& fileName) {
         qDebug() << "Error loading " << fileName;
         return QImage();
     }
-    thmb = thmb.scaled(64, 64, Qt::KeepAspectRatioByExpanding).copy(0, 0, 64, 64);
+    thmb = thmb.scaled(64, 64, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation).copy(0, 0, 64, 64);
     return thmb;
 }
 
@@ -86,10 +86,20 @@ QImage TApplication::GenerateTxtThmb(const QString& fileName) {
     QPainter painter(&thmb);
     painter.setPen(Qt::white);
     QFont font;
-    font.setPointSize(5);
+    font.setPointSize(6);
     painter.setFont(font);
-    for (int i = 0; i < (text.size() > 8 ? 8 : text.size()); i++) {
-        painter.drawText(8, 9 + i * 7, text[i]);
+    int i = -1;
+    int count = 0;
+    while (i < text.size() - 1 && count <= 8) {
+       i++;
+       QString str = text[i].trimmed();
+       if (str.length() == 0) {
+           continue;
+       }
+       count++;
+       painter.drawText(8, 9 + count * 8, str);
     }
+
     return thmb.toImage();
 }
+
