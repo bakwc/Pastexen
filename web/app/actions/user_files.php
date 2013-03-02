@@ -46,25 +46,43 @@
                 throw new ApplicationException('Cannot load user.', 500);
 			}
 			
-			// get the list of files for this user
-			$files = array();
+			// get the page number
+			if(isset($this->application->parameters['page']))
+				$page = (int)$this->application->parameters['page'];
+			else
+				$page = 1;
+			if($page <= 0)
+				$page = 1;
+
+			// build list of files, this user owns
 			$userUuids = $user->getUuids();
+			$fileLoadQueue = array();
 			foreach($userUuids as $time => $uuid) {
-				// go through every file, this uuid has
 				$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
-				foreach($userUuidFileIds as $fileId) {
-					try {
-						// load file
-						$file = new ApplicationModel_File($this->application);
-						$file->setId($fileId);
-						$file->load();
-					
-						// put it into the list of user's files
-						$files[] = $file;
-					}
-					catch(ApplicationModelException_File $e) {
-						// skip this file
-					}
+				$fileLoadQueue = array_merge($fileLoadQueue, $userUuidFileIds);
+			}
+			
+			// make sure that the requested page number is not too high
+			$totalPages = ceil(count($fileLoadQueue) / $this->application->config['user_files_per_page']);
+			if($page > $totalPages)
+				$page = 1;
+			
+			// cut off the part of the file list which we need to display on selected page
+			$fileLoadQueue = array_slice($fileLoadQueue, ($page - 1) * $this->application->config['user_files_per_page'], $this->application->config['user_files_per_page']);
+			
+			// load file information for every file which we need to display on this page
+			foreach($fileLoadQueue as $fileId) {
+				try {
+					// load file
+					$file = new ApplicationModel_File($this->application);
+					$file->setId($fileId);
+					$file->load();
+				
+					// put it into the list of user's files
+					$files[] = $file;
+				}
+				catch(ApplicationModelException_File $e) {
+					// skip this file
 				}
 			}
 			
@@ -72,6 +90,8 @@
 			$view = new ApplicationView($this->application, $this->application->path . '/views/user_files.php');
 			$view->user = $user;
 			$view->files = $files;
+			$view->currentPage = $page;
+			$view->totalPages = $totalPages;
 			$view->render();
 		}
 	}

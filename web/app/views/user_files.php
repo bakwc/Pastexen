@@ -60,7 +60,28 @@
 			<p><?php echo htmlspecialchars($description); ?></p>
 		</div>
 	</div>
+	
 <?php
+	}
+
+	if($totalPages != 1) {
+		echo '<div class="pagination pagination-centered"><ul>';
+		
+		$paginationLow  = max($currentPage - $this->application->config['user_files_pagination_range'], 1);
+		$paginationHigh = min($currentPage + $this->application->config['user_files_pagination_range'], $totalPages);
+		
+		if($paginationLow != 1)
+			echo '<li><a href="/account.php">&larr;</a></li>';
+		
+		for($i = $paginationLow; $i <= $paginationHigh; ++$i)
+			echo	'<li class="' . ($i == $currentPage ? 'active ' : '') . '">' .
+						'<a' . ($i != $currentPage ? ' href="/account.php?page=' . $i . '"' : '') . '>' . $i . '</a>' .
+					'</li>';
+		
+		if($paginationHigh != $totalPages)
+			echo '<li><a href="/account.php?page=' . $totalPages . '">&rarr;</a></li>';
+		
+		echo '</ul></div>';
 	}
 ?>
 

@@ -34,6 +34,8 @@
 		'download_link_source'			=> 'https://github.com/bakwc/Pastexen/',
 		
 		'user_password_salt'			=> 'pastexen',
+		'user_files_pagination_range'	=> 5,
+		'user_files_per_page'			=> 20,
 		
 		'file_image_link'				=> 'http://pastexen.com/i/%s',
 		'file_source_link'				=> 'http://pastexen.com/code.php?file=%s',
