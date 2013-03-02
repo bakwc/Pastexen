@@ -71,8 +71,11 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
 
                 int timestamp = std::time(0);
 
+                size_t n = filename.lastIndexOf(".");
+                QString clearName = filename.left(n);
+
                 _redis->Query("HSET file_" + recordNumber + " type " + fileType);
-                _redis->Query("HSET file_" + recordNumber + " name " + filename);
+                _redis->Query("HSET file_" + recordNumber + " name " + clearName);
                 _redis->Query("HSET file_" + recordNumber + " extension " + type);
                 _redis->Query("HSET file_" + recordNumber + " path " + path);
                 _redis->Query("HSET file_" + recordNumber + " uuid " + uuid);
