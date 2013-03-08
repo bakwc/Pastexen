@@ -40,7 +40,7 @@
 			}
 			catch(ApplicationModelException_File $e) {
 				$file->setType(ApplicationModel_File::TYPE_SOURCE);
-				$file->setExtension('auto');
+				$file->setExtension(pathinfo($systemName, PATHINFO_EXTENSION));
 				try {
 					$file->setName(basename($file->getSystemName(), '.' . pathinfo($file->getSystemName(), PATHINFO_EXTENSION)));
 				}

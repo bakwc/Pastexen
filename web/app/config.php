@@ -75,6 +75,7 @@
 			'hs'    => 'haskell',
 			'lhs'   => 'haskell',
 			'txt'	=> 'text',
-			'dat'	=> 'text'
+			'dat'	=> 'text',
+			'auto'  => 'auto'
 		)
 	);
