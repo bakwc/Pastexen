@@ -35,7 +35,6 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
         _redis->SetTimeout(1200);
     }
 
-    int i = 10;
     QFile file;
     QString filename, path;
     if (Settings::types().find(type) == Settings::types().end()) {
@@ -47,7 +46,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
         filename = randName(Settings::fileNameLenght()) + '.' + type;
         path = typeFolder + filename;
         file.setFileName(path);
-    } while(_files.contains(path) && --i);
+    } while(_files.contains(path));
 
     _files.insert(path);
 
@@ -127,7 +126,6 @@ QString pSaver::randName(int count)
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
-    qsrand(QTime::currentTime().msec());
     for (int i = 0; i < count; ++i) {
         str += alphanum[qrand() % (sizeof(alphanum) - 1)];
     }

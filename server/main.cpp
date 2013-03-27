@@ -14,6 +14,7 @@
 
 int main(int argc, char** argv)
 {
+    qsrand(QTime::currentTime().msec());
     Application app(argc, argv);
     if (!app.parseArgs()) {
         qDebug() << "Wrong usage!";
