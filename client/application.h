@@ -66,5 +66,5 @@ private:
     QLocalServer *_localServer;
     QTime _lastSended;
     bool Sharing = false;
-    int _timerId;
+    int _timerId = -1;
 };

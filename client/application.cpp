@@ -382,7 +382,11 @@ bool Application::checkEllapsed()
 }
 
 void Application::timerEvent(QTimerEvent *) {
+    if (_timerId == -1) { // Fix for unknown timerEvent-s, #108
+        return;
+    }
     this->killTimer(_timerId);
+    _timerId = -1;
 
     QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
 
