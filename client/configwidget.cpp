@@ -32,11 +32,8 @@ ConfigWidget::ConfigWidget(QMap<QString, QString> &languages, QWidget *parent)
 }
 
 void ConfigWidget::registerActualHotkeys() {
-//    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
     QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
-//    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     QString partHotkey = Application::settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
-//    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
     QString codeHotkey = Application::settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
 
     _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
@@ -70,7 +67,6 @@ void ConfigWidget::init()
         _ui.comboSourcesType->setCurrentIndex(srcIndex);
     }
 
-//    QString uuid = _settings->value("general/uuid").toString();
     QString uuid = Application::settings().GetParameter("general/uuid");
     QString regText = tr("<a href=\"http://pastexen.com/register.php?uuid=%1\">Register & attach client</a>")
             .arg(uuid);
