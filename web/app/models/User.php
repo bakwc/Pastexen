@@ -171,7 +171,11 @@
 		 * Checks whether the client UUID is valid. Returns false, if it is not.
 		 */
 		public static function validateUuid($uuid) {
-			return strlen($uuid) == 48 && self::validateHex($uuid);
+			if (strlen($uuid) != 48 || !self::validateHex($uuid)) {
+				return false;
+			}
+			$uuidKey = new Rediska_Key('uuid_' . $uuid);
+			return $uuidKey->isExists();
 		}
 		
 		/**

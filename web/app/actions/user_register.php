@@ -27,16 +27,15 @@
 	final class ApplicationAction_user_register extends ApplicationAction {
 		public function run() {
 			$uuid = '';
-			$uuidBad = false;
 			if(!isset($this->application->parameters['uuid']))
 				$uuid = '';
 			else {
 				$uuid = $this->application->parameters['uuid'];
-				if(!empty($uuid) && !ApplicationModel_User::validateUuid($uuid))
-					$uuidBad = true;
 			}
-			if($uuidBad) // uuid is set, but it is invalid
+			
+			if(empty($uuid) || !ApplicationModel_User::validateUuid($uuid)) { // unvalid uuid
 				throw new ApplicationException('Invalid client uuid.', 400);
+			}
 			
 			if(empty($uuid) && isset($_SESSION['authorized_user_id'])) {
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
