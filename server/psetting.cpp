@@ -12,6 +12,7 @@ Settings::Settings(const QString &filename) :
 
     _host       = _set.value("host", "0.0.0.0").toString();
     _port       = _set.value("port", 9876).toInt();
+    _redis_port = _set.value("redis_port", 6379).toInt();
     _threads    = _set.value("threads", QThread::idealThreadCount() - 2).toInt();
     _fileNameLength = _set.value("file_name_length", 5).toInt();
     QStringList _imageTypes = _set.value("image_types", QStringList() << "jpg" << "png").toStringList();
@@ -36,6 +37,7 @@ Settings::Settings(const QString &filename) :
     qDebug() << "\nSettings:"
              << "\n Host:" << host().toString()
              << "\n Port:" << port()
+             << "\n Redis port: " << redis_port()
              << "\n Threads:" << threads()
              << "\n File name lenght:" << fileNameLenght()
              << "\n Types:" << types()
