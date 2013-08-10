@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "languageselectdialog.h"
 #include "utils.h"
+#include "application.h"
 
 #ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
@@ -117,7 +118,7 @@ Application::Application(int argc, char *argv[]) :
 Application::~Application()
 {
     _trayIcon->hide();
-    _settings->sync();
+    _settings->Save();
     delete _trayIconMenu;
 }
 
@@ -139,20 +140,22 @@ bool Application::pxAppInit()
         _localServer->listen(APP_NAME);
     }
 
-    QString homePath = QDir::homePath();
-    QString settingsFile = homePath + "/" + SETTINGS_FILE;
-    _settings = new QSettings(settingsFile, QSettings::IniFormat, this);
+    const QString& settingsFile = QDir::homePath() + "/" + SETTINGS_FILE;
+    _settings = new USettings(settingsFile);
 
-    QString uuid = _settings->value("general/uuid").toString();
+    QString uuid = _settings->GetParameter("general/uuid", "");
     if (uuid.length() != 24 * 2) {
         uuid = GenerateUUID();
+        qDebug() << Q_FUNC_INFO << " uuid = " << uuid;
+
         Q_ASSERT(uuid.length() == 24 * 2);
-        _settings->setValue("general/uuid", uuid);
+        _settings->SetParameter("general/uuid", uuid);
+        _settings->Save();
     }
 
     initLanguages();
 
-    _configWidget = new ConfigWidget(_settings, _languages);
+    _configWidget = new ConfigWidget(_languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
     connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
@@ -174,7 +177,7 @@ bool Application::pxAppInit()
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
     _trayIcon->setContextMenu(_trayIconMenu);                                   // Tray icon
 
-    _network = new Network(_settings, this);
+    _network = new Network(this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
     connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
 
@@ -236,7 +239,8 @@ void Application::processScreenshot(bool isFullScreen)
         }
     }
 
-    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+//    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
+    QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
 
     QByteArray imageBytes;
     QBuffer buffer(&imageBytes);
@@ -253,9 +257,10 @@ void Application::processCodeShare()
         return;
     }
 
-    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
+//    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
+    bool showsourcedialog = settings().GetParameter("general/showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
     if (showsourcedialog) {
-        LanguageSelectDialog dialog(_settings, _languages);
+        LanguageSelectDialog dialog(_languages);
         if (!dialog.exec()) {
             return;
         }
@@ -330,9 +335,12 @@ void Application::aboutDialog()
 
 void Application::setupHotkeys()
 {
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+//    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
+//    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
+//    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+    QString fullHotkey = settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
+    QString partHotkey = settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
+    QString codeHotkey = settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
 
     QList<QAction*> actsList = _trayIconMenu->actions();
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));
@@ -384,7 +392,7 @@ bool Application::checkEllapsed()
 void Application::timerEvent(QTimerEvent *) {
     this->killTimer(_timerId);
 
-    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString sourcestype = settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
 
     QString text;
 

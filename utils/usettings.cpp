@@ -6,9 +6,12 @@
 
 #include <QDebug>
 
-USettings::USettings(QObject *parent)
-    : QObject(parent)
+USettings::USettings(QString path, QObject *parent)
+    : QObject(parent), Path(path)
 {
+    if (!Path.isEmpty()) {
+        Load(Path);
+    }
 }
 
 void USettings::Load(const QString& fname, const QStringList& required) {
@@ -44,6 +47,14 @@ UFromStringFormat USettings::GetParameter(const QString& parameter) {
     return FromString(Parameters[parameter]);
 }
 
+UFromStringFormat USettings::GetParameter(const QString &parameter, QString value)
+{
+    if (Parameters.find(parameter) == Parameters.end()) {
+        return FromString(value);
+    }
+    return FromString(Parameters[parameter]);
+}
+
 void USettings::SetParameter(const QString &parameter, const QString &value)
 {
     if( parameter.isEmpty() )
@@ -57,6 +68,13 @@ void USettings::SetParameter(const QString &parameter, const QString &value)
 
 void USettings::DefineParams(const TParametersHash &paramsList) {
     Parameters = paramsList;
+}
+
+void USettings::Save(bool keepOrigin) {
+    if (Path.isEmpty()) {
+        throw UException("Incorrect save path");
+    }
+    Save(Path, keepOrigin);
 }
 
 void USettings::Save(const QString &fname, bool keepOrigin)

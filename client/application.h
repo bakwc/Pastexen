@@ -8,6 +8,7 @@
 #include <QLocalServer>
 #include "configwidget.h"
 #include "network.h"
+#include "../utils/usettings.h"
 
 #ifdef Q_OS_WIN
 #undef _WIN32_WINNT
@@ -31,6 +32,11 @@ public:
     Application(int argc, char *argv[]);
     ~Application();
     bool pxAppInit();
+
+    static USettings& settings() {
+        return *((Application*)qApp)->_settings;
+    }
+
 public slots:
     inline void hotkeyPressed(size_t id) {
         if (id == HOTKEY_CODE_ID) {
@@ -61,7 +67,8 @@ private:
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
     Network *_network;
-    QSettings *_settings;
+//    QSettings *_settings;
+    USettings *_settings;
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
     QTime _lastSended;

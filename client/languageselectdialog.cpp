@@ -3,10 +3,10 @@
 #include "languageselectdialog.h"
 #include "ui_languageselectdialog.h"
 #include "defines.h"
+#include "application.h"
 
-LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
+LanguageSelectDialog::LanguageSelectDialog(QMap<QString, QString> &languages, QWidget *parent)
     : QDialog(parent)
-    , _settings(settings)
     , _languages(languages)
     , ui(new Ui::LanguageSelectDialog)
 {
@@ -17,7 +17,7 @@ LanguageSelectDialog::LanguageSelectDialog(QSettings *settings, QMap<QString, QS
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
     showTypes();
-    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
+    QString sourcestype = Application::settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
     int srcIndex = ui->comboLanguageType->findData(sourcestype);
     if (srcIndex != -1) {
         ui->comboLanguageType->setCurrentIndex(srcIndex);
@@ -38,5 +38,5 @@ void LanguageSelectDialog::showTypes()
 
 void LanguageSelectDialog::on_buttonBox_accepted()
 {
-    _settings->setValue("general/sourcetype" ,ui->comboLanguageType->itemData(ui->comboLanguageType->currentIndex()).toString());
+    Application::settings().SetParameter("general/sourcetype" ,ui->comboLanguageType->itemData(ui->comboLanguageType->currentIndex()).toString());
 }

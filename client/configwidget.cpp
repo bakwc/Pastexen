@@ -9,9 +9,8 @@
 #include "scanhotkeydialog.h"
 #include "defines.h"
 
-ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
+ConfigWidget::ConfigWidget(QMap<QString, QString> &languages, QWidget *parent)
     : QWidget(parent),
-      _settings(settings),
       _languages(languages),
       _hotKeys(new UGlobalHotkeys(parent))
 {
@@ -33,9 +32,12 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
 }
 
 void ConfigWidget::registerActualHotkeys() {
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+//    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
+    QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
+//    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
+    QString partHotkey = Application::settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
+//    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+    QString codeHotkey = Application::settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
 
     _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
     _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
@@ -48,15 +50,15 @@ void ConfigWidget::init()
                          .arg(APP_NAME)
                          .arg(tr("Config")));
 
-    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
+    QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
+    QString partHotkey = Application::settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
+    QString codeHotkey = Application::settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
 
     showTypes(fullHotkey, partHotkey, codeHotkey);
 
-    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
-    QString sourcestype = _settings->value("general/sourcetype", DEFAULT_SOURCES_TYPE).toString();
-    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
+    QString imagetype = Application::settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
+    QString sourcestype = Application::settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
+    bool showsourcedialog = Application::settings().GetParameter("general/showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
 
     int imgIndex = _ui.comboImageType->findData(imagetype);
     if (imgIndex != -1) {
@@ -68,7 +70,8 @@ void ConfigWidget::init()
         _ui.comboSourcesType->setCurrentIndex(srcIndex);
     }
 
-    QString uuid = _settings->value("general/uuid").toString();
+//    QString uuid = _settings->value("general/uuid").toString();
+    QString uuid = Application::settings().GetParameter("general/uuid");
     QString regText = tr("<a href=\"http://pastexen.com/register.php?uuid=%1\">Register & attach client</a>")
             .arg(uuid);
     _ui.regLabel->setText(regText);
@@ -113,10 +116,10 @@ void ConfigWidget::hideEvent(QHideEvent *event)
 void ConfigWidget::applyChanges()
 {
     emit settingsChanged();
-    _settings->setValue("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
-    _settings->setValue("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
-    _settings->setValue("general/showsourcedialog", _ui.checkBoxLangDialogShow->isChecked());
-    _settings->sync();
+    Application::settings().SetParameter("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
+    Application::settings().SetParameter("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
+    Application::settings().SetParameter("general/showsourcedialog", ToString(_ui.checkBoxLangDialogShow->isChecked()));
+    Application::settings().Save();
     this->hide();
 }
 
@@ -130,7 +133,7 @@ void ConfigWidget::changeHotkey()
             QString settingsKey("general/");
             settingsKey += b->objectName();
 
-            _settings->setValue(settingsKey, dial.key());
+            Application::settings().SetParameter(settingsKey, dial.key());
 
             b->setText(dial.key());
 

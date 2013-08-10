@@ -9,9 +9,8 @@
 
 #include "../utils/udebug.h"
 
-Network::Network(QSettings *settings, QObject *parent) :
-    QObject(parent),
-    _settings(settings)
+Network::Network(QObject *parent) :
+    QObject(parent)
 {
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
     this->startTimer(30000);
@@ -57,7 +56,10 @@ void Network::upload(const QByteArray& data, const QString &type)
     arr.append("proto=pastexen\n");
     arr.append("version=1.0\n");
     arr.append("uuid=");
-    QString uuid = _settings->value("general/uuid").toString();
+    QString uuid = Application::settings().GetParameter("general/uuid");
+
+    qDebug() << Q_FUNC_INFO << " uuid = " << uuid;
+
     Q_ASSERT(uuid.length() == 24 * 2);
     arr.append(uuid.toLocal8Bit());
     arr.append("\n");
