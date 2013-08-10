@@ -56,7 +56,7 @@ void pSaver::save(const QByteArray &data, const QString& type, const QString& uu
     }
 
     if (uuid.length() != 0) {
-        if (!_redis->Connect("127.0.0.1", 6379)) {
+        if (!_redis->Connect("127.0.0.1", Settings::redis_port())) {
             qDebug() << "redis server unavailable";
         } else {
 
