@@ -24,7 +24,7 @@
 	
 	$applicationConfig = array(
 		'database_host'					=> '127.0.0.1',
-		'database_port'					=> 6379,
+		'database_port'					=> 6378,
 		'database_password'				=> null,
 		
 		'language_default'				=> 'ru',
@@ -37,11 +37,12 @@
 		'user_files_pagination_range'	=> 5,
 		'user_files_per_page'			=> 20,
 		
-		'file_image_link'				=> 'http://pastexen.com/i/%s',
-		'file_source_link'				=> 'http://pastexen.com/code.php?file=%s',
-		'file_thumbnail_link'			=> 'http://pastexen.com/thmb/%s.png',
-		'file_image_dir'				=> '/data/images',
-		'file_source_dir'				=> '/data/sources',
+		'file_image_link'				=> 'http://dev.pastexen.com/i/%s',
+		'file_source_link'				=> 'http://dev.pastexen.com/code.php?file=%s',
+		'file_thumbnail_link'			=> 'http://dev.pastexen.com/thmb/%s.png',
+                'file_image_dir'                                => '/usr/local/data/pastexen_dev/images',
+                'file_source_dir'                               => '/usr/local/data/pastexen_dev/sources',
+
 		'file_extensions'				=> array(
 			// file extension => programming language
 			'php'   => 'php',
