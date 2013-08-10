@@ -12,6 +12,7 @@ public:
 
     static const QHostAddress& host() { return inst()->_host; }
     static int                 port() { return inst()->_port; }
+    static int                 redis_port() { return inst()->_redis_port; }
     static int                 threads() { return inst()->_threads; }
     static int                 fileNameLenght() { return inst()->_fileNameLength; }
     static const QMap<QString, QString>& types() { return inst()->_types; }
@@ -26,6 +27,7 @@ private:
 
     QHostAddress    _host;
     int             _port;
+    int             _redis_port;
     int             _threads;
     int             _fileNameLength;
     QMap<QString, QString>  _types;
