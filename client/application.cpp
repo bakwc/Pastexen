@@ -123,11 +123,115 @@ Application::~Application()
     delete _trayIconMenu;
 }
 
+//---- Get parameters from app instance and upload ---//
+void Application::localRequestReceived()
+{
+    QString path = _localConnection->readAll();
+    uploadFile(path); // upload given file
+}
+
+//---- Upload file to server ---//
+void Application::uploadFile(QString request)
+{
+    // For get extension of file
+    QFileInfo ImgExt;
+    ImgExt.setFile(request);
+
+    //----------------------Loading Images-------------------------//
+    if ((ImgExt.completeSuffix()=="png")||(ImgExt.completeSuffix()=="jpg")||(ImgExt.completeSuffix()=="gif")){
+
+        if (Sharing) {
+            return;
+        }
+
+        if (!checkEllapsed()) {
+            return;
+        }
+
+        Sharing = true;
+
+        QPixmap pixmap;
+
+        // try load image
+        if(! pixmap.load(request)){            
+            return;
+        }
+
+        QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
+
+        QByteArray imageBytes;
+        QBuffer buffer(&imageBytes);
+        buffer.open(QFile::WriteOnly);
+        pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
+        buffer.close();
+        _network->upload(imageBytes, ImgExt.completeSuffix());
+        Sharing = false;
+    }
+
+    //----------------------Loading Text-------------------------//
+    else if ((ImgExt.completeSuffix()=="auto")||
+             (ImgExt.completeSuffix()=="txt")||
+             (ImgExt.completeSuffix()=="c")||
+             (ImgExt.completeSuffix()=="cpp")||
+             (ImgExt.completeSuffix()=="h")||
+             (ImgExt.completeSuffix()=="cs")||
+             (ImgExt.completeSuffix()=="java")||
+             (ImgExt.completeSuffix()=="php")||
+             (ImgExt.completeSuffix()=="py")||
+             (ImgExt.completeSuffix()=="pl")||
+             (ImgExt.completeSuffix()=="pas")||
+             (ImgExt.completeSuffix()=="m")||
+             (ImgExt.completeSuffix()=="xml")||
+             (ImgExt.completeSuffix()=="html")||
+             (ImgExt.completeSuffix()=="js")||
+             (ImgExt.completeSuffix()=="css")||
+             (ImgExt.completeSuffix()=="json")||
+             (ImgExt.completeSuffix()=="as")||
+             (ImgExt.completeSuffix()=="d")||
+             (ImgExt.completeSuffix()=="sql")||
+             (ImgExt.completeSuffix()=="st")||
+             (ImgExt.completeSuffix()=="lisp")||
+             (ImgExt.completeSuffix()=="ini")||
+             (ImgExt.completeSuffix()=="conf")||
+             (ImgExt.completeSuffix()=="sh")||
+             (ImgExt.completeSuffix()=="bat")||
+             (ImgExt.completeSuffix()=="cmake")||
+             (ImgExt.completeSuffix()=="hs"))
+    {
+        if (Sharing) {
+            return;
+        }
+        if (!checkEllapsed()) {
+            return;
+        }
+
+        Sharing = true;
+
+        QFile source(request);
+        if (!source.open(QIODevice::ReadOnly)){
+            return;
+        }
+
+        QTextStream textStream(&source);
+        QString text = textStream.readAll();
+        _network->upload(text.toUtf8(), ImgExt.completeSuffix());
+
+        Sharing = false;
+    }
+}
+
 bool Application::pxAppInit()
 {
+
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
+
+    // Check if app instance already run
     if (socket.waitForConnected(500)) {
+        // Send args from new instance, and check if args given
+        if (QApplication::arguments().count()>1){
+            socket.write(QApplication::arguments().at(1).toUtf8());
+        }
         qDebug() << "Application already launched!";
         return false;
     }
@@ -140,6 +244,8 @@ bool Application::pxAppInit()
         QLocalServer::removeServer(APP_NAME);
         _localServer->listen(APP_NAME);
     }
+
+    connect(_localServer, SIGNAL(newConnection()), SLOT(newLocalSocketConnection()));
 
     const QString& settingsFile = QDir::homePath() + "/" + SETTINGS_FILE;
     _settings = new USettings(settingsFile);
@@ -188,13 +294,27 @@ bool Application::pxAppInit()
     _trayIcon->show();
     QFile file(settingsFile);
 
+    _lastSended = _lastSended.addSecs(5); // for check on first run
+    connect(_network, SIGNAL(ready()), SLOT(resolved()));
+
     if (!file.exists())
         _configWidget->show();
     return true;
 }
 
+void Application::resolved()
+{
+    // If program have parameter upload file
+    if (QApplication::arguments().count()>1){
+        qDebug() << Application::arguments().at(1).toUtf8();
+        uploadFile(QApplication::arguments().at(1).toUtf8());
+    }
+}
+
 void Application::newLocalSocketConnection()
 {
+    _localConnection = _localServer->nextPendingConnection();
+    connect(_localConnection, SIGNAL(readyRead()), SLOT(localRequestReceived()));
 }
 
 void Application::trayMessage(const QString &caption, const QString &text)
@@ -312,7 +432,6 @@ void Application::accountLink()
     QDesktopServices::openUrl(QUrl(Application::GetAccountUrl()));
 }
 
-
 void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &button)
 {
     switch (button)
@@ -360,7 +479,8 @@ void Application::initLanguages()
     _languages.insert("auto", tr("Auto detection"));
     _languages.insert("txt", tr("Plain text"));
     _languages.insert("c", "C");
-    _languages.insert("cpp", "C++");
+    _languages.insert("cpp", "C++ ");
+    _languages.insert("h", "C++ Header");
     _languages.insert("cs", "C#");
     _languages.insert("java", "Java");
     _languages.insert("php", "PHP");

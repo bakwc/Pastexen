@@ -17,6 +17,7 @@ Network::Network(QObject *parent) :
     timerEvent(NULL);
 }
 
+
 void Network::lookedUp(const QHostInfo &host)
 {
     if (host.error() != QHostInfo::NoError) {
@@ -24,6 +25,7 @@ void Network::lookedUp(const QHostInfo &host)
         return;
     }
     _serverAddr = host.addresses().at(0);
+    emit ready();
 }
 
 void Network::timerEvent(QTimerEvent *) {
@@ -36,6 +38,7 @@ void Network::timerEvent(QTimerEvent *) {
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
+    qDebug() << data.size() << " DATAS ";
     UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
         qDebug() << "Unable to upload data: host not resolved";
@@ -49,8 +52,9 @@ void Network::upload(const QByteArray& data, const QString &type)
     }
 
     UDebug << "Server addr: " << _serverAddr.toString();
-    _socket.connectToHost(_serverAddr, 9876);
+    _socket.connectToHost(_serverAddr, 9877);
     _socket.waitForConnected(4000);
+
 
     QByteArray arr;
     arr.append("proto=pastexen\n");
