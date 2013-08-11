@@ -179,6 +179,15 @@
 		}
 		
 		/**
+		 * Sets the uuid to load user. If id is not valid - throws exception
+		 */
+		public function setUuid($uuid) {
+			if (!ApplicationModel_User::validateUuid($uuid))
+				throw new ApplicationModelException_User('Uuid is invalid.', self::ERROR_INVALID_UUID);
+			$this->uuid = $uuid;
+		}
+		
+		/**
 		 * Loads the user's information from the database. The user's login or id must be set before this function
 		 * is called. If the id is unknown, but the login is known, this function will try to find the user's id
 		 * first. Then, it will try to load the information for this user from the database. If user with selected
@@ -194,6 +203,15 @@
 						'User with login ' . $this->login . ' does not exist in the database.',
 						self::ERROR_NOTFOUND_LOGIN);
 				$this->id = (int)$userLoginKey->getValue();
+			}
+			// is is unknown, but uuid is known - use uuid to get the id of the user
+			elseif($this->id == null && $this->uuid !== null) {
+				$userUuidKey = new Rediska_Key('user_uuid_' . $this->uuid);
+				if($userUuidKey->getValue() === null)
+					throw new ApplicationModelException_User(
+						'User with not exists in the database.',
+						self::ERROR_NOTFOUND_LOGIN);
+				$this->id = (int)$userUuidKey->getValue();
 			}
 			
 			// if the id is known - load user's information from the database

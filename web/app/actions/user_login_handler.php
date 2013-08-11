@@ -27,6 +27,9 @@
 	final class ApplicationAction_user_login_handler extends ApplicationAction {
 		public function run() {
 			$success = true;
+			$use_uuid = false;
+			$register_redirect = false;
+			$uuid = '';
 			$login = '';
 			$password = '';
 			
@@ -43,6 +46,15 @@
 			else
 				$password = $this->application->parameters['password'];
 			
+			if (!$success) {
+				if (isset($this->application->parameters['uuid'])) {
+					$uuid = $this->application->parameters['uuid'];
+					if (ApplicationModel_User::validateUuid($uuid)) {
+						$use_uuid = true;
+					}
+				}
+			}
+			
 			if($success) {
 				$user = new ApplicationModel_User($this->application);
 				try {
@@ -53,9 +65,22 @@
 					$success = false;
 				}
 			}
-				
+			
+			if ($use_uuid) {
+				$success = true;
+				$user = new ApplicationModel_User($this->application);
+				try {
+					$user->setUuid($uuid);
+					$user->load();
+				}
+				catch(ApplicationModelException_User $e) {
+					$success = false;
+					$register_redirect = true;
+				}
+			}
+			
 			if($success)
-				if($user->makePasswordHash($password) != $user->getPasswordHash())
+				if(!$use_uuid && $user->makePasswordHash($password) != $user->getPasswordHash())
 					$success = false;
 
 			if($success) {
@@ -64,6 +89,11 @@
 				
 				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
 				$this->application->outputHeaders[] = 'Location: /account.php';
+				$this->application->outputContent = '';
+			}
+			elseif ($register_redirect) {
+				$this->application->outputHeaders[] = 'HTTP/1.1 302 Found';
+				$this->application->outputHeaders[] = 'Location: /register.php?uuid=' . $uuid;
 				$this->application->outputContent = '';
 			}
 			else {
