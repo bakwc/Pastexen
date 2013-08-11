@@ -169,35 +169,8 @@ void Application::uploadFile(QString request)
     }
 
     //----------------------Loading Text-------------------------//
-    else if ((ImgExt.completeSuffix()=="auto")||
-             (ImgExt.completeSuffix()=="txt")||
-             (ImgExt.completeSuffix()=="c")||
-             (ImgExt.completeSuffix()=="cpp")||
-             (ImgExt.completeSuffix()=="h")||
-             (ImgExt.completeSuffix()=="cs")||
-             (ImgExt.completeSuffix()=="java")||
-             (ImgExt.completeSuffix()=="php")||
-             (ImgExt.completeSuffix()=="py")||
-             (ImgExt.completeSuffix()=="pl")||
-             (ImgExt.completeSuffix()=="pas")||
-             (ImgExt.completeSuffix()=="m")||
-             (ImgExt.completeSuffix()=="xml")||
-             (ImgExt.completeSuffix()=="html")||
-             (ImgExt.completeSuffix()=="js")||
-             (ImgExt.completeSuffix()=="css")||
-             (ImgExt.completeSuffix()=="json")||
-             (ImgExt.completeSuffix()=="as")||
-             (ImgExt.completeSuffix()=="d")||
-             (ImgExt.completeSuffix()=="sql")||
-             (ImgExt.completeSuffix()=="st")||
-             (ImgExt.completeSuffix()=="lisp")||
-             (ImgExt.completeSuffix()=="ini")||
-             (ImgExt.completeSuffix()=="conf")||
-             (ImgExt.completeSuffix()=="sh")||
-             (ImgExt.completeSuffix()=="bat")||
-             (ImgExt.completeSuffix()=="cmake")||
-             (ImgExt.completeSuffix()=="hs"))
-    {
+    else if(_languages.contains(ImgExt.completeSuffix())){
+
         if (Sharing) {
             return;
         }
@@ -480,7 +453,8 @@ void Application::initLanguages()
     _languages.insert("txt", tr("Plain text"));
     _languages.insert("c", "C");
     _languages.insert("cpp", "C++ ");
-    _languages.insert("h", "C++ Header");
+    _languages.insert("h", "C header");
+    _languages.insert("hpp", "C header");
     _languages.insert("cs", "C#");
     _languages.insert("java", "Java");
     _languages.insert("php", "PHP");

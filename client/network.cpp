@@ -38,7 +38,6 @@ void Network::timerEvent(QTimerEvent *) {
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
-    qDebug() << data.size() << " DATAS ";
     UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
         qDebug() << "Unable to upload data: host not resolved";
@@ -52,7 +51,7 @@ void Network::upload(const QByteArray& data, const QString &type)
     }
 
     UDebug << "Server addr: " << _serverAddr.toString();
-    _socket.connectToHost(_serverAddr, 9877);
+    _socket.connectToHost(_serverAddr, 9876);
     _socket.waitForConnected(4000);
 
 
