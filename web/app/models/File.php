@@ -208,8 +208,8 @@
 		 * Checks whether the path to the file is valid. Returns false, if it is not.
 		 */
 		public static function validatePath($path) {
-			return is_string($path) && strlen($path) >= 2 && strlen($path) <= 60 &&
-				self::validateAlphanumeric(str_replace(array('.', '-', '/'), '', $path));
+			return is_string($path) && strlen($path) >= 2 && strlen($path) <= 80 &&
+				self::validateAlphanumeric(str_replace(array('.', '-', '/', '_'), '', $path));
 		}
 		
 		/**
