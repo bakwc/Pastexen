@@ -14,6 +14,7 @@
 #include <QScreen>
 #include <QThread>
 #include <QPixmap>
+#include <QDesktopServices>
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
@@ -167,6 +168,7 @@ bool Application::pxAppInit()
     _trayIconMenu->addAction("", this, SLOT(processScreenshotFull()));
     _trayIconMenu->addAction("", this, SLOT(processScreenshotPart()));
     _trayIconMenu->addAction(tr("Configure"), _configWidget, SLOT(show()));
+    _trayIconMenu->addAction(tr("My files"), this, SLOT(accountLink()));
     _trayIconMenu->addSeparator();
     _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
 
@@ -303,6 +305,11 @@ void Application::processCodeShare()
 
     #endif
     _timerId = this->startTimer(200);
+}
+
+void Application::accountLink()
+{
+    QDesktopServices::openUrl(QUrl(Application::GetAccountUrl()));
 }
 
 

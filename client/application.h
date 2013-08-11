@@ -37,6 +37,10 @@ public:
         return *((Application*)qApp)->_settings;
     }
 
+    static QString GetAccountUrl() {
+        QString uuid = settings().GetParameter("uuid");
+        return "http://pastexen.com/login_app.php?uuid=" + uuid;
+    }
 public slots:
     inline void hotkeyPressed(size_t id) {
         if (id == HOTKEY_CODE_ID) {
@@ -50,6 +54,7 @@ public slots:
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
     void processCodeShare();
+    void accountLink();
 private slots:
     void trayIconClicked(const QSystemTrayIcon::ActivationReason &button);
     void linkAvaliable(const QString &link);
