@@ -47,7 +47,7 @@ UFromStringFormat USettings::GetParameter(const QString& parameter) {
     return FromString(Parameters[parameter]);
 }
 
-UFromStringFormat USettings::GetParameter(const QString &parameter, QString value)
+UFromStringFormat USettings::GetParameter(const QString &parameter, const QString& value)
 {
     if (Parameters.find(parameter) == Parameters.end()) {
         return FromString(value);
