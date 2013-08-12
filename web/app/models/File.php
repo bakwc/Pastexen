@@ -550,7 +550,7 @@
 		}
 		
 		/**
-		 * Returns ids of all files which have a specified uploader's UUID. Throws an exception with code
+		 * Returns ids and timestamps of all files which have a specified uploader's UUID. Throws an exception with code
 		 * self::ERROR_INVALID_UPLOADER if the UUID is invalid. If there are no files for selected UUID, an empty
 		 * array will be returned.
 		 */
@@ -561,12 +561,9 @@
 			
 			$fileIds = array();
 			$filesKeySet = new Rediska_Key_SortedSet('uuid_' . $uuid);
-			$fileIdsSet = $filesKeySet->getByRank(false, 0, 20, true);
-			foreach($fileIdsSet as $fileId) {
-                                $fileIds[] = (int)substr($fileId, strlen('file_'));
-			}
-			
-			return $fileIds;
+			$fileIdsSet = $filesKeySet->getByRank(true, 0, 20, true);
+
+			return $fileIdsSet;
 		}
 	}
 	
