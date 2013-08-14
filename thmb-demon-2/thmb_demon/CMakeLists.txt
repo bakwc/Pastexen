@@ -1,4 +1,5 @@
 
-add_executable (thmb_demon main.cpp)
+add_executable (thmb_demon main.cpp redis_task.cpp)
 target_link_libraries(thmb_demon
+                        hiredis
                         ${Boost_LIBRARIES})

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(exhauster)
+project(pastexen-thumb-demon)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
@@ -12,7 +12,8 @@ find_package(Boost 1.48.0 COMPONENTS locale system filesystem REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR}
                     ${Boost_INCLUDE_DIRS})
 
-link_directories (${PROJECT_BINARY_DIR}/thmb_demon)
+link_directories (${PROJECT_BINARY_DIR}/thmb_demon
+                  ${PROJECT_BINARY_DIR}/contrib/hiredis)
 
 add_subdirectory(contrib)
 add_subdirectory(thmb_demon)
