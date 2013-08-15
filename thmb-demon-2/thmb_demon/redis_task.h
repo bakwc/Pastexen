@@ -13,7 +13,7 @@ public:
     virtual ~TTaskException() throw();
     const char* what() const throw();
 private:
-    const string& Message;
+    string Message;
 };
 
 struct TConnectionError: public TTaskException {
@@ -29,7 +29,12 @@ struct TUnexpectedResponseError: public TTaskException {
 };
 
 struct TTask {
-    string FileId;
+    enum EType {
+        Image,
+        Text
+    };
+    string FilePath;
+    EType Type;
 };
 
 class TRedisTaskManagerImpl;

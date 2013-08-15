@@ -30,8 +30,11 @@ public:
     }
     optional<TTask> GetTask() {
         redisReply *reply;
-        string command = "SRANDMEMBER thmb_tasks";
-        reply = (redisReply*)redisCommand(Context, command.c_str());
+        string cmd;
+        TTask task;
+
+        // get waiting task
+        reply = (redisReply*)redisCommand(Context, "SRANDMEMBER thmb_tasks");
         if (!reply) {
             throw TConnectionError();
         }
@@ -41,8 +44,41 @@ public:
         if (reply->type != REDIS_REPLY_STRING) {
             throw TUnexpectedResponseError();
         }
-        TTask task;
-        task.FileId = reply->str;
+        string fileId = reply->str;
+        freeReplyObject(reply);
+
+        // get file path
+        cmd = (boost::format("HGET file_%1% path") % fileId).str();
+        reply = (redisReply*)redisCommand(Context, cmd.c_str());
+        if (!reply) {
+            throw TConnectionError();
+        }
+        if (reply->type != REDIS_REPLY_STRING) {
+            throw TUnexpectedResponseError();
+        }
+        task.FilePath = reply->str;
+        freeReplyObject(reply);
+
+        // get file type
+        cmd = (boost::format("HGET file_%1% type") % fileId).str();
+        reply = (redisReply*)redisCommand(Context, cmd.c_str());
+        if (!reply) {
+            throw TConnectionError();
+        }
+        if (reply->type != REDIS_REPLY_STRING) {
+            throw TUnexpectedResponseError();
+        }
+        string fileType = reply->str;
+        if (fileType == "image") {
+            task.Type = TTask::Image;
+        } else if (fileType == "text") {
+            task.Type = TTask::Text;
+        } else {
+            throw TUnexpectedResponseError();
+        }
+        freeReplyObject(reply);
+
+        return task;
     }
 private:
     void SelectDatabase(size_t dbNum) {
@@ -52,7 +88,7 @@ private:
         if (!reply) {
             throw TConnectionError();
         }
-        if (reply->type == REDIS_REPLY_ERROR) {
+        if (reply->type != REDIS_REPLY_STATUS) {
             throw TSelectDbError();
         }
         freeReplyObject(reply);
