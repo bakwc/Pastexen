@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
         optional<TTask> task = taskManager.GetTask();
         if (task.is_initialized()) {
             cout << task->FilePath << "\n";
-            if (task->Type == TTask::Image) {
+            if (task->Type == FT_Image) {
                 cout << "image\n";
             } else {
                 cout << "text\n";

@@ -70,9 +70,9 @@ public:
         }
         string fileType = reply->str;
         if (fileType == "image") {
-            task.Type = TTask::Image;
+            task.Type = FT_Image;
         } else if (fileType == "text") {
-            task.Type = TTask::Text;
+            task.Type = FT_Text;
         } else {
             throw TUnexpectedResponseError();
         }

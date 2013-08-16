@@ -4,6 +4,8 @@
 #include <memory>
 #include <boost/optional.hpp>
 
+#include "defines.h"
+
 using namespace std;
 using namespace boost;
 
@@ -29,12 +31,8 @@ struct TUnexpectedResponseError: public TTaskException {
 };
 
 struct TTask {
-    enum EType {
-        Image,
-        Text
-    };
     string FilePath;
-    EType Type;
+    EFileType Type;
 };
 
 class TRedisTaskManagerImpl;
