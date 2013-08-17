@@ -8,8 +8,7 @@ size_t QtKeyToWin(size_t key) {
         return VK_F1 + (key - Qt::Key_F1);
     }
 
-    qDebug() << "Hotkey not found in mapping!";
-    return 0;
+    return key;
 }
 #elif defined(Q_OS_LINUX)
 #include "ukeysequence.h"
