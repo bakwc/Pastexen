@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "redis_task.h"
+#include "thumb_generator.h"
 
 using namespace std;
 

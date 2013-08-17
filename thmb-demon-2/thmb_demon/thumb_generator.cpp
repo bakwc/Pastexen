@@ -1,12 +1,42 @@
-#include <contrib/cimg/cimg.h>
 #include <contrib/lodepng/lodepng.h>
-
+#include <contrib/cimg/cimg.h>
+#include <boost/algorithm/string.hpp>
 #include "thumb_generator.h"
+
+using namespace boost::algorithm;
 
 typedef cimg_library::CImg<unsigned char> TImage;
 
+TImage LoadPng(const string& sourceFile) {
+    std::vector<unsigned char> image;
+    size_t width, height;
+    size_t err = lodepng::decode(image, width, height, sourceFile);
+    if (err) {
+        std::cerr << lodepng_error_text(err);
+        return TImage();
+    }
+    TImage result(width, height, 1, 3);
+    unsigned char* r = result.data(0, 0, 0, 0);
+    unsigned char* g = result.data(0, 0, 0, 1);
+    unsigned char* b = result.data(0, 0, 0, 2);
+    const unsigned char* s;
+    for (s = image.data(); s < image.data() + image.size();) {
+        *(r++) = *(s++);
+        *(g++) = *(s++);
+        *(b++) = *(s++);
+        s++;
+    }
+    return result;
+}
+
 TImage LoadImageFile(const string& sourceFile) {
-    // todo: load image using lodepng and other libs
+    if (ends_with(sourceFile, ".bmp")) {
+        return TImage(sourceFile.c_str());
+    } else if (ends_with(sourceFile, ".png")) {
+        return LoadPng(sourceFile);
+    }
+    // todo: implement loading jpg
+    return TImage();
 }
 
 void SaveImage(const TImage& image, const string& destFile) {
