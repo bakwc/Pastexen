@@ -76,9 +76,16 @@ void SaveImage(const TImage& image, const string& destFile) {
 }
 
 TImage MakeImageThumb(const string& sourceFile, size_t width, size_t height) {
-    TImage baseImage = LoadImageFile(sourceFile);
-    // todo: resize baseImage
-    return baseImage;
+    // todo: correct thumbs for images width / height rate not only 1:1
+    TImage image = LoadImageFile(sourceFile);
+    if (image.width() > image.height()) {
+        image = image.get_crop(0, 0, image.height(), image.height(), true);
+    } else if (image.height() > image.width()) {
+        image = image.get_crop(0, 0, image.width(), image.width(), true);
+    } else {
+        // todo: throw exception
+    }
+    return image.get_resize(width, height, -100, -100, 5);
 }
 
 TImage MakeTextThumb(const string& sourceFile, size_t width, size_t height) {
