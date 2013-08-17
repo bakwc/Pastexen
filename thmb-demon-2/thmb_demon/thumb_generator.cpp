@@ -1,6 +1,7 @@
+#include <iostream>
+#include <boost/algorithm/string.hpp>
 #include <contrib/lodepng/lodepng.h>
 #include <contrib/cimg/cimg.h>
-#include <boost/algorithm/string.hpp>
 #include "thumb_generator.h"
 
 using namespace boost::algorithm;
@@ -8,23 +9,24 @@ using namespace boost::algorithm;
 typedef cimg_library::CImg<unsigned char> TImage;
 
 TImage LoadPng(const string& sourceFile) {
-    std::vector<unsigned char> image;
+    vector<unsigned char> image;
     size_t width, height;
     size_t err = lodepng::decode(image, width, height, sourceFile);
     if (err) {
-        std::cerr << lodepng_error_text(err);
+        cerr << lodepng_error_text(err);
         return TImage();
     }
-    TImage result(width, height, 1, 3);
+    TImage result(width, height, 1, 4);
     unsigned char* r = result.data(0, 0, 0, 0);
     unsigned char* g = result.data(0, 0, 0, 1);
     unsigned char* b = result.data(0, 0, 0, 2);
+    unsigned char* a = result.data(0, 0, 0, 3);
     const unsigned char* s;
     for (s = image.data(); s < image.data() + image.size();) {
         *(r++) = *(s++);
         *(g++) = *(s++);
         *(b++) = *(s++);
-        s++;
+        *(a++) = *(s++);
     }
     return result;
 }
@@ -39,8 +41,38 @@ TImage LoadImageFile(const string& sourceFile) {
     return TImage();
 }
 
+// store image inside png
 void SaveImage(const TImage& image, const string& destFile) {
-    // todo: save image using lodepng
+    vector<unsigned char> result(image.width() * image.height() * 4);
+    unsigned char* d;
+    const unsigned char* r = image.data(0, 0, 0, 0);
+    const unsigned char* g = image.data(0, 0, 0, 1);
+    const unsigned char* b = image.data(0, 0, 0, 2);
+    int sp = image.spectrum();
+    if (sp == 4) {
+        const unsigned char* a = image.data(0, 0, 0, 3);
+        for (d = result.data(); d < result.data() + result.size();) {
+            *(d++) = *(r++);
+            *(d++) = *(g++);
+            *(d++) = *(b++);
+            *(d++) = *(a++);
+        }
+    } else if (sp == 3) {
+        for (d = result.data(); d < result.data() + result.size();) {
+            *(d++) = *(r++);
+            *(d++) = *(g++);
+            *(d++) = *(b++);
+            *(d++) = 255;
+        }
+    } else {
+        // todo: exception here
+        cerr << "wrong image type";
+        return;
+    }
+    size_t err = lodepng::encode(destFile, result, image.width(), image.height());
+    if (err) {
+        cerr << lodepng_error_text(err) << "\n";
+    }
 }
 
 TImage MakeImageThumb(const string& sourceFile, size_t width, size_t height) {
