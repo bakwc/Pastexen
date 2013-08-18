@@ -9,8 +9,11 @@
 #include "scanhotkeydialog.h"
 #include "defines.h"
 
-ConfigWidget::ConfigWidget(QMap<QString, QString> &languages, QWidget *parent)
+ConfigWidget::ConfigWidget(const QString& appName,
+                           QMap<QString, QString> &languages,
+                           QWidget *parent)
     : QWidget(parent),
+      _appName(appName),
       _languages(languages),
       _hotKeys(new UGlobalHotkeys(parent))
 {
@@ -44,7 +47,7 @@ void ConfigWidget::registerActualHotkeys() {
 void ConfigWidget::init()
 {
     this->setWindowTitle(QString("%1 - %2")
-                         .arg(APP_NAME)
+                         .arg(_appName)
                          .arg(tr("Config")));
 
     QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);

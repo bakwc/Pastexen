@@ -13,7 +13,7 @@ class Network : public QObject
 {
     Q_OBJECT
 public:
-    explicit Network(QObject *parent = 0);
+    explicit Network(const QString& hostName, quint16 port, QObject *parent = 0);
     void uploadFile(const QString &fileName, const QString &type);
     void upload(const QByteArray &data, const QString &type);
 
@@ -32,6 +32,8 @@ private:
     QByteArray readFile(const QString& fileName);
     void timerEvent(QTimerEvent *);
 private:
+    QString _hostName;
+    quint16 _port;
     bool _ready;
     QTcpSocket _socket;
     QHostAddress _serverAddr;

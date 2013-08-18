@@ -9,8 +9,10 @@
 
 #include "../utils/udebug.h"
 
-Network::Network(QObject *parent) :
-    QObject(parent)
+Network::Network(const QString& hostName, quint16 port, QObject *parent)
+    : QObject(parent)
+    , _hostName(hostName)
+    , _port(port)
 {
     connect(&_socket, SIGNAL(readyRead()), SLOT(onDataReceived()));
     this->startTimer(30000);
@@ -31,14 +33,13 @@ void Network::lookedUp(const QHostInfo &host)
 void Network::timerEvent(QTimerEvent *) {
     if (_serverAddr.isNull()) {
         QHostInfo::abortHostLookup(_lookupId);
-        _lookupId = QHostInfo::lookupHost("pastexen.com",
+        _lookupId = QHostInfo::lookupHost(_hostName,
                               this, SLOT(lookedUp(QHostInfo)));
     }
 }
 
 void Network::upload(const QByteArray& data, const QString &type)
 {
-    UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
         UDebug << "Unable to upload data: host not resolved";
         throw UException("Not connected - host not resolved");
@@ -50,14 +51,14 @@ void Network::upload(const QByteArray& data, const QString &type)
         return;
     }
 
-    UDebug << "Server addr: " << _serverAddr.toString();
-    _socket.connectToHost(_serverAddr, 9876);
+    UDebug << "Server addr: " << _serverAddr.toString() << ":" << _port;
+    _socket.connectToHost(_serverAddr, _port);
     _socket.waitForConnected(4000);
 
 
     QByteArray arr;
     arr.append("proto=pastexen\n");
-    arr.append("version=1.0\n");
+    arr.append("version=" + APP_RELEASE + "\n");
     arr.append("uuid=");
     QString uuid = Application::settings().GetParameter("general/uuid");
 

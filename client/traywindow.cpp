@@ -74,6 +74,7 @@ void TrayWindow::showUploadMessage(QString text)
     this->bar.setVisible(true);
 
     const QTcpSocket& socket = Application::network().socket();
+
     if (socket.isOpen() && socket.bytesToWrite() > 0) {
         connect(&socket, &QTcpSocket::bytesWritten, [&](qint64 value) {
             int barValue;

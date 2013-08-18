@@ -13,7 +13,7 @@ class ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ConfigWidget(QMap<QString, QString> &languages, QWidget *parent = 0);
+    ConfigWidget(const QString& appName, QMap<QString, QString> &languages, QWidget *parent = 0);
     void init();
 
 protected:
@@ -31,6 +31,7 @@ private:
     void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
     void registerActualHotkeys();
     Ui::ConfigForm _ui;
+    QString _appName;
     QMap<QString, QString> &_languages;
     UGlobalHotkeys* _hotKeys;
 };

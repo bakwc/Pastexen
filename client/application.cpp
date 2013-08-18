@@ -235,7 +235,7 @@ bool Application::pxAppInit()
 
     initLanguages();
 
-    _configWidget = new ConfigWidget(_languages);
+    _configWidget = new ConfigWidget(GetAppName(), _languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
     connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
@@ -258,7 +258,7 @@ bool Application::pxAppInit()
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
     _trayIcon->setContextMenu(_trayIconMenu);                                   // Tray icon
 
-    _network = new Network(this);
+    _network = new Network(GetHostName(), GetPort(), this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
 
     this->setQuitOnLastWindowClosed(false);
@@ -419,7 +419,7 @@ void Application::linkAvaliable(const QString &link)
 void Application::aboutDialog()
 {
     QMessageBox::information(NULL, APP_NAME,
-                             tr("Utility for easy screenshoting and code sharing<br> We live at <a href=\"http://pastexen.com/\">pastexen.com</a><br> Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
+                             tr("Utility for easy screenshoting and code sharing<br> We live at <a href=\"http://pastexen.com/\">pastexen.com</a>"));
 }
 
 void Application::setupHotkeys()

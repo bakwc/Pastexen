@@ -44,11 +44,34 @@ public:
 
     static QString GetAccountUrl() {
         QString uuid = settings().GetParameter("uuid");
-        return "http://pastexen.com/login_app.php?uuid=" + uuid;
+        return "http://" + GetHostName() + "/login_app.php?uuid=" + uuid;
     }
+    static QString GetHostName() {
+        QString mode = settings().GetParameter("mode", "");
+        if (mode == "dev") {
+            return "dev.pastexen.com";
+        }
+        return "pastexen.com";
+    }
+
+    static unsigned short GetPort() {
+        QString mode = settings().GetParameter("mode", "");
+        if (mode == "dev") {
+            return 9877;
+        }
+        return 9876;
+    }
+
+    static QString GetAppName() {
+        QString mode = settings().GetParameter("mode", "");
+        if (mode == "dev") {
+            return APP_NAME + " (dev)";
+        }
+        return APP_NAME;
+    }
+
 public slots:
     inline void hotkeyPressed(size_t id) {
-        qDebug() << "Hotkey presed!\n";
         if (id == HOTKEY_CODE_ID) {
             processCodeShare();
         } else if (id == HOTKEY_FULL_ID) {
