@@ -128,6 +128,7 @@ int TrayWindow::startTimer(int interval)
         killTimer(timerId);
     }
     timerId = QObject::startTimer(interval);
+    return timerId;
 }
 
 

@@ -86,6 +86,9 @@ void UKeySequence::AddModifiers(Qt::KeyboardModifiers mod) {
     if (mod & Qt::AltModifier) {
         AddKey(Qt::Key_Alt);
     }
+    if (mod & Qt::MetaModifier) {
+        AddKey(Qt::Key_Meta);
+    }
 }
 
 void UKeySequence::AddKey(const QString& key) {
@@ -104,6 +107,10 @@ void UKeySequence::AddKey(const QString& key) {
     }
     if (mod == "control" || mod == "ctrl") {
         AddKey(Qt::Key_Control);
+        return;
+    }
+    if (mod == "win" || mod == "meta") {
+        AddKey(Qt::Key_Meta);
         return;
     }
     QKeySequence seq(key);

@@ -27,16 +27,15 @@
 	final class ApplicationAction_user_register_handler extends ApplicationAction {
 		public function run() {
 			$uuid = '';
-			$uuidBad = false;
 			if(!isset($this->application->parameters['uuid']))
 				$uuid = '';
 			else {
 				$uuid = $this->application->parameters['uuid'];
-				if(!empty($uuid) && !ApplicationModel_User::validateUuid($uuid))
-					$uuidBad = true;
 			}
-			if($uuidBad) // invalid uuid is set
+			
+			if(empty($uuid) || !ApplicationModel_User::validateUuid($uuid)) { // unvalid uuid
 				throw new ApplicationException('Invalid client uuid.', 400);
+			}
 
 			$login = '';
 			$loginBad = false;

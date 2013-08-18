@@ -44,6 +44,8 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
             winMod |= MOD_ALT;
         } else if (keySeq[i] == Qt::Key_Shift) {
             winMod |= MOD_SHIFT;
+        } else if (keySeq[i] == Qt::Key_Meta) {
+            winMod |= MOD_WIN;
         } else {
             key = QtKeyToWin(keySeq[i]);
         }

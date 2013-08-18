@@ -56,11 +56,20 @@
 
 			// build list of files, this user owns
 			$userUuids = $user->getUuids();
+			$userFiles = array();
+			$fileLoadQueueTimestamps = array();
 			$fileLoadQueue = array();
 			foreach($userUuids as $time => $uuid) {
 				$userUuidFileIds = ApplicationModel_File::getIdsForUploader($this->application, $uuid);
-				$fileLoadQueue = array_merge($fileLoadQueue, $userUuidFileIds);
+				$userFiles = array_merge($userFiles, $userUuidFileIds);
 			}
+			
+			foreach($userFiles as $userFile) {
+				$fileLoadQueue[] = (int)substr($userFile["value"], strlen('file_'));
+				$fileLoadQueueTimestamps[] = (int)($userFile["score"]);
+			}
+			
+			array_multisort($fileLoadQueueTimestamps, SORT_DESC, $fileLoadQueue, SORT_ASC);
 			
 			// make sure that the requested page number is not too high
 			$totalPages = ceil(count($fileLoadQueue) / $this->application->config['user_files_per_page']);

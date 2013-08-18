@@ -23,7 +23,7 @@ public:
     void Save(bool keepOrigin = false);
 
     UFromStringFormat GetParameter(const QString& parameter);
-    UFromStringFormat GetParameter(const QString &parameter, QString value);
+    UFromStringFormat GetParameter(const QString &parameter, const QString& value);
     void SetParameter(const QString& parameter, const QString& value);
     void DefineParams(const TParametersHash& paramsList);
 

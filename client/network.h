@@ -24,6 +24,7 @@ public:
 signals:
     void linkReceived(const QString &link);
     void trayMessage(const QString &caption, const QString &text);
+    void ready(); // dns was resolve
 private slots:
     void onDataReceived();
     void lookedUp(const QHostInfo &host);

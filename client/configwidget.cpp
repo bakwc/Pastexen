@@ -67,9 +67,9 @@ void ConfigWidget::init()
         _ui.comboSourcesType->setCurrentIndex(srcIndex);
     }
 
-    QString uuid = Application::settings().GetParameter("general/uuid");
-    QString regText = tr("<a href=\"http://pastexen.com/register.php?uuid=%1\">Register & attach client</a>")
-            .arg(uuid);
+    QString regText = tr("<a href=\"%1\">My account</a>"
+                         " (you need to share file first)")
+            .arg(Application::GetAccountUrl());
     _ui.regLabel->setText(regText);
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
 }
