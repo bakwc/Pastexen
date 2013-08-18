@@ -39,12 +39,14 @@ void Network::upload(const QByteArray& data, const QString &type)
     UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
         qDebug() << "Unable to upload data: host not resolved";
-        emit trayMessage("Error", "Not connected - host not resolved");
+//        emit trayMessage("Error", "Not connected - host not resolved");
+        throw UException("Not connected - host not resolved");
         return; // If no internet connection
     }
     if (_socket.state() != QAbstractSocket::UnconnectedState) {
-        emit trayMessage("Error", "Sending previous request");
+//        emit trayMessage("Error", "Sending previous request");
         UDebug << "Error connecting to server!";
+        throw UException("Sending previous request");
         return;
     }
 

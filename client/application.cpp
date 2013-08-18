@@ -21,6 +21,7 @@
 #include "languageselectdialog.h"
 #include "utils.h"
 #include "application.h"
+#include "traywindow.h"
 
 #ifdef Q_OS_LINUX
 #include <X11/Xlib.h>
@@ -112,6 +113,7 @@ Application::Application(int argc, char *argv[]) :
     , _trayIconMenu(0)
     , _network(0)
     , _settings(0)
+  , _trayWindow(0)
 {
 }
 
@@ -179,9 +181,11 @@ bool Application::pxAppInit()
 
     _network = new Network(this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
-    connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
+//    connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
 
     this->setQuitOnLastWindowClosed(false);
+
+    _trayWindow = new TrayWindow;
 
     _trayIcon->show();
     QFile file(settingsFile);
@@ -197,7 +201,8 @@ void Application::newLocalSocketConnection()
 
 void Application::trayMessage(const QString &caption, const QString &text)
 {
-    _trayIcon->showMessage(caption, text, QSystemTrayIcon::Information, 6500);
+//    _trayIcon->showMessage(caption, text, QSystemTrayIcon::Information, 6500);
+    _trayWindow->showTextMessage(caption, text);
 }
 
 void Application::processScreenshot(bool isFullScreen)
@@ -239,7 +244,6 @@ void Application::processScreenshot(bool isFullScreen)
         }
     }
 
-//    QString imagetype = _settings->value("general/imagetype", DEFAULT_IMAGE_TYPE).toString();
     QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
 
     QByteArray imageBytes;
@@ -247,8 +251,16 @@ void Application::processScreenshot(bool isFullScreen)
     buffer.open(QFile::WriteOnly);
     pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
     buffer.close();
-    _network->upload(imageBytes, imagetype);
+    try {
+        _network->upload(imageBytes, imagetype);
+    } catch (UException &e) {
+        emit trayMessage("Error", e.what());
+        return;
+    }
+
     Sharing = false;
+
+    _trayWindow->showUploadMessage("Image uploading...", ".....");
 }
 
 void Application::processCodeShare()
@@ -257,7 +269,6 @@ void Application::processCodeShare()
         return;
     }
 
-//    bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     bool showsourcedialog = settings().GetParameter("general/showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
     if (showsourcedialog) {
         LanguageSelectDialog dialog(_languages);
@@ -324,7 +335,9 @@ void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &butto
 void Application::linkAvaliable(const QString &link)
 {
     QApplication::clipboard()->setText(link);
-    _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
+//    _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
+//    trayMessage(tr("Done!"), tr("File shared!"));
+//    _trayWindow->showUploadedMessage(tr("Done!"), tr("File shared!"));
 }
 
 void Application::aboutDialog()
@@ -335,9 +348,6 @@ void Application::aboutDialog()
 
 void Application::setupHotkeys()
 {
-//    QString fullHotkey = _settings->value("general/fullhotkey", DEFAULT_HOTKEY_FULL).toString();
-//    QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
-//    QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
     QString fullHotkey = settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
     QString partHotkey = settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
     QString codeHotkey = settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
@@ -415,8 +425,17 @@ void Application::timerEvent(QTimerEvent *) {
 #endif
 
     if (text.count() == 0) {
-        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
+//        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
+        trayMessage(tr("Error"), tr("No text found in clipboard"));
         return;
     }
-    _network->upload(text.toUtf8(), sourcestype);
+
+    try {
+        _network->upload(text.toUtf8(), sourcestype);
+    } catch(UException &e) {
+        emit trayMessage("Error", e.what());
+        return;
+    }
+
+    _trayWindow->showUploadMessage("Text uploading...", ".....");
 }

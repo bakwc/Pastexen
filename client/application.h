@@ -9,6 +9,7 @@
 #include "configwidget.h"
 #include "network.h"
 #include "../utils/usettings.h"
+#include "traywindow.h"
 
 #ifdef Q_OS_WIN
 #undef _WIN32_WINNT
@@ -35,6 +36,10 @@ public:
 
     static USettings& settings() {
         return *((Application*)qApp)->_settings;
+    }
+
+    static const Network& network() {
+        return *((Application*)qApp)->_network;
     }
 
 public slots:
@@ -64,6 +69,7 @@ private:
     void timerEvent(QTimerEvent *);
 private:
     ConfigWidget *_configWidget;
+    TrayWindow *_trayWindow;
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
     Network *_network;

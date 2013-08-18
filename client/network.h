@@ -16,6 +16,11 @@ public:
     explicit Network(QObject *parent = 0);
     void uploadFile(const QString &fileName, const QString &type);
     void upload(const QByteArray &data, const QString &type);
+
+    const QTcpSocket& socket() const {
+        return _socket;
+    }
+
 signals:
     void linkReceived(const QString &link);
     void trayMessage(const QString &caption, const QString &text);

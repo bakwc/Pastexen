@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     ../utils/ucolonsep.cpp \
     ../utils/ucast.cpp \
     ../utils/ukeysequence.cpp \
-    ../utils/uglobalhotkeys.cpp
+    ../utils/uglobalhotkeys.cpp \
+    traywindow.cpp
 
 HEADERS  += \
     application.h \
@@ -50,7 +51,8 @@ HEADERS  += \
     ../utils/ucast.h \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkeys.h \
-    ../utils/udebug.h
+    ../utils/udebug.h \
+    traywindow.h
 
 RESOURCES += \
     resources.qrc
