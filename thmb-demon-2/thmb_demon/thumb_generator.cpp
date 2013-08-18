@@ -2,6 +2,8 @@
 #include <boost/algorithm/string.hpp>
 #include <contrib/lodepng/lodepng.h>
 #include <contrib/cimg/cimg.h>
+#include <contrib/jpeg/jpgd.h>
+
 #include "thumb_generator.h"
 
 using namespace boost::algorithm;
@@ -31,13 +33,38 @@ TImage LoadPng(const string& sourceFile) {
     return result;
 }
 
+TImage LoadJpeg(const string& sourceFile) {
+    int width, height, comps;
+    unsigned char* image;
+    image = jpgd::decompress_jpeg_image_from_file(sourceFile.c_str(), &width, &height, &comps, 4);
+    if (!image) {
+        cerr << "Failed to load jpeg image";
+        return TImage();
+    }
+    TImage result(width, height, 1, 4);
+    unsigned char* r = result.data(0, 0, 0, 0);
+    unsigned char* g = result.data(0, 0, 0, 1);
+    unsigned char* b = result.data(0, 0, 0, 2);
+    unsigned char* a = result.data(0, 0, 0, 3);
+    const unsigned char* s;
+    for (s = image; s < image + width * height * 4;) {
+        *(r++) = *(s++);
+        *(g++) = *(s++);
+        *(b++) = *(s++);
+        *(a++) = *(s++);
+    }
+    return result;
+}
+
 TImage LoadImageFile(const string& sourceFile) {
     if (ends_with(sourceFile, ".bmp")) {
         return TImage(sourceFile.c_str());
     } else if (ends_with(sourceFile, ".png")) {
         return LoadPng(sourceFile);
+    } else if (ends_with(sourceFile, ".jpg")) {
+        return LoadJpeg(sourceFile);
     }
-    // todo: implement loading jpg
+    // todo: implement loading gif and mb tiff
     return TImage();
 }
 
