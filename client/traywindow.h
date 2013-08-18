@@ -1,37 +1,29 @@
-#ifndef TRAYWINDOW_H
-#define TRAYWINDOW_H
+#pragma once
 
 #include <QFrame>
 #include <QLabel>
 #include <QProgressBar>
+
+enum ETrayMessageType {
+    TMT_None,
+    TMT_Info,
+    TMT_Success,
+    TMT_Error
+};
 
 class TrayWindow : public QFrame
 {
     Q_OBJECT
 public:
     explicit TrayWindow();
-
-    void showTextMessage(QString title = "", QString text = "", int interval = 2000);
-    void showUploadMessage(QString title = "", QString text = "", QPixmap img = QPixmap(0, 0));
-    void showUploadedMessage(QString title = "", QString text = "", QPixmap img = QPixmap(0, 0));
-
+    void showMessage(QString text, ETrayMessageType type = TMT_None,
+                     int interval = 3000,
+                     bool showProgressBar = false);
+    void showUploadMessage(QString text);
 protected:
     void timerEvent(QTimerEvent *);
     int startTimer(int interval);
-    
-signals:
-    
-public slots:
-
 private:
-    QWidget* createTitle();
-    QWidget* createContent();
-    QWidget* createBottom();
-
-    QLabel title;
     QLabel text;
     QProgressBar bar;
-    
 };
-
-#endif // TRAYWINDOW_H

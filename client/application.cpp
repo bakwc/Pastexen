@@ -110,11 +110,11 @@ bool IsFullscreenAndMaximized( HWND hwnd )
 Application::Application(int argc, char *argv[]) :
     QApplication(argc, argv)
     , _configWidget(0)
+    , _trayWindow(0)
     , _trayIcon(0)
     , _trayIconMenu(0)
     , _network(0)
     , _settings(0)
-  , _trayWindow(0)
 {
 }
 
@@ -228,8 +228,6 @@ bool Application::pxAppInit()
     QString uuid = _settings->GetParameter("general/uuid", "");
     if (uuid.length() != 24 * 2) {
         uuid = GenerateUUID();
-        qDebug() << Q_FUNC_INFO << " uuid = " << uuid;
-
         Q_ASSERT(uuid.length() == 24 * 2);
         _settings->SetParameter("general/uuid", uuid);
         _settings->Save();
@@ -262,7 +260,6 @@ bool Application::pxAppInit()
 
     _network = new Network(this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
-//    connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
 
     this->setQuitOnLastWindowClosed(false);
 
@@ -283,7 +280,6 @@ void Application::resolved()
 {
     // If program have parameter upload file
     if (QApplication::arguments().count()>1){
-        qDebug() << Application::arguments().at(1).toUtf8();
         uploadFile(QApplication::arguments().at(1).toUtf8());
     }
 }
@@ -294,10 +290,9 @@ void Application::newLocalSocketConnection()
     connect(_localConnection, SIGNAL(readyRead()), SLOT(localRequestReceived()));
 }
 
-void Application::trayMessage(const QString &caption, const QString &text)
+void Application::trayMessage(const QString& text, ETrayMessageType type)
 {
-//    _trayIcon->showMessage(caption, text, QSystemTrayIcon::Information, 6500);
-    _trayWindow->showTextMessage(caption, text);
+    _trayWindow->showMessage(text, type);
 }
 
 void Application::processScreenshot(bool isFullScreen)
@@ -310,25 +305,8 @@ void Application::processScreenshot(bool isFullScreen)
     }
     Sharing = true;
     QPixmap pixmap;
-    #if defined(Q_OS_LINUX)
+
     pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
-
-    #elif defined(Q_OS_WIN)
-
-
-    if(IsFullscreenAndMaximized(GetForegroundWindow()))
-    {
-
-        //pixmap.load("screenshot.bmp"); //Still not have working function for take snapshot from full screen applications
-    }
-
-    else
-    {
-        pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
-    }
-
-    //pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
-    #endif
 
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
@@ -339,6 +317,8 @@ void Application::processScreenshot(bool isFullScreen)
         }
     }
 
+    _trayWindow->showMessage(tr("Uploading image..."), TMT_None, 60000, true);
+
     QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
 
     QByteArray imageBytes;
@@ -348,14 +328,12 @@ void Application::processScreenshot(bool isFullScreen)
     buffer.close();
     try {
         _network->upload(imageBytes, imagetype);
+        _trayWindow->showUploadMessage(tr("Uploading image..."));
     } catch (UException &e) {
-        emit trayMessage("Error", e.what());
+        emit trayMessage(e.what(), TMT_Error);
         return;
     }
-
     Sharing = false;
-
-    _trayWindow->showUploadMessage("Image uploading...", ".....");
 }
 
 void Application::processCodeShare()
@@ -371,6 +349,8 @@ void Application::processCodeShare()
             return;
         }
     }
+
+    _trayWindow->showMessage(tr("Uploading code..."), TMT_None, 60000, true);
 
 #ifdef Q_OS_WIN
     QApplication::processEvents();
@@ -434,9 +414,6 @@ void Application::trayIconClicked(const QSystemTrayIcon::ActivationReason &butto
 void Application::linkAvaliable(const QString &link)
 {
     QApplication::clipboard()->setText(link);
-//    _trayIcon->showMessage(tr("Done!"), tr("File shared!"), QSystemTrayIcon::Information, 6500);
-//    trayMessage(tr("Done!"), tr("File shared!"));
-//    _trayWindow->showUploadedMessage(tr("Done!"), tr("File shared!"));
 }
 
 void Application::aboutDialog()
@@ -526,17 +503,15 @@ void Application::timerEvent(QTimerEvent *) {
 #endif
 
     if (text.count() == 0) {
-//        _trayIcon->showMessage(tr("Error!"), tr("No text found in clipboard"), QSystemTrayIcon::Information, 6500);
-        trayMessage(tr("Error"), tr("No text found in clipboard"));
+        trayMessage(tr("No text found in clipboard"), TMT_Error);
         return;
     }
 
     try {
         _network->upload(text.toUtf8(), sourcestype);
+        _trayWindow->showUploadMessage(tr("Uploading code..."));
     } catch(UException &e) {
-        emit trayMessage("Error", e.what());
+        emit trayMessage(e.what(), TMT_Error);
         return;
     }
-
-    _trayWindow->showUploadMessage("Text uploading...", ".....");
 }

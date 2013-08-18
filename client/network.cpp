@@ -40,13 +40,11 @@ void Network::upload(const QByteArray& data, const QString &type)
 {
     UDebug << Q_FUNC_INFO;
     if (_serverAddr.isNull()) {
-        qDebug() << "Unable to upload data: host not resolved";
-//        emit trayMessage("Error", "Not connected - host not resolved");
+        UDebug << "Unable to upload data: host not resolved";
         throw UException("Not connected - host not resolved");
         return; // If no internet connection
     }
     if (_socket.state() != QAbstractSocket::UnconnectedState) {
-//        emit trayMessage("Error", "Sending previous request");
         UDebug << "Error connecting to server!";
         throw UException("Sending previous request");
         return;
@@ -63,7 +61,7 @@ void Network::upload(const QByteArray& data, const QString &type)
     arr.append("uuid=");
     QString uuid = Application::settings().GetParameter("general/uuid");
 
-    qDebug() << Q_FUNC_INFO << " uuid = " << uuid;
+    UDebug << Q_FUNC_INFO << " uuid = " << uuid;
 
     Q_ASSERT(uuid.length() == 24 * 2);
     arr.append(uuid.toLocal8Bit());

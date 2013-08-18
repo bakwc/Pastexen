@@ -9,7 +9,7 @@
 
 const QString STYLESHEET =
         "* {"
-            "background-color: rgb(100, 100, 100);"
+            "background-color: rgb(255, 255, 255);"
         "}"
         "TrayWindow {"
             "border-style: outset;"
@@ -18,16 +18,9 @@ const QString STYLESHEET =
             "border-color: black;"
             "padding: 3px;"
         "}"
-        "QLabel {"
-            "color: white;"
-        "}"
-        "#TitleWidget {"
-            "min-height: 15pt;"
-        "}"
-        "#TitleLabel {"
-            "min-height: 15pt;"
-
-            "font: 12pt;"
+        "#Text {"
+            "min-height: 13pt;"
+            "font: 10pt;"
         "}";
 
 TrayWindow::TrayWindow() :
@@ -35,49 +28,53 @@ TrayWindow::TrayWindow() :
            Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&text);
+    layout->addWidget(&bar);
 
-    layout->addWidget(createTitle());
-    layout->addWidget(createContent());
-    layout->addWidget(createBottom());
-
-    title.setObjectName("TitleLabel");
-    text.setObjectName("TextLabel");
+    text.setObjectName("Text");
     bar.setObjectName("ProgressBar");
+    bar.setFixedSize(130, 14);
 
-    int w = 200, h = 140;
-    int xi = 90, yi = 80;
+    setFixedSize(160, 60);
 
-    setFixedSize(w, h);
+    QRect dsktpSize = qApp->screens().at(0)->availableGeometry();
+    if (dsktpSize.top() == 0) {
+        // toolbar is on bottom
+        move(dsktpSize.width() - width(), dsktpSize.height() - height());
+    } else {
+        // toolbar is on top
+        move(dsktpSize.width() - width(), dsktpSize.top());
+    }
 
-    QSize dsktpSize = qApp->screens().at(0)->size();
-    move(dsktpSize.width() - width() - xi,
-         dsktpSize.height() - height() - yi);
-
-//    setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet(STYLESHEET);
-
-    //    this->startTimer(5000);
 }
 
-void TrayWindow::showTextMessage(QString title, QString text, int interval)
+void TrayWindow::showMessage( QString text, ETrayMessageType type, int interval, bool showProgressBar)
 {
-    this->title.setText(title);
+    // todo: show different images for different error types
+    switch(type) {
+    case TMT_None: break;
+    case TMT_Info: break;
+    case TMT_Error: text = tr("Error: ") + text;
+    case TMT_Success: break;
+    }
+
     this->text.setText(text);
-    this->bar.setVisible(false);
+    this->bar.setVisible(showProgressBar);
+    this->bar.setValue(0);
     startTimer(interval);
     show();
+    QCoreApplication::processEvents();
 }
 
 
-void TrayWindow::showUploadMessage(QString title, QString text, QPixmap img)
+void TrayWindow::showUploadMessage(QString text)
 {
-    this->title.setText(title);
     this->text.setText(text);
     this->bar.setVisible(true);
 
     const QTcpSocket& socket = Application::network().socket();
     if (socket.isOpen() && socket.bytesToWrite() > 0) {
-        qDebug() << Q_FUNC_INFO << "socket open";
         connect(&socket, &QTcpSocket::bytesWritten, [&](qint64 value) {
             int barValue;
             qint64 s = socket.bytesToWrite();
@@ -92,28 +89,13 @@ void TrayWindow::showUploadMessage(QString title, QString text, QPixmap img)
         });
         connect(&Application::network(), &Network::linkReceived, [&]() {
             bar.setValue(100);
-            this->text.setText("Successfull!");
-            this->startTimer(2000);
+            this->text.setText("Done!");
+            this->startTimer(3000);
             disconnect(this);
         });
     }
-
-    startTimer(10000);
     show();
 }
-
-
-void TrayWindow::showUploadedMessage(QString title, QString text, QPixmap img)
-{
-    this->title.setText(title);
-    this->text.setText(text);
-    this->bar.setVisible(true);
-    this->bar.setValue(100);
-
-    this->startTimer(1000);
-    show();
-}
-
 
 void TrayWindow::timerEvent(QTimerEvent *)
 {
@@ -129,45 +111,4 @@ int TrayWindow::startTimer(int interval)
     }
     timerId = QObject::startTimer(interval);
     return timerId;
-}
-
-
-QWidget* TrayWindow::createTitle() {
-    QWidget *wdgt = new QWidget;
-    wdgt->setObjectName("TitleWidget");
-    QHBoxLayout* layout = new QHBoxLayout(wdgt);
-
-    layout->addSpacing(20);
-    layout->addWidget(&title);
-//    layout->addWidget(closeBtn, 1, Qt::AlignTop);
-
-    return wdgt;
-}
-
-QWidget* TrayWindow::createContent() {
-    QWidget *wdgt = new QWidget;
-    wdgt->setObjectName("ContentWidget");
-    QHBoxLayout* layout = new QHBoxLayout(wdgt);
-
-    layout->addWidget(&text);
-
-    return wdgt;
-}
-
-QWidget* TrayWindow::createBottom() {
-//    const QTcpSocket& socket = Application::network().socket();
-//    if (socket.isOpen() && socket.size() > 0) {
-//        qDebug() << Q_FUNC_INFO << "socket open";
-//        connect(&socket, &QTcpSocket::bytesWritten, [&](qint64 value) {
-//            qint64 s = socket.size();
-//            double d = value / s;
-//            bar->setValue(d*100);
-//        });
-//        connect(&Application::network(), &Network::linkReceived, [&]() {
-//            bar->setValue(100);
-//            this->startTimer(1000);
-//        });
-//    }
-
-    return &bar;
 }

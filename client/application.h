@@ -48,6 +48,7 @@ public:
     }
 public slots:
     inline void hotkeyPressed(size_t id) {
+        qDebug() << "Hotkey presed!\n";
         if (id == HOTKEY_CODE_ID) {
             processCodeShare();
         } else if (id == HOTKEY_FULL_ID) {
@@ -67,7 +68,7 @@ private slots:
     void aboutDialog();
     void setupHotkeys();
     void newLocalSocketConnection();
-    void trayMessage(const QString &caption, const QString &text);
+    void trayMessage(const QString& text, ETrayMessageType type = TMT_None);
     void localRequestReceived();
 private:
     QLocalSocket *_localConnection;
@@ -84,7 +85,6 @@ private:
     QSystemTrayIcon *_trayIcon;
     QMenu *_trayIconMenu;
     Network *_network;
-//    QSettings *_settings;
     USettings *_settings;
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
