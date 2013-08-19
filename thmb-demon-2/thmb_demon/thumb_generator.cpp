@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <boost/algorithm/string.hpp>
 #include <contrib/lodepng/lodepng.h>
 #include <contrib/cimg/cimg.h>
@@ -9,6 +10,14 @@
 using namespace boost::algorithm;
 
 typedef cimg_library::CImg<unsigned char> TImage;
+
+string LoadFile(const string& fileName) {
+    std::ifstream ifs;
+    ifs.open(fileName, fstream::binary | fstream::in);
+    std::string content((std::istreambuf_iterator<char>(ifs)),
+                        (std::istreambuf_iterator<char>()));
+    return content;
+}
 
 TImage LoadPng(const string& sourceFile) {
     vector<unsigned char> image;
@@ -116,11 +125,23 @@ TImage MakeImageThumb(const string& sourceFile, size_t width, size_t height) {
 }
 
 TImage MakeTextThumb(const string& sourceFile, size_t width, size_t height) {
-    string text;
-    // todo: load text from sourceFile
-    TImage thumb(100, 100, 1, 3, 0);
-    // todo: write text to thumb
-    // todo: resize thumb
+    string text = LoadFile(sourceFile);
+    vector<string> lines;
+    split(lines, text, is_any_of("\n\r"));
+    size_t n = 0;
+    TImage thumb(width, height, 1, 3, 0);
+    unsigned char white[] = {255, 255, 255};
+    for (size_t i = 0; i < lines.size(); ++i) {
+        string& text = lines[i];
+        trim(text);
+        if (!text.empty()) {
+            // todo: use font rendering library instead
+            //  - make text smaller
+            //  - fix encoding problem
+            thumb.draw_text(6, 3 + 12 * n, text.c_str(), white, NULL, 1, 13);
+            ++n;
+        }
+    }
     return thumb;
 }
 

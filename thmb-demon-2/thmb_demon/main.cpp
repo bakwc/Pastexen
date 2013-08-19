@@ -6,6 +6,9 @@
 using namespace std;
 
 int main(int argc, char** argv) {
+    GenerateThumbnail(FT_Text, "C:\\koding\\image.txt", "C:\\koding\\thumb.png", 64, 64);
+    return 0;
+
     try {
         TRedisTaskManager taskManager("dev.pastexen.com", 6378, 0);
         optional<TTask> task = taskManager.GetTask();
