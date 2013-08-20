@@ -4,6 +4,8 @@
 #include <contrib/lodepng/lodepng.h>
 #include <contrib/cimg/cimg.h>
 #include <contrib/jpeg/jpgd.h>
+#define STB_TRUETYPE_IMPLEMENTATION
+#include <contrib/stb_truetype/stb_truetype.h>
 
 #include "thumb_generator.h"
 
