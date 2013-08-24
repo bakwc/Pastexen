@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <sstream>
 #include "uexception.h"
 
 template<typename T> T FromString(const std::string& str);
@@ -26,7 +27,9 @@ inline UFromStringFormat FromString(const std::string& str) {
 
 template <typename T>
 inline std::string ToString(const T& t) {
-    return std::to_string(t);
+    std::ostringstream convert;
+    convert << t;
+    return convert.str();
 }
 
 inline std::string ToString(const std::vector<char> byteArray) {

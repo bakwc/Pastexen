@@ -44,7 +44,7 @@ string RecodeText(string text, const string& from, const string& to) {
         return "";
     }
 
-    char* ip = (char*)text.c_str();
+    const char* ip = (char*)text.c_str();
     char* op = outbuf;
     size_t icount = text.length();
     size_t ocount = text.length() * 2;

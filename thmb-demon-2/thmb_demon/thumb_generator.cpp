@@ -2,6 +2,7 @@
 #include <fstream>
 #include <boost/algorithm/string.hpp>
 #include <contrib/lodepng/lodepng.h>
+#define cimg_display 0
 #include <contrib/cimg/cimg.h>
 #include <contrib/jpeg/jpgd.h>
 #define STB_TRUETYPE_IMPLEMENTATION
@@ -18,8 +19,8 @@ typedef cimg_library::CImg<unsigned char> TImage;
 
 TImage LoadPng(const string& sourceFile) {
     vector<unsigned char> image;
-    size_t width, height;
-    size_t err = lodepng::decode(image, width, height, sourceFile);
+    unsigned int width, height;
+    size_t err = lodepng::decode(image, width, height, sourceFile, LCT_RGBA, 8);
     if (err) {
         throw UException(lodepng_error_text(err));
     }
