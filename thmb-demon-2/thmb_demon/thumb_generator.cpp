@@ -113,7 +113,45 @@ void SaveImage(const TImage& image, const string& destFile) {
     }
 }
 
-TImage MakeImageThumb(const string& sourceFile, size_t width, size_t height) {
+class TThumbGeneratorImpl {
+public:
+    TThumbGeneratorImpl(const string& fontFile, size_t width, size_t height);
+    void GenerateThumbnail(EFileType type, const string& sourceFile, const string& destFile);
+private:
+    void DrawText(TImage& image, size_t x, size_t y, const string& text, size_t size);
+    TImage MakeTextThumb(const string& sourceFile);
+    TImage MakeImageThumb(const string& sourceFile);
+private:
+    string FontData;
+    stbtt_fontinfo Font;
+    size_t Width;
+    size_t Height;
+};
+
+TThumbGeneratorImpl::TThumbGeneratorImpl(const string& fontFile, size_t width, size_t height)
+    : FontData(LoadFile(fontFile))
+    , Width(width)
+    , Height(height)
+{
+    stbtt_InitFont(&Font, (const unsigned char*)FontData.c_str(), 0);
+}
+
+void TThumbGeneratorImpl::GenerateThumbnail(EFileType type,
+                                                const string &sourceFile,
+                                                const string &destFile)
+{
+    TImage thumb;
+    if (type == FT_Image) {
+        thumb = MakeImageThumb(sourceFile);
+    } else if (type == FT_Text) {
+        thumb = MakeTextThumb(sourceFile);
+    } else {
+        // todo: throw exception
+    }
+    SaveImage(thumb, destFile);
+}
+
+TImage TThumbGeneratorImpl::MakeImageThumb(const string& sourceFile) {
     // todo: correct thumbs for images width / height rate not only 1:1
     TImage image = LoadImageFile(sourceFile);
     if (image.width() > image.height()) {
@@ -123,43 +161,75 @@ TImage MakeImageThumb(const string& sourceFile, size_t width, size_t height) {
     } else {
         // todo: throw exception
     }
-    return image.get_resize(width, height, -100, -100, 5);
+    return image.get_resize(Width, Height, -100, -100, 5);
 }
 
-TImage MakeTextThumb(const string& sourceFile, size_t width, size_t height) {
+void TThumbGeneratorImpl::DrawText(TImage& image, size_t x, size_t y, const string& text, size_t size) {
+    float scale = stbtt_ScaleForPixelHeight(&Font, size);
+
+    int w, h, xo, yo;
+    unsigned char* r = image.data(0, 0, 0, 0);
+    unsigned char* g = image.data(0, 0, 0, 1);
+    unsigned char* b = image.data(0, 0, 0, 2);
+
+    size_t pos = x;
+    for (size_t i = 0; i < text.size(); i++) {
+        if (isspace(text[i])) {
+            pos += size * 0.3;
+            continue;
+        }
+        unsigned char* d = stbtt_GetCodepointBitmap(&Font, 0, scale, text[i], &w, &h, &xo, &yo);
+        for (size_t wx = 0; wx < w; wx++) {
+            for (size_t wy = 0; wy < h; wy++) {
+                size_t cx = pos + wx + xo;
+                size_t cy = y + wy + yo + size;
+                if (cy >= image.height() ||
+                        cx >= image.width())
+                {
+                    continue;
+                }
+                size_t dcord = image.width() * cy + cx;
+                size_t scord = wy * w + wx;
+                r[dcord] = d[scord];
+                g[dcord] = d[scord];
+                b[dcord] = d[scord];
+            }
+        }
+        pos += w;
+    }
+}
+
+TImage TThumbGeneratorImpl::MakeTextThumb(const string& sourceFile) {
     string text = LoadFile(sourceFile);
     vector<string> lines;
     split(lines, text, is_any_of("\n\r"));
     size_t n = 0;
-    TImage thumb(width, height, 1, 3, 0);
-    unsigned char white[] = {255, 255, 255};
+    TImage thumb(Width, Height, 1, 3, 0);
+
     for (size_t i = 0; i < lines.size(); ++i) {
         string& text = lines[i];
         trim(text);
         if (!text.empty()) {
-            // todo: use font rendering library instead
-            //  - make text smaller
             //  - fix encoding problem
-            thumb.draw_text(6, 3 + 12 * n, text.c_str(), white, NULL, 1, 13);
+            DrawText(thumb, 6, 9 * n, text, 10);
             ++n;
+            if (9 * n > Width + 9) break;
         }
     }
     return thumb;
 }
 
-void GenerateThumbnail(EFileType type,
-                       const string& sourceFile,
-                       const string& destFile,
-                       size_t width,
-                       size_t height)
+TThumbGenerator::TThumbGenerator(const string& fontFile, size_t width, size_t height)
+    : Impl(new TThumbGeneratorImpl(fontFile, width, height))
 {
-    TImage thumb;
-    if (type == FT_Image) {
-        thumb = MakeImageThumb(sourceFile, width, height);
-    } else if (type == FT_Text) {
-        thumb = MakeTextThumb(sourceFile, width, height);
-    } else {
-        // todo: throw exception
-    }
-    SaveImage(thumb, destFile);
+}
+
+TThumbGenerator::~TThumbGenerator() {
+}
+
+void TThumbGenerator::GenerateThumbnail(EFileType type,
+                                        const string& sourceFile,
+                                        const string& destFile)
+{
+    Impl->GenerateThumbnail(type, sourceFile, destFile);
 }

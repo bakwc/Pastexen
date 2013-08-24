@@ -6,7 +6,10 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    GenerateThumbnail(FT_Text, "C:\\koding\\image.txt", "C:\\koding\\thumb.png", 64, 64);
+
+    TThumbGenerator generator("C:\\koding\\font.ttf", 64, 64);
+    generator.GenerateThumbnail(FT_Text, "C:\\koding\\image.txt", "C:\\koding\\thumb.png");
+
     return 0;
 
     try {
