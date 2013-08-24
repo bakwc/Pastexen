@@ -4,4 +4,5 @@ target_link_libraries(thmb_demon
                         hiredis
                         lodepng
                         jpeg
+                        utils
                         ${Boost_LIBRARIES})

@@ -9,7 +9,7 @@
 using namespace std;
 using namespace boost;
 
-class TTaskException: public exception {
+class TTaskException: public std::exception {
 public:
     TTaskException(const string& message);
     virtual ~TTaskException() throw();

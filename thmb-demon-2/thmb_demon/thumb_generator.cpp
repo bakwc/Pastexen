@@ -7,27 +7,21 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <contrib/stb_truetype/stb_truetype.h>
 
+#include <utils/uexception.h>
+#include <utils/string.h>
+
 #include "thumb_generator.h"
 
 using namespace boost::algorithm;
 
 typedef cimg_library::CImg<unsigned char> TImage;
 
-string LoadFile(const string& fileName) {
-    std::ifstream ifs;
-    ifs.open(fileName, fstream::binary | fstream::in);
-    std::string content((std::istreambuf_iterator<char>(ifs)),
-                        (std::istreambuf_iterator<char>()));
-    return content;
-}
-
 TImage LoadPng(const string& sourceFile) {
     vector<unsigned char> image;
     size_t width, height;
     size_t err = lodepng::decode(image, width, height, sourceFile);
     if (err) {
-        cerr << lodepng_error_text(err);
-        return TImage();
+        throw UException(lodepng_error_text(err));
     }
     TImage result(width, height, 1, 4);
     unsigned char* r = result.data(0, 0, 0, 0);
@@ -49,8 +43,7 @@ TImage LoadJpeg(const string& sourceFile) {
     unsigned char* image;
     image = jpgd::decompress_jpeg_image_from_file(sourceFile.c_str(), &width, &height, &comps, 4);
     if (!image) {
-        cerr << "Failed to load jpeg image";
-        return TImage();
+        throw UException("Failed to load jpeg file " + sourceFile);
     }
     TImage result(width, height, 1, 4);
     unsigned char* r = result.data(0, 0, 0, 0);
@@ -76,6 +69,7 @@ TImage LoadImageFile(const string& sourceFile) {
         return LoadJpeg(sourceFile);
     }
     // todo: implement loading gif and mb tiff
+    throw UException("Failed to load image file - unknown type");
     return TImage();
 }
 
@@ -103,13 +97,11 @@ void SaveImage(const TImage& image, const string& destFile) {
             *(d++) = 255;
         }
     } else {
-        // todo: exception here
-        cerr << "wrong image type";
-        return;
+        throw UException("failed to save image - wrong type");
     }
     size_t err = lodepng::encode(destFile, result, image.width(), image.height());
     if (err) {
-        cerr << lodepng_error_text(err) << "\n";
+        throw UException(lodepng_error_text(err));
     }
 }
 
@@ -118,7 +110,7 @@ public:
     TThumbGeneratorImpl(const string& fontFile, size_t width, size_t height);
     void GenerateThumbnail(EFileType type, const string& sourceFile, const string& destFile);
 private:
-    void DrawText(TImage& image, size_t x, size_t y, const string& text, size_t size);
+    void DrawText(TImage& image, size_t x, size_t y, const wstring& wtext, size_t size);
     TImage MakeTextThumb(const string& sourceFile);
     TImage MakeImageThumb(const string& sourceFile);
 private:
@@ -146,7 +138,7 @@ void TThumbGeneratorImpl::GenerateThumbnail(EFileType type,
     } else if (type == FT_Text) {
         thumb = MakeTextThumb(sourceFile);
     } else {
-        // todo: throw exception
+        throw UException("GenerateThumb: unknown type");
     }
     SaveImage(thumb, destFile);
 }
@@ -158,13 +150,11 @@ TImage TThumbGeneratorImpl::MakeImageThumb(const string& sourceFile) {
         image = image.get_crop(0, 0, image.height(), image.height(), true);
     } else if (image.height() > image.width()) {
         image = image.get_crop(0, 0, image.width(), image.width(), true);
-    } else {
-        // todo: throw exception
     }
     return image.get_resize(Width, Height, -100, -100, 5);
 }
 
-void TThumbGeneratorImpl::DrawText(TImage& image, size_t x, size_t y, const string& text, size_t size) {
+void TThumbGeneratorImpl::DrawText(TImage& image, size_t x, size_t y, const wstring& wtext, size_t size) {
     float scale = stbtt_ScaleForPixelHeight(&Font, size);
 
     int w, h, xo, yo;
@@ -173,12 +163,12 @@ void TThumbGeneratorImpl::DrawText(TImage& image, size_t x, size_t y, const stri
     unsigned char* b = image.data(0, 0, 0, 2);
 
     size_t pos = x;
-    for (size_t i = 0; i < text.size(); i++) {
-        if (isspace(text[i])) {
+    for (size_t i = 0; i < wtext.size(); i++) {
+        if (iswspace(wtext[i])) {
             pos += size * 0.3;
             continue;
         }
-        unsigned char* d = stbtt_GetCodepointBitmap(&Font, 0, scale, text[i], &w, &h, &xo, &yo);
+        unsigned char* d = stbtt_GetCodepointBitmap(&Font, 0, scale, wtext[i], &w, &h, &xo, &yo);
         for (size_t wx = 0; wx < w; wx++) {
             for (size_t wy = 0; wy < h; wy++) {
                 size_t cx = pos + wx + xo;
@@ -201,16 +191,20 @@ void TThumbGeneratorImpl::DrawText(TImage& image, size_t x, size_t y, const stri
 
 TImage TThumbGeneratorImpl::MakeTextThumb(const string& sourceFile) {
     string text = LoadFile(sourceFile);
-    vector<string> lines;
-    split(lines, text, is_any_of("\n\r"));
+    // Removing UTF8 BOM (239 187 191)
+    if (text.length() >= 3 && (uint8_t)text[0] == 239 && (uint8_t)text[1] == 187 && (uint8_t)text[2] == 191) {
+        text.erase(text.begin(), text.begin() + 3);
+    }
+    wstring wtext = UTF8ToWide(text);
+    vector<wstring> lines;
+    split(lines, wtext, is_any_of("\n\r"));
     size_t n = 0;
     TImage thumb(Width, Height, 1, 3, 0);
 
     for (size_t i = 0; i < lines.size(); ++i) {
-        string& text = lines[i];
+        wstring& text = lines[i];
         trim(text);
         if (!text.empty()) {
-            //  - fix encoding problem
             DrawText(thumb, 6, 9 * n, text, 10);
             ++n;
             if (9 * n > Width + 9) break;
