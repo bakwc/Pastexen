@@ -17,7 +17,7 @@ LanguageSelectDialog::LanguageSelectDialog(QMap<QString, QString> &languages, QW
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
                        this->width(), this->height());
     showTypes();
-    QString sourcestype = Application::settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
+    QString sourcestype = Application::settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
     int srcIndex = ui->comboLanguageType->findData(sourcestype);
     if (srcIndex != -1) {
         ui->comboLanguageType->setCurrentIndex(srcIndex);
@@ -38,5 +38,5 @@ void LanguageSelectDialog::showTypes()
 
 void LanguageSelectDialog::on_buttonBox_accepted()
 {
-    Application::settings().SetParameter("general/sourcetype" ,ui->comboLanguageType->itemData(ui->comboLanguageType->currentIndex()).toString());
+    Application::settings().SetParameter("sourcetype" ,ui->comboLanguageType->itemData(ui->comboLanguageType->currentIndex()).toString());
 }

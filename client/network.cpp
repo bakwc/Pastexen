@@ -60,7 +60,7 @@ void Network::upload(const QByteArray& data, const QString &type)
     arr.append("proto=pastexen\n");
     arr.append("version=" + APP_RELEASE + "\n");
     arr.append("uuid=");
-    QString uuid = Application::settings().GetParameter("general/uuid");
+    QString uuid = Application::settings().GetParameter("uuid");
 
     UDebug << Q_FUNC_INFO << " uuid = " << uuid;
 

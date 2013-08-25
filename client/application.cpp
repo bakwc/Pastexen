@@ -159,7 +159,7 @@ void Application::uploadFile(QString request)
             return;
         }
 
-        QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
+        QString imagetype = settings().GetParameter("imagetype", DEFAULT_IMAGE_TYPE);
 
         QByteArray imageBytes;
         QBuffer buffer(&imageBytes);
@@ -225,11 +225,11 @@ bool Application::pxAppInit()
     const QString& settingsFile = QDir::homePath() + "/" + SETTINGS_FILE;
     _settings = new USettings(settingsFile);
 
-    QString uuid = _settings->GetParameter("general/uuid", "");
+    QString uuid = _settings->GetParameter("uuid", "");
     if (uuid.length() != 24 * 2) {
         uuid = GenerateUUID();
         Q_ASSERT(uuid.length() == 24 * 2);
-        _settings->SetParameter("general/uuid", uuid);
+        _settings->SetParameter("uuid", uuid);
         _settings->Save();
     }
 
@@ -319,7 +319,7 @@ void Application::processScreenshot(bool isFullScreen)
 
     _trayWindow->showMessage(tr("Uploading image..."), TMT_None, 60000, true);
 
-    QString imagetype = settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
+    QString imagetype = settings().GetParameter("imagetype", DEFAULT_IMAGE_TYPE);
 
     QByteArray imageBytes;
     QBuffer buffer(&imageBytes);
@@ -342,7 +342,7 @@ void Application::processCodeShare()
         return;
     }
 
-    bool showsourcedialog = settings().GetParameter("general/showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
+    bool showsourcedialog = settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
     if (showsourcedialog) {
         LanguageSelectDialog dialog(_languages);
         if (!dialog.exec()) {
@@ -424,9 +424,9 @@ void Application::aboutDialog()
 
 void Application::setupHotkeys()
 {
-    QString fullHotkey = settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
-    QString partHotkey = settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
-    QString codeHotkey = settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
+    QString fullHotkey = settings().GetParameter("fullhotkey", DEFAULT_HOTKEY_FULL);
+    QString partHotkey = settings().GetParameter("parthotkey", DEFAULT_HOTKEY_PART);
+    QString codeHotkey = settings().GetParameter("texthotkey", DEFAULT_HOTKEY_CODE);
 
     QList<QAction*> actsList = _trayIconMenu->actions();
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));
@@ -484,7 +484,7 @@ void Application::timerEvent(QTimerEvent *) {
     this->killTimer(_timerId);
     _timerId = -1;
 
-    QString sourcestype = settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
+    QString sourcestype = settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
 
     QString text;
 
