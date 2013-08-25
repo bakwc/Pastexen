@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>260</width>
-    <height>294</height>
+    <height>307</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,8 +32,8 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>260</y>
+     <x>30</x>
+     <y>270</y>
      <width>201</width>
      <height>31</height>
     </rect>
@@ -64,7 +64,7 @@
      <x>10</x>
      <y>130</y>
      <width>241</width>
-     <height>121</height>
+     <height>141</height>
     </rect>
    </property>
    <property name="title">
@@ -193,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>100</y>
+      <y>120</y>
       <width>221</width>
       <height>16</height>
      </rect>
@@ -206,6 +206,19 @@
     </property>
     <property name="textInteractionFlags">
      <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxEditScreenshots">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>201</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edit screenshots before sharing</string>
     </property>
    </widget>
   </widget>

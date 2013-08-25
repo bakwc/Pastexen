@@ -20,6 +20,7 @@
 #include "ui_config.h"
 #include "defines.h"
 #include "languageselectdialog.h"
+#include "screenshoteditwidget.h"
 #include "utils.h"
 #include "application.h"
 #include "traywindow.h"
@@ -312,6 +313,16 @@ void Application::processScreenshot(bool isFullScreen)
         ImageSelectWidget imageSelectDialog(&pixmap);
         imageSelectDialog.setWindowState(Qt::WindowFullScreen);
         if (!imageSelectDialog.exec()) {
+            Sharing = false;
+            return;
+        }
+    }
+
+    bool editScreenshot = settings().GetParameter("showeditscreenshot", ToString(DEFAULT_SHOW_EDIT_SCREENSHOT));
+
+    if (editScreenshot && !isFullScreen) {
+        ScreenshotEditWidget editDialog(&pixmap);
+        if (!editDialog.exec()) {
             Sharing = false;
             return;
         }

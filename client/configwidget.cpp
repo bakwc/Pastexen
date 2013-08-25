@@ -59,6 +59,7 @@ void ConfigWidget::init()
     QString imagetype = Application::settings().GetParameter("imagetype", DEFAULT_IMAGE_TYPE);
     QString sourcestype = Application::settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
     bool showsourcedialog = Application::settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
+    bool editScreenshot = Application::settings().GetParameter("showeditscreenshot", ToString(DEFAULT_SHOW_EDIT_SCREENSHOT));
 
     int imgIndex = _ui.comboImageType->findData(imagetype);
     if (imgIndex != -1) {
@@ -75,6 +76,7 @@ void ConfigWidget::init()
             .arg(Application::GetAccountUrl());
     _ui.regLabel->setText(regText);
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
+    _ui.checkBoxEditScreenshots->setChecked(editScreenshot);
 }
 
 void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
@@ -118,6 +120,7 @@ void ConfigWidget::applyChanges()
     Application::settings().SetParameter("imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
     Application::settings().SetParameter("sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
     Application::settings().SetParameter("showsourcedialog", ToString(_ui.checkBoxLangDialogShow->isChecked()));
+    Application::settings().SetParameter("showeditscreenshot", ToString(_ui.checkBoxEditScreenshots->isChecked()));
     Application::settings().Save();
     this->hide();
 }
