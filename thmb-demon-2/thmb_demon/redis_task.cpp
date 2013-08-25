@@ -34,7 +34,7 @@ public:
         TTask task;
 
         // get waiting task
-        reply = (redisReply*)redisCommand(Context, "SRANDMEMBER thmb_tasks");
+        reply = (redisReply*)redisCommand(Context, "SPOP thmb_tasks");
         if (!reply) {
             throw TConnectionError();
         }

@@ -55,7 +55,7 @@ void TThumbDemon::Run() {
             optional<TTask> task = TaskManager->GetTask();
             if (task.is_initialized()) {
                 string destFile = ThumbDir + "/" + GetFileName(task->FilePath);
-                ThumbGenerator->GenerateThumbnail(task->Type, task->FilePath, destFile);
+                ThumbGenerator->GenerateThumbnail(task->Type, task->FilePath, destFile + ".png");
             }
         } catch(const std::exception& e) {
             cerr << "Error processing task: " << e.what() << "\n";
