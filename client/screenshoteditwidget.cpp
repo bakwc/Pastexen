@@ -21,7 +21,13 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
                       ui->screenshotDisplayWidget->y() + source->height() +
                         ui->colorDisplayWidget->height() + 10);
 
-    ui->screenshotDisplayWidget->setGeometry(ui->screenshotDisplayWidget->x(),
+    int minWidth = ui->clearButton->x() + ui->clearButton->width() + ui->colorDisplayWidget->x();
+
+    if (this->width() < minWidth) {
+        this->setGeometry(this->x(), this->y(), minWidth, this->height());
+    }
+
+    ui->screenshotDisplayWidget->setGeometry(width() / 2 - source->width() / 2,
                                         ui->screenshotDisplayWidget->y(),
                                         source->width(), source->height());
 
@@ -29,7 +35,7 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
                QDesktopWidget().availableGeometry().center().y() - (this->height() / 2));
     ui->buttonBox->setGeometry(ui->buttonBox->x(),
                                ui->screenshotDisplayWidget->y() + ui->screenshotDisplayWidget->height() + 10,
-                               source->width() - ui->buttonBox->x() * 2,
+                               this->width() - ui->buttonBox->x() * 2 - 20,
                                ui->buttonBox->height());
 
     this->setFixedSize(this->size());
@@ -76,13 +82,17 @@ void ScreenshotEditWidget::mouseMoveEvent(QMouseEvent* event) {
                           event->y() - ui->screenshotDisplayWidget->y());
 
         switch (_selectedTool) {
-        case ST_CustomDraw:
+        case ST_CustomDraw: {
             QPainter painter(&_newPixmap);
             QPen pen;
             pen.setColor(_color);
             pen.setWidth(3);
             painter.setPen(pen);
             painter.drawLine(_lastToolPosition, currentPos);
+            break;
+        }
+        default:
+            // to suppress warnings
             break;
         }
 
