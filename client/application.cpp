@@ -18,7 +18,6 @@
 #include "application.h"
 #include "imageselectwidget.h"
 #include "ui_config.h"
-#include "defines.h"
 #include "languageselectdialog.h"
 #include "screenshoteditwidget.h"
 #include "utils.h"
@@ -121,9 +120,16 @@ Application::Application(int argc, char *argv[]) :
 
 Application::~Application()
 {
-    _trayIcon->hide();
-    _settings->Save();
-    delete _trayIconMenu;
+    if (_trayIcon) {
+        _trayIcon->hide();
+    }
+    if (_settings) {
+        _settings->Save();
+    }
+    if (_trayIconMenu) {
+        // todo: use smart pointers
+        delete _trayIconMenu;
+    }
 }
 
 //---- Get parameters from app instance and upload ---//
@@ -142,7 +148,6 @@ void Application::uploadFile(QString request)
 
     //----------------------Loading Images-------------------------//
     if ((ImgExt.completeSuffix()=="png")||(ImgExt.completeSuffix()=="jpg")||(ImgExt.completeSuffix()=="gif")){
-
         if (Sharing) {
             return;
         }
@@ -153,10 +158,14 @@ void Application::uploadFile(QString request)
 
         Sharing = true;
 
+        _trayWindow->showMessage(tr("Uploading image..."), TMT_None, 60000, true);
+
         QPixmap pixmap;
 
         // try load image
-        if(! pixmap.load(request)){            
+        if(! pixmap.load(request)){
+            _trayWindow->showMessage(tr("Failed to load image"), TMT_Error);
+            Sharing = false;
             return;
         }
 
@@ -167,7 +176,9 @@ void Application::uploadFile(QString request)
         buffer.open(QFile::WriteOnly);
         pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
         buffer.close();
+        sending();
         _network->upload(imageBytes, ImgExt.completeSuffix());
+        _trayWindow->showUploadMessage(tr("Uploading image..."));
         Sharing = false;
     }
 
@@ -182,23 +193,28 @@ void Application::uploadFile(QString request)
         }
 
         Sharing = true;
-
+        _trayWindow->showMessage(tr("Uploading code..."), TMT_None, 60000, true);
         QFile source(request);
         if (!source.open(QIODevice::ReadOnly)){
+            _trayWindow->showMessage(tr("Failed to open file"), TMT_Error);
+            Sharing = false;
             return;
         }
 
         QTextStream textStream(&source);
         QString text = textStream.readAll();
+        sending();
         _network->upload(text.toUtf8(), ImgExt.completeSuffix());
+        _trayWindow->showUploadMessage(tr("Uploading code..."));
 
         Sharing = false;
+    } else {
+        _trayWindow->showMessage(tr("Unknown file type"), TMT_Error);
     }
 }
 
 bool Application::pxAppInit()
 {
-
     QLocalSocket socket;
     socket.connectToServer(APP_NAME);
 
@@ -224,16 +240,24 @@ bool Application::pxAppInit()
     connect(_localServer, SIGNAL(newConnection()), SLOT(newLocalSocketConnection()));
 
     const QString& settingsFile = QDir::homePath() + "/" + SETTINGS_FILE;
-    _settings = new USettings(settingsFile);
+    _settings = new USettings();
+    try {
+        _settings->Load(settingsFile);
+    } catch (...) {
+        qDebug() << "Warning: failed to load settings";
+    }
 
     QString uuid = _settings->GetParameter("uuid", "");
     if (uuid.length() != 24 * 2) {
         uuid = GenerateUUID();
         Q_ASSERT(uuid.length() == 24 * 2);
         _settings->SetParameter("uuid", uuid);
-        _settings->Save();
+        try {
+            _settings->Save();
+        } catch (...) {
+            qDebug() << "Error: failed to save settings";
+        }
     }
-
     initLanguages();
 
     _configWidget = new ConfigWidget(GetAppName(), _languages);
@@ -274,6 +298,12 @@ bool Application::pxAppInit()
 
     if (!file.exists())
         _configWidget->show();
+
+    if (QApplication::arguments().count()>1){
+        QString fileName = QApplication::arguments().at(1);
+        QMetaObject::invokeMethod(this, "uploadFile", Qt::QueuedConnection, Q_ARG(QString, fileName));
+    }
+
     return true;
 }
 
@@ -338,6 +368,7 @@ void Application::processScreenshot(bool isFullScreen)
     pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
     buffer.close();
     try {
+        sending();
         _network->upload(imageBytes, imagetype);
         _trayWindow->showUploadMessage(tr("Uploading image..."));
     } catch (UException &e) {
@@ -361,6 +392,7 @@ void Application::processCodeShare()
         }
     }
 
+    sending();
     _trayWindow->showMessage(tr("Uploading code..."), TMT_None, 60000, true);
 
 #ifdef Q_OS_WIN
@@ -484,8 +516,12 @@ bool Application::checkEllapsed()
     if (_lastSended.elapsed() < 3000) {
         return false;
     }
-    _lastSended.restart();
     return true;
+}
+
+void Application::sending()
+{
+    _lastSended.restart();
 }
 
 void Application::timerEvent(QTimerEvent *) {

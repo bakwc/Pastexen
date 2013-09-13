@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,6 +59,12 @@
     <iconset resource="resources.qrc">
      <normaloff>:/icons/color_line.ico</normaloff>:/icons/color_line.ico</iconset>
    </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
   </widget>
   <widget class="QWidget" name="screenshotDisplayWidget" native="true">
    <property name="geometry">
@@ -73,7 +79,7 @@
   <widget class="QToolButton" name="rectangleDrawButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>140</x>
      <y>10</y>
      <width>31</width>
      <height>31</height>
@@ -96,7 +102,7 @@
   <widget class="QToolButton" name="customDrawButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>100</x>
      <y>10</y>
      <width>31</width>
      <height>31</height>
@@ -109,6 +115,12 @@
     <iconset resource="resources.qrc">
      <normaloff>:/icons/pencil.ico</normaloff>:/icons/pencil.ico</iconset>
    </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -117,6 +129,23 @@
    </property>
   </widget>
   <widget class="QToolButton" name="clearButton">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/icons/clear.ico</normaloff>:/icons/clear.ico</iconset>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="arrowDrawButton">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -130,7 +159,13 @@
    </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/clear.ico</normaloff>:/icons/clear.ico</iconset>
+     <normaloff>:/icons/arrow-20-16.ico</normaloff>:/icons/arrow-20-16.ico</iconset>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

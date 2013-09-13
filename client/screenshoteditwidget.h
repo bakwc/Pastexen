@@ -8,7 +8,8 @@ class ScreenshotEditWidget;
 
 enum ESelectedTool {
     ST_CustomDraw,
-    ST_Rectangle
+    ST_Rectangle,
+    ST_Arrow
 };
 
 class ScreenshotEditWidget : public QDialog
@@ -23,6 +24,8 @@ private slots:
     void on_customDrawButton_clicked();
     void on_rectangleDrawButton_clicked();
     void on_buttonBox_accepted();
+
+    void on_arrowDrawButton_clicked();
 
 private:
     void paintEvent(QPaintEvent* event);

@@ -5,22 +5,22 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="application.cpp" line="246"/>
+        <location filename="application.cpp" line="258"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="250"/>
+        <location filename="application.cpp" line="262"/>
         <source>Configure</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="251"/>
+        <location filename="application.cpp" line="263"/>
         <source>My files</source>
-        <translation></translation>
+        <translation>Мои файлы</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="253"/>
+        <location filename="application.cpp" line="265"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
@@ -29,7 +29,7 @@
         <translation type="obsolete">Ошибка!</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="517"/>
+        <location filename="application.cpp" line="535"/>
         <source>No text found in clipboard</source>
         <translation>В буфере обмена нет текста</translation>
     </message>
@@ -46,44 +46,63 @@
         <translation type="obsolete">Утилита для шаринга скриншотов и кода&lt;br&gt; Наш сайт &lt;a href=&quot;http://pastexen.com/&quot;&gt;pastexen.com&lt;/a&gt;&lt;br&gt; Хостинг предоставлен &lt;a href=&quot;http://scalaxy.ru/&quot;&gt;scalaxy.ru&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="331"/>
-        <location filename="application.cpp" line="342"/>
+        <location filename="application.cpp" line="161"/>
+        <location filename="application.cpp" line="179"/>
+        <location filename="application.cpp" line="349"/>
+        <location filename="application.cpp" line="360"/>
         <source>Uploading image...</source>
         <translation>Отправка изображения...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="364"/>
-        <location filename="application.cpp" line="523"/>
+        <location filename="application.cpp" line="167"/>
+        <source>Failed to load image</source>
+        <translation>Не удалось загрузить изображение</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="194"/>
+        <location filename="application.cpp" line="204"/>
+        <location filename="application.cpp" line="382"/>
+        <location filename="application.cpp" line="541"/>
         <source>Uploading code...</source>
         <translation>Отправка кода...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="433"/>
+        <location filename="application.cpp" line="197"/>
+        <source>Failed to open file</source>
+        <translation>Не удалось открыть файл</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="208"/>
+        <source>Unknown file type</source>
+        <translation>Неизвестный тип файла</translation>
+    </message>
+    <message>
+        <location filename="application.cpp" line="451"/>
         <source>Utility for easy screenshoting and code sharing&lt;br&gt; We live at &lt;a href=&quot;http://pastexen.com/&quot;&gt;pastexen.com&lt;/a&gt;</source>
         <translation>Утилита для шаринга скриншотов и кода&lt;br&gt;Наш сайт &lt;a href=&quot;http://pastexen.com/&quot;&gt;pastexen.com&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="443"/>
+        <location filename="application.cpp" line="461"/>
         <source>Text share (%1)</source>
         <translation>Текст (%1)</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="444"/>
+        <location filename="application.cpp" line="462"/>
         <source>Full s-shot (%1)</source>
         <translation>Полн. экран (%1)</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="445"/>
+        <location filename="application.cpp" line="463"/>
         <source>Half s-shot (%1)</source>
         <translation>Часть экр. (%1)</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="450"/>
+        <location filename="application.cpp" line="468"/>
         <source>Auto detection</source>
         <translation>Авто-определение</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="451"/>
+        <location filename="application.cpp" line="469"/>
         <source>Plain text</source>
         <translation>Обычный текст</translation>
     </message>

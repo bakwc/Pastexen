@@ -15,6 +15,7 @@ USettings::USettings(QString path, QObject *parent)
 }
 
 void USettings::Load(const QString& fname, const QStringList& required) {
+    Path = fname;
     QFile file(fname);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         throw UException("Error opening file " + fname);

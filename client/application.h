@@ -8,6 +8,7 @@
 #include <QLocalServer>
 #include "configwidget.h"
 #include "network.h"
+#include "defines.h"
 #include "../utils/usettings.h"
 #include "traywindow.h"
 
@@ -47,7 +48,7 @@ public:
         return "http://" + GetHostName() + "/login_app.php?uuid=" + uuid;
     }
     static QString GetHostName() {
-        QString mode = settings().GetParameter("mode", "");
+        QString mode = settings().GetParameter("mode", DEFAULT_MODE);
         if (mode == "dev") {
             return "dev.pastexen.com";
         }
@@ -55,7 +56,7 @@ public:
     }
 
     static unsigned short GetPort() {
-        QString mode = settings().GetParameter("mode", "");
+        QString mode = settings().GetParameter("mode", DEFAULT_MODE);
         if (mode == "dev") {
             return 9877;
         }
@@ -63,9 +64,9 @@ public:
     }
 
     static QString GetAppName() {
-        QString mode = settings().GetParameter("mode", "");
+        QString mode = settings().GetParameter("mode", DEFAULT_MODE);
         if (mode == "dev") {
-            return APP_NAME + " (dev)";
+            return APP_NAME + " (beta)";
         }
         return APP_NAME;
     }
@@ -95,13 +96,13 @@ private slots:
     void localRequestReceived();
 private:
     QLocalSocket *_localConnection;
-
-    void uploadFile(QString request); // upload file to server and return link
+    Q_INVOKABLE void uploadFile(QString request); // upload file to server and return link
 
     void processScreenshot(bool isFullScreen);
     void initLanguages();
     bool checkEllapsed();
     void timerEvent(QTimerEvent *);
+    void sending();
 private:
     ConfigWidget *_configWidget;
     TrayWindow *_trayWindow;

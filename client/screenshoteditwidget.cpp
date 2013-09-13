@@ -46,6 +46,25 @@ ScreenshotEditWidget::~ScreenshotEditWidget()
     delete ui;
 }
 
+static void DrawArrow(QPainter& painter, int x1, int y1, int x2, int y2) {
+    if (x1 == x2 && y1 == y2) {
+        return;
+    }
+    float abs = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    float normX = float(x2 - x1) * 15 / abs;
+    float normY = float(y2 - y1) * 15 / abs;
+    int intersectionX = x2 - normX;
+    int intersectionY = y2 - normY;
+    float l1x = -normY + intersectionX;
+    float l1y = normX + intersectionY;
+    float l2x = normY + intersectionX;
+    float l2y = -normX + intersectionY;
+
+    painter.drawLine(x1, y1, x2, y2);
+    painter.drawLine(x2, y2, l1x, l1y);
+    painter.drawLine(x2, y2, l2x, l2y);
+}
+
 void ScreenshotEditWidget::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
@@ -57,15 +76,23 @@ void ScreenshotEditWidget::paintEvent(QPaintEvent* event)
     painter.drawRect(ui->screenshotDisplayWidget->x(), ui->screenshotDisplayWidget->y(),
                      ui->screenshotDisplayWidget->width(), ui->screenshotDisplayWidget->height());
 
-    if (_toolActive && _selectedTool == ST_Rectangle) {
+    if (_toolActive) {
         QPen pen;
         pen.setColor(_color);
         pen.setWidth(3);
         painter.setPen(pen);
-        painter.drawRect(ui->screenshotDisplayWidget->x() + _startToolPosition.x(),
-                         ui->screenshotDisplayWidget->y() + _startToolPosition.y(),
-                         _lastToolPosition.x() - _startToolPosition.x(),
-                         _lastToolPosition.y() - _startToolPosition.y());
+        if (_selectedTool == ST_Rectangle) {
+            painter.drawRect(ui->screenshotDisplayWidget->x() + _startToolPosition.x(),
+                             ui->screenshotDisplayWidget->y() + _startToolPosition.y(),
+                             _lastToolPosition.x() - _startToolPosition.x(),
+                             _lastToolPosition.y() - _startToolPosition.y());
+        } else if (_selectedTool == ST_Arrow) {
+            DrawArrow(painter,
+                        ui->screenshotDisplayWidget->x() + _startToolPosition.x(),
+                        ui->screenshotDisplayWidget->y() + _startToolPosition.y(),
+                        ui->screenshotDisplayWidget->x() + _lastToolPosition.x(),
+                        ui->screenshotDisplayWidget->y() + _lastToolPosition.y());
+        }
     }
 }
 
@@ -104,18 +131,25 @@ void ScreenshotEditWidget::mouseMoveEvent(QMouseEvent* event) {
 void ScreenshotEditWidget::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() != Qt::RightButton &&
             event->button() != Qt::MidButton &&
-            _toolActive == true &&
-            _selectedTool == ST_Rectangle)
+            _toolActive == true)
     {
         QPainter painter(&_newPixmap);
         QPen pen;
         pen.setColor(_color);
         pen.setWidth(3);
         painter.setPen(pen);
-        painter.drawRect(_startToolPosition.x(),
-                         _startToolPosition.y(),
-                         _lastToolPosition.x() - _startToolPosition.x(),
-                         _lastToolPosition.y() - _startToolPosition.y());
+        if (_selectedTool == ST_Rectangle) {
+            painter.drawRect(_startToolPosition.x(),
+                             _startToolPosition.y(),
+                             _lastToolPosition.x() - _startToolPosition.x(),
+                             _lastToolPosition.y() - _startToolPosition.y());
+        } else if (_selectedTool == ST_Arrow) {
+            DrawArrow(painter,
+                        _startToolPosition.x(),
+                        _startToolPosition.y(),
+                        _lastToolPosition.x(),
+                        _lastToolPosition.y());
+        }
     }
     _toolActive = false;
     update();
@@ -131,6 +165,9 @@ void ScreenshotEditWidget::selectTool(ESelectedTool tool) {
         case ST_Rectangle:
             ui->rectangleDrawButton->setChecked(false);
             break;
+        case ST_Arrow:
+            ui->arrowDrawButton->setChecked(false);
+            break;
         }
         _selectedTool = tool;
     }
@@ -142,6 +179,9 @@ void ScreenshotEditWidget::selectTool(ESelectedTool tool) {
         break;
     case ST_Rectangle:
         ui->rectangleDrawButton->setChecked(true);
+        break;
+    case ST_Arrow:
+        ui->arrowDrawButton->setChecked(true);
         break;
     }
 }
@@ -164,6 +204,10 @@ void ScreenshotEditWidget::on_customDrawButton_clicked() {
 
 void ScreenshotEditWidget::on_rectangleDrawButton_clicked() {
     selectTool(ST_Rectangle);
+}
+
+void ScreenshotEditWidget::on_arrowDrawButton_clicked() {
+    selectTool(ST_Arrow);
 }
 
 void ScreenshotEditWidget::on_buttonBox_accepted() {
