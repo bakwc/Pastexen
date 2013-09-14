@@ -9,11 +9,9 @@ QT       += core gui network gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
-win32 {
-    TARGET = PasteXen
-    RC_FILE = PasteXen.rc
-}
 TEMPLATE = app
+
+QTPLUGIN     += qico
 
 CODEC = UTF-8
 
