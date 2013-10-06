@@ -502,7 +502,7 @@
 		}
 		
 		/**
-		 * Deletes the file from the database. The file's id or path of the file must be set before this function is
+		 * Deletes the file from the database and disk. The file's id or path of the file must be set before this function is
 		 * called. If the id is unknown, but the path is known, this function will try to find the file's id first.
 		 * Then it will try to delete the information for the file from the database. If file with selected path or
 		 * id does not exist, an exception with code self::ERROR_NOTFOUND_PATH or self::ERROR_NOTFOUND_ID will be
@@ -532,6 +532,15 @@
 				
 				// delete file's information
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
+				if ($this->path == null) {
+					$this->path = $fileKeyHash->path;
+				}
+
+				// Remove file from disk
+				if (!unlink($this->path)) {
+					throw new ApplicationModelException_File("Failed to delete file ".$this->path." cause ".error_get_last());
+				}
+				
 				$fileKeyHash->delete();
 				
 				// remove id lookup field
