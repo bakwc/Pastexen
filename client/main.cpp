@@ -1,10 +1,11 @@
 #include "application.h"
 #include <QTimer>
 #include <QTranslator>
+#include <memory>
 
 int main(int argc, char *argv[])
 {
-    Application *app = new Application(argc, argv);
+    std::unique_ptr<Application> app(new Application(argc, argv));
 
     QString locale = QLocale::system().name();
 
@@ -15,6 +16,5 @@ int main(int argc, char *argv[])
     if (!app->pxAppInit()) {
         return 0;
     }
-
     return app->exec();
 }

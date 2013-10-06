@@ -1,6 +1,11 @@
 <RCC>
     <qresource prefix="/icons">
         <file>icon.png</file>
+        <file>color_line.ico</file>
+        <file>rectanlge.ico</file>
+        <file>pencil.ico</file>
+        <file>clear.ico</file>
+        <file>arrow-20-16.ico</file>
     </qresource>
     <qresource prefix="/">
         <file>pastexen_ru.qm</file>

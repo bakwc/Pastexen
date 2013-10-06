@@ -35,9 +35,9 @@ ConfigWidget::ConfigWidget(const QString& appName,
 }
 
 void ConfigWidget::registerActualHotkeys() {
-    QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
-    QString partHotkey = Application::settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
-    QString codeHotkey = Application::settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
+    QString fullHotkey = Application::settings().GetParameter("fullhotkey", DEFAULT_HOTKEY_FULL);
+    QString partHotkey = Application::settings().GetParameter("parthotkey", DEFAULT_HOTKEY_PART);
+    QString codeHotkey = Application::settings().GetParameter("texthotkey", DEFAULT_HOTKEY_CODE);
 
     _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
     _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
@@ -50,15 +50,16 @@ void ConfigWidget::init()
                          .arg(_appName)
                          .arg(tr("Config")));
 
-    QString fullHotkey = Application::settings().GetParameter("general/fullhotkey", DEFAULT_HOTKEY_FULL);
-    QString partHotkey = Application::settings().GetParameter("general/parthotkey", DEFAULT_HOTKEY_PART);
-    QString codeHotkey = Application::settings().GetParameter("general/texthotkey", DEFAULT_HOTKEY_CODE);
+    QString fullHotkey = Application::settings().GetParameter("fullhotkey", DEFAULT_HOTKEY_FULL);
+    QString partHotkey = Application::settings().GetParameter("parthotkey", DEFAULT_HOTKEY_PART);
+    QString codeHotkey = Application::settings().GetParameter("texthotkey", DEFAULT_HOTKEY_CODE);
 
     showTypes(fullHotkey, partHotkey, codeHotkey);
 
-    QString imagetype = Application::settings().GetParameter("general/imagetype", DEFAULT_IMAGE_TYPE);
-    QString sourcestype = Application::settings().GetParameter("general/sourcetype", DEFAULT_SOURCES_TYPE);
-    bool showsourcedialog = Application::settings().GetParameter("general/showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
+    QString imagetype = Application::settings().GetParameter("imagetype", DEFAULT_IMAGE_TYPE);
+    QString sourcestype = Application::settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
+    bool showsourcedialog = Application::settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
+    bool editScreenshot = Application::settings().GetParameter("showeditscreenshot", ToString(DEFAULT_SHOW_EDIT_SCREENSHOT));
 
     int imgIndex = _ui.comboImageType->findData(imagetype);
     if (imgIndex != -1) {
@@ -75,6 +76,7 @@ void ConfigWidget::init()
             .arg(Application::GetAccountUrl());
     _ui.regLabel->setText(regText);
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
+    _ui.checkBoxEditScreenshots->setChecked(editScreenshot);
 }
 
 void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
@@ -115,9 +117,10 @@ void ConfigWidget::hideEvent(QHideEvent *event)
 void ConfigWidget::applyChanges()
 {
     emit settingsChanged();
-    Application::settings().SetParameter("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
-    Application::settings().SetParameter("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
-    Application::settings().SetParameter("general/showsourcedialog", ToString(_ui.checkBoxLangDialogShow->isChecked()));
+    Application::settings().SetParameter("imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
+    Application::settings().SetParameter("sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
+    Application::settings().SetParameter("showsourcedialog", ToString(_ui.checkBoxLangDialogShow->isChecked()));
+    Application::settings().SetParameter("showeditscreenshot", ToString(_ui.checkBoxEditScreenshots->isChecked()));
     Application::settings().Save();
     this->hide();
 }
@@ -129,8 +132,7 @@ void ConfigWidget::changeHotkey()
     if (dial.exec()) {
         QPushButton* b = qobject_cast<QPushButton*>(sender());
         if (b) {
-            QString settingsKey("general/");
-            settingsKey += b->objectName();
+            QString settingsKey = b->objectName();
 
             Application::settings().SetParameter(settingsKey, dial.key());
 

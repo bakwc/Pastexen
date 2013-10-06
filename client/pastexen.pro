@@ -9,11 +9,9 @@ QT       += core gui network gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
-win32 {
-    TARGET = PasteXen
-    RC_FILE = PasteXen.rc
-}
 TEMPLATE = app
+
+QTPLUGIN     += qico
 
 CODEC = UTF-8
 
@@ -33,7 +31,8 @@ SOURCES += main.cpp \
     ../utils/ucast.cpp \
     ../utils/ukeysequence.cpp \
     ../utils/uglobalhotkeys.cpp \
-    traywindow.cpp
+    traywindow.cpp \
+    screenshoteditwidget.cpp
 
 HEADERS  += \
     application.h \
@@ -52,7 +51,8 @@ HEADERS  += \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkeys.h \
     ../utils/udebug.h \
-    traywindow.h
+    traywindow.h \
+    screenshoteditwidget.h
 
 RESOURCES += \
     resources.qrc
@@ -60,7 +60,8 @@ RESOURCES += \
 FORMS += \
     config.ui \
     languageselectdialog.ui \
-    scanHotkeysDialog.ui
+    scanHotkeysDialog.ui \
+    screenshoteditwidget.ui
 
 INSTALLS += target
 isEmpty(PREFIX) {
