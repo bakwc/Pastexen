@@ -65,7 +65,8 @@
 			}
 			
 			foreach($userFiles as $userFile) {
-				$fileLoadQueue[] = (int)substr($userFile["value"], strlen('file_'));
+				if ($userFile["value"] != "virtual")
+					$fileLoadQueue[] = (int)substr($userFile["value"], strlen('file_'));
 				$fileLoadQueueTimestamps[] = (int)($userFile["score"]);
 			}
 			

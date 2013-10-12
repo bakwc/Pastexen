@@ -547,6 +547,10 @@
 				
 				// remove file from user's upload list
 				$filesUuidKeySet = new Rediska_Key_SortedSet('uuid_' . $this->uploader);
+				// dirty hack for saving "uuid_HASH" in redis after removing last user file
+				if ($filesUuidKeySet->getLength() < 2) {
+					$filesUuidKeySet->add('virtual', 0);
+				}
 				$filesUuidKeySet->remove('file_' . $this->id);
 			}
 			
