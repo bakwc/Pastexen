@@ -40,8 +40,8 @@
 		'file_image_link'				=> 'http://dev.pastexen.com/i/%s',
 		'file_source_link'				=> 'http://dev.pastexen.com/code.php?file=%s',
 		'file_thumbnail_link'			=> 'http://dev.pastexen.com/thmb/%s.png',
-                'file_image_dir'                                => '/usr/local/data/pastexen_dev/images',
-                'file_source_dir'                               => '/usr/local/data/pastexen_dev/sources',
+                'file_image_dir'                                => '/pastexen_dev/images',
+                'file_source_dir'                               => '/pastexen_dev/sources',
 
 		'file_extensions'				=> array(
 			// file extension => programming language
