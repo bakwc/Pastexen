@@ -44,7 +44,6 @@
 				// file does not exist in the database, but if the file exists in the filesystem, then fill the model with default data
 				$file->setTime(time());
 				$file->setDescription('');
-				$file->setUploader('000000000000000000000000000000000000000000000000');
 				try {
 					$file->setExtension(pathinfo($file->getSystemName(), PATHINFO_EXTENSION));
 					$file->setName(basename($file->getSystemName(), '.' . $file->getExtension()));
