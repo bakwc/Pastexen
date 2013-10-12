@@ -8,10 +8,6 @@
 #include "logger.h"
 #include <QFile>
 
-#ifdef Q_OS_LINUX
-#include <unistd.h>
-#endif
-
 int main(int argc, char** argv)
 {
     qsrand(QTime::currentTime().msec());
@@ -20,11 +16,6 @@ int main(int argc, char** argv)
         qDebug() << "Wrong usage!";
         return 42;
     }
-
-    #ifdef Q_OS_LINUX
-    int d = daemon(0, 0);
-    Q_UNUSED(d);
-    #endif
 
     QString pathToConfig = app.config();
 
