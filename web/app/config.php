@@ -37,11 +37,11 @@
 		'user_files_pagination_range'	=> 5,
 		'user_files_per_page'			=> 20,
 		
-		'file_image_link'				=> 'http://dev.pastexen.com/i/%s',
-		'file_source_link'				=> 'http://dev.pastexen.com/code.php?file=%s',
-		'file_thumbnail_link'			=> 'http://dev.pastexen.com/thmb/%s.png',
-                'file_image_dir'                                => '/pastexen_dev/images',
-                'file_source_dir'                               => '/pastexen_dev/sources',
+		'file_image_link'				=> 'http://pastexen.com/i/%s',
+		'file_source_link'				=> 'http://pastexen.com/code.php?file=%s',
+		'file_thumbnail_link'			=> 'http://pastexen.com/thmb/%s.png',
+                'file_image_dir'                                => '/pastexen/images',
+                'file_source_dir'                               => '/pastexen/sources',
 
 		'file_extensions'				=> array(
 			// file extension => programming language
