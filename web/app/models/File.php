@@ -301,8 +301,9 @@
 		 * self::ERROR_INVALID_UPLOADER.
 		 */
 		public function setUploader($uuid) {
-			if(!ApplicationModel_User::validateUuid($uuid))
+			if(!ApplicationModel_User::validateUuid($uuid)) {
 				throw new ApplicationModelException_File('Uploader UUID is invalid.', self::ERROR_INVALID_UPLOADER);
+			}
 			$this->uploader = $uuid;
 		}
 		
@@ -537,9 +538,7 @@
 				}
 
 				// Remove file from disk
-				if (!unlink($this->path)) {
-					throw new ApplicationModelException_File("Failed to delete file ".$this->path." cause ".error_get_last());
-				}
+				unlink($this->path);
 				
 				$fileKeyHash->delete();
 				
