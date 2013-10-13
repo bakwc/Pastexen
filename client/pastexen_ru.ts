@@ -175,7 +175,7 @@
     <message>
         <location filename="configwidget.cpp" line="74"/>
         <source>&lt;a href=&quot;%1&quot;&gt;My account&lt;/a&gt; (you need to share file first)</source>
-        <translation>&lt;a href=&quot;%1&quot;&gt;Мой аккаунт&lt;/a&gt; (вначал что-то отправьте)</translation>
+        <translation>&lt;a href=&quot;%1&quot;&gt;Мой аккаунт&lt;/a&gt; (вначале что-то отправьте)</translation>
     </message>
 </context>
 <context>
