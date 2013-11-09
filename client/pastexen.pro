@@ -57,6 +57,10 @@ HEADERS  += \
 RESOURCES += \
     resources.qrc
 
+win32:QMAKE_PRE_LINK = "windres --use-temp-file -i ../client/resources.rc -o resources.o --include-dir=./client"
+
+LIBS += "resources.o"
+
 FORMS += \
     config.ui \
     languageselectdialog.ui \
