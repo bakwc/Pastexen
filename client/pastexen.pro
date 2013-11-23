@@ -59,7 +59,7 @@ RESOURCES += \
 
 win32:QMAKE_PRE_LINK = "windres --use-temp-file -i ../client/resources.rc -o resources.o --include-dir=./client"
 
-LIBS += "resources.o"
+win32:LIBS += "resources.o"
 
 FORMS += \
     config.ui \
