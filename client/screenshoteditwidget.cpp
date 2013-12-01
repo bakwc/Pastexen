@@ -3,6 +3,7 @@
 #include <QColorDialog>
 #include <QMouseEvent>
 
+#include "application.h"
 #include "screenshoteditwidget.h"
 #include "ui_screenshoteditwidget.h"
 
@@ -10,11 +11,12 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
     QDialog(NULL),
     _selectedTool(ST_CustomDraw),
     _toolActive(false),
-    _color(Qt::red),
     _source(source),
     _newPixmap(*source),
     ui(new Ui::ScreenshotEditWidget)
 {
+    QString new_color = Application::settings().GetParameter("color", DEFAULT_COLOR);
+    _color = QColor(new_color);
     ui->setupUi(this);
     this->setGeometry(0, 0,
                       source->width() + ui->colorDisplayWidget->x() * 2,
@@ -190,6 +192,8 @@ void ScreenshotEditWidget::on_colorSelectButton_clicked() {
     QColor result = QColorDialog().getColor(_color);
     if (result.isValid()) {
         _color = result;
+        Application::settings().SetParameter("color", _color.name());
+        Application::settings().Save();
     }
 }
 

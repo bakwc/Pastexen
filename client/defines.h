@@ -14,6 +14,7 @@ const QString DEFAULT_HOTKEY_PART = "F10";
 const QString DEFAULT_HOTKEY_CODE = "F9";
 const QString DEFAULT_IMAGE_TYPE = "png";
 const QString DEFAULT_SOURCES_TYPE = "txt";
+const QString DEFAULT_COLOR = "red";
 const QString APP_RELEASE = "2";
 const QString APP_NAME = "Pastexen v" + APP_RELEASE;
 const QString DEFAULT_MODE = "release";
