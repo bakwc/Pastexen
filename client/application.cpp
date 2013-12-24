@@ -115,6 +115,8 @@ Application::Application(int argc, char *argv[]) :
     , _trayIconMenu(0)
     , _network(0)
     , _settings(0)
+    , Sharing(false)
+    , _timerId(-1)
 {
 }
 

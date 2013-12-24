@@ -16,8 +16,7 @@ inline QString getValue(const QString& data, const QString& key)
 
 inline QString GenerateUUID()
 {
-    QTime now = QTime::currentTime();
-    qsrand(now.msec());
+    qsrand(QDateTime::currentMSecsSinceEpoch());
 
     QString uuid(24 * 2);
     for (int i = 0; i < 24 * 2; i++) {

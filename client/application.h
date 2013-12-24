@@ -113,6 +113,6 @@ private:
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
     QTime _lastSended;
-    bool Sharing = false;
-    int _timerId = -1;
+    bool Sharing;
+    int _timerId;
 };
