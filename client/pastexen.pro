@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 CONFIG   -= console
-QT       += core gui network gui-private
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
@@ -73,7 +73,9 @@ isEmpty(PREFIX) {
 }
 target.path=$$PREFIX/
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS = -std=c++0x -static
+QMAKE_LFLAGS_RELEASE = -static-libgcc -static-libstdc++ -s
+
 unix {
     LIBS += -lxcb-keysyms -lX11 -lXtst -lxcb
 }
