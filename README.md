@@ -15,9 +15,9 @@ Pastexen
 * F9 - публикация текстов/исходников. Выделите текст и нажмите на F9. Вы получите ссылку на ваш текст/исходник с подсветкой синтаксиса для выбранного языка программирования
 
 ### Сборка // Build
-* Install [Qt 5.0.1](http://qt.nokia.com/)
-* required GCC 4.7.2 or Clang 3.2.5
-* required libxcb and libxcb-keysyms
+* Install [Qt 5.2.0](http://qt-project.org/downloads)
+* Windows,Linux build required GCC 4.7.2 or Clang 3.2.5
+* Linux build required libxcb and libxcb-keysyms
 * git clone git@github.com:bakwc/Pastexen
 * cd Pastexen
 * qmake
