@@ -74,7 +74,7 @@ isEmpty(PREFIX) {
 target.path=$$PREFIX/
 
 QMAKE_CXXFLAGS = -std=c++0x -static
-QMAKE_LFLAGS_RELEASE = -static-libgcc -static-libstdc++ -s
+QMAKE_LFLAGS_RELEASE = -static -static-libgcc -static-libstdc++ -s
 
 unix {
     LIBS += -lxcb-keysyms -lX11 -lXtst -lxcb
