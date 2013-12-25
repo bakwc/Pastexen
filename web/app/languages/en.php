@@ -66,6 +66,7 @@
 		'field_login'						=> 'Login',
 		'field_login_description'			=> 'It must be longer than 4 and shorter than 25 characters and must contain only letters and numbers.',
 		'field_password'					=> 'Password',
+		'field_hide_password'				=> 'Hide password',
 		'field_filename'					=> 'Name',
 		'field_extension'					=> 'Extension',
 		'field_description'					=> 'Description',
