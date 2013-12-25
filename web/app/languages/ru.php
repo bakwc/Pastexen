@@ -66,6 +66,7 @@
 		'field_login'						=> 'Логин',
 		'field_login_description'			=> 'Должен содержать от 4 до 25 букв латинского алфавита и цифр.',
 		'field_password'					=> 'Пароль',
+		'field_hide_password'					=> 'Скрыть пароль',
 		'field_filename'					=> 'Имя',
 		'field_extension'					=> 'Расширение',
 		'field_description'					=> 'Описание',

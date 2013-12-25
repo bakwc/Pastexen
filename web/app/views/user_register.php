@@ -59,7 +59,34 @@
 			<input type="text" class="span6" id="password" name="password" autocomplete="off" required />
 		</div>
 	</div>
-	
+
+	<script language="JavaScript" type="text/javascript">
+		var password_hidden = false;
+		function hide_password_clicked() {
+			if (password_hidden) {
+				show_password();
+			} else {
+				hide_password();
+			}
+                }
+		function show_password() {
+			document.getElementById('password').type = 'text';
+			password_hidden = false;
+		}
+		function hide_password() {
+			document.getElementById('password').type = 'password';
+			password_hidden = true;
+		}
+	</script>
+
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox">
+				<input type="checkbox" id="hide_password" value="option1" onClick="hide_password_clicked()"> <?php echo $this->l('field_hide_password'); ?> 
+			</label>
+		</div>
+	</div>
+
 	<div class="form-actions">
 		<input type="submit" class="btn btn-primary" value="<?php echo $this->l('action_register'); ?>" />
 	</div>
