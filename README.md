@@ -18,6 +18,7 @@ Pastexen
 * Install [Qt 5.2.0](http://qt-project.org/downloads)
 * Windows,Linux build required GCC 4.7.2 or Clang 3.2.5
 * Linux build required libxcb and libxcb-keysyms
+* [NSIS 3](http://qt-project.org/downloads) required for compiling installation script
 * git clone git@github.com:bakwc/Pastexen
 * cd Pastexen
 * qmake
