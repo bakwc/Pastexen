@@ -398,14 +398,14 @@
 				
 				// load some information from the database
 				$fileKeyHash = new Rediska_Key_Hash('file_' . $this->id);
-				$this->name = $fileKeyHash->name;
-				$this->extension = $fileKeyHash->extension;
-				$this->path = $fileKeyHash->path;
-				$this->pathOld = $this->path;
+				$this->name = (string)$fileKeyHash->name;
+				$this->extension = (string)$fileKeyHash->extension;
+				$this->path = (string)$fileKeyHash->path;
+				$this->pathOld = (string)$this->path;
 				$this->time = (int)$fileKeyHash->timestamp;
-				$this->setDescription($fileKeyHash->description);
-				$this->uploader = $fileKeyHash->uuid;
-				$this->uploaderOld = $this->uploader;
+				$this->setDescription((string)$fileKeyHash->description);
+				$this->uploader = (string)$fileKeyHash->uuid;
+				$this->uploaderOld = (string)$this->uploader;
 				
 				// get file's type
 				switch(strtolower($fileKeyHash->type)) {
