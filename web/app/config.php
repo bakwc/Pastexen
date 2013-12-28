@@ -24,12 +24,12 @@
 	
 	$applicationConfig = array(
 		'database_host'					=> '127.0.0.1',
-		'database_port'					=> 6378,
+		'database_port'					=> 6379,
 		'database_password'				=> null,
 		
 		'language_default'				=> 'ru',
 		
-		'download_link_windows'			=> 'https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_0.2_win32_installer.exe',
+		'download_link_windows'			=> 'https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_v2_win32_installer.exe',
 		'download_link_other'			=> 'https://github.com/bakwc/Pastexen/tree/master/builds',
 		'download_link_source'			=> 'https://github.com/bakwc/Pastexen/',
 		
