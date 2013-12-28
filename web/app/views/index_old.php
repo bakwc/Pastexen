@@ -64,10 +64,12 @@
 							<a class="btn btn-large btn-warning" href="<?php echo $this->application->config['download_link_windows']; ?>"><?php echo $this->l('download_windows'); ?></a>
 							<a class="btn btn-large" href="<?php echo $this->application->config['download_link_other']; ?>"><?php echo $this->l('download_other'); ?></a>
 						</div>
-						<br />
+                        <br />
+                        <a href="/account.php" class="download-section-sub"><?php echo $this->l('action_login'); ?></a>
+                        &nbsp;&nbsp;&nbsp;
 						<a href="<?php echo $this->application->config['download_link_source']; ?>" class="download-section-sub"><?php echo $this->l('download_source'); ?></a>
 						&nbsp;&nbsp;&nbsp;
-						<a href="Oo.php" class="download-section-sub"><?php echo $this->l('our_team'); ?></a>
+						<a href="/Oo.php" class="download-section-sub"><?php echo $this->l('our_team'); ?></a>
 						<br/>
 						<br/>
 						<br/>
