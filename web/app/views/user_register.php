@@ -34,7 +34,9 @@
 		echo '<div class="alert alert-block alert-error">';
 		echo '<h4>' . $this->l('account_register_errors_occured') . '</h4>';
 		if($loginBad)
-			echo '<br />' . $this->l('error_login_bad');
+            echo '<br />' . $this->l('error_login_bad');
+        if ($passwordBad)
+            echo '<br />' . $this->l('error_password_bad');
 		if($passwordWrong)
 			echo '<br />' . $this->l('error_password_wrong');
 		if($uuidTaken)

@@ -39,6 +39,7 @@
 
 			$login = '';
 			$loginBad = false;
+			$passwordBad = false;
 			if(!isset($this->application->parameters['login']))
 				$loginBad = true;
 			else {
@@ -46,13 +47,17 @@
 				if(!ApplicationModel_User::validateLogin($login))
 					$loginBad = true;
 			}
-			
-			$password = '';
-			if(isset($this->application->parameters['password']))
-				$password = $this->application->parameters['password'];
+
+			if(!isset($this->application->parameters['password'])) 
+				$passwordBad = true;
+			else {
+                $password = $this->application->parameters['password'];
+                if (!ApplicationModel_User::validatePassword($password))
+                    $passwordBad = true;
+			}
 			
 			// login must be valid
-			$success = !$loginBad;
+			$success = !$loginBad && !$passwordBad;
 			
 			$passwordWrong = false;
 			$registerUser = false;
@@ -119,6 +124,7 @@
 			$view->uuidTaken = $uuidTaken;
 			$view->login = $login;
 			$view->loginBad = $loginBad;
+			$view->passwordBad = $passwordBad;
 			$view->passwordWrong = $passwordWrong;
 			$view->render();
 		}
