@@ -103,9 +103,13 @@
 		 * Checks whether the login is valid. Returns false, if it is not.
 		 */
 		public static function validateLogin($login) {
-			return strlen($login) >= 4 && strlen($login) <= 25 && self::validateAlphanumeric($login);
+			return strlen($login) >= 2 && strlen($login) <= 25 && self::validateAlphanumeric($login);
 		}
-		
+
+        public static function validatePassword($password) {
+            return strlen($password) >= 4 && strlen($password) <= 25;
+        }
+
 		/**
 		 * Sets the password hash. Throws an exception with code self::ERROR_INVALID_PASSWORD_HASH if it is not a
 		 * valid md5 hash.
@@ -253,7 +257,7 @@
 		public function save() {
 			// id lookup key
 			$userLoginKey = new Rediska_Key('user_login_' . $this->login);
-		
+
 			// id is known - we are going to edit user's information
 			if($this->id !== null) {
 				// user with selected id must exist
