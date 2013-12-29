@@ -10,8 +10,10 @@ int main(int argc, char *argv[])
     QString locale = QLocale::system().name();
 
     QTranslator translator;
-    translator.load(QString(":/pastexen_") + locale);
-    app->installTranslator(&translator);
+    if (locale == "ru" || locale == "ru_RU") {
+        translator.load(":/pastexen_ru");
+        app->installTranslator(&translator);
+    }
 
     if (!app->pxAppInit()) {
         return 0;
