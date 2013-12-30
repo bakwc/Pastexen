@@ -107,7 +107,7 @@ bool IsFullscreenAndMaximized( HWND hwnd )
 
 
 
-Application::Application(int argc, char *argv[]) :
+Application::Application(int& argc, char *argv[]) :
     QApplication(argc, argv)
     , _configWidget(0)
     , _trayWindow(0)
