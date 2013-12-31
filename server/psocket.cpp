@@ -89,7 +89,6 @@ bool checkUUID(const QString& uuid) {
     return true;
 }
 
-QString _generate_id;
 
 void pSocket::onDataReceived()
 {
@@ -110,6 +109,8 @@ void pSocket::onDataReceived()
         QByteArray header = data.left(n);
         auto content = data.mid(n+2);
         _buffer = content;
+
+	QString _generate_id;
 
 	_generate_id = getValue(header, "generateid");
 	if (_generate_id == "1") {
