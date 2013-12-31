@@ -62,6 +62,18 @@ void pSocket::sendLink(const QString& link)
 #endif
 }
 
+inline QString GenerateUUID()
+{
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+    
+    QString uuid(24*2);
+    for (int i = 0; i < 24; i++){
+        int c = qrand() % 16;
+        Q_ASSERT(c >= 0);
+        uuid[i] = c < 10 ? '0' + c : 'A' + (c - 10);
+    }
+    return uuid;
+}
 bool checkUUID(const QString& uuid) {
     if (uuid.length() != 49 - 1) {
         return false;
@@ -76,6 +88,7 @@ bool checkUUID(const QString& uuid) {
     }
     return true;
 }
+
 
 void pSocket::onDataReceived()
 {
@@ -96,6 +109,16 @@ void pSocket::onDataReceived()
         QByteArray header = data.left(n);
         auto content = data.mid(n+2);
         _buffer = content;
+
+	QString _generate_id;
+
+	_generate_id = getValue(header, "generateid");
+	if (_generate_id == "1") {
+		_uuid = GenerateUUID();
+		_socket->write(_uuid.toStdString().c_str());
+		_socket->disconnectFromHost();
+	}
+
         _limit.fetchAndAddAcquire(content.size());
         _packetSize = getValue(header, "size").toInt();
         _protoVersion   = getValue(header, "version");
@@ -174,3 +197,4 @@ void pSocket::customEvent(QEvent *ev)
     qDebug() << '\n' << Q_FUNC_INFO << "end";
 #endif
 }
+
