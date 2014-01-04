@@ -1,0 +1,12 @@
+ Short howto:
+
+1) mkdir pastexen-2.0
+2) cp client/ and utils/ into it
+3) cd pastexen-2.0
+4) run dh_make (it will create src arhive - required)
+5) rm dir debian, copy debian from here instead
+6) edit files id debian to change program name, version, etc. 
+7) debuild
+
+ And profit!
+

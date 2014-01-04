@@ -1,0 +1,16 @@
+Source: pastexen
+Section: utils
+Priority: standard
+Maintainer: Filipp Ozinov <ozinov@quantion.ru>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: http://pastexen.com
+Vcs-Git: git://git.gihub.com/bakwc/Pastexen.git
+Vcs-Browser: https://github.com/bakwc/Pastexen
+
+Package: pastexen
+Architecture: i386
+Depends: ${misc:Depends}
+Description: screenshots and code sharing utility
+ Share screenshots and source snippets with single hotkey press. Press hotkey and get link into clipboard.
+
