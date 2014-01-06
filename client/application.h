@@ -105,7 +105,7 @@ private:
     void timerEvent(QTimerEvent *);
     void sending();
 private:
-    AutorunManager *autorun;
+    AutorunManager *_autorun;
     ConfigWidget *_configWidget;
     TrayWindow *_trayWindow;
     QSystemTrayIcon *_trayIcon;
