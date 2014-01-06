@@ -117,6 +117,7 @@ Application::Application(int& argc, char *argv[]) :
     , _settings(0)
     , Sharing(false)
     , _timerId(-1)
+    , autorun(new AutorunManager())
 {
 }
 
@@ -264,6 +265,19 @@ bool Application::pxAppInit()
 
     _configWidget = new ConfigWidget(GetAppName(), _languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
+    connect(_configWidget, &ConfigWidget::settingsChanged, [=](){
+        bool autostart = _settings->GetParameter("autostart", "0");
+
+        if ((autostart && autorun->isInstalled()) || (!autostart && !autorun->isInstalled()))
+            return;
+
+        else if (autostart && !autorun->isInstalled())
+            autorun->install();
+
+        else if (!autostart && autorun->isInstalled())
+            autorun->uninstall();
+
+    });
     connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
     _configWidget->init();

@@ -11,6 +11,7 @@
 #include "defines.h"
 #include "../utils/usettings.h"
 #include "traywindow.h"
+#include "autorunmanager.h"
 
 #ifdef Q_OS_WIN
 #undef _WIN32_WINNT
@@ -112,6 +113,7 @@ private:
     USettings *_settings;
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
+    AutorunManager *autorun;
     QTime _lastSended;
     bool Sharing;
     int _timerId;
