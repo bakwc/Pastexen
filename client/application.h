@@ -11,6 +11,7 @@
 #include "defines.h"
 #include "../utils/usettings.h"
 #include "traywindow.h"
+#include "autorunmanager.h"
 
 #ifdef Q_OS_WIN
 #undef _WIN32_WINNT
@@ -104,6 +105,7 @@ private:
     void timerEvent(QTimerEvent *);
     void sending();
 private:
+    AutorunManager *_autorun;
     ConfigWidget *_configWidget;
     TrayWindow *_trayWindow;
     QSystemTrayIcon *_trayIcon;

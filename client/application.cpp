@@ -109,6 +109,7 @@ bool IsFullscreenAndMaximized( HWND hwnd )
 
 Application::Application(int& argc, char *argv[]) :
     QApplication(argc, argv)
+    , _autorun(new AutorunManager(this))
     , _configWidget(0)
     , _trayWindow(0)
     , _trayIcon(0)
@@ -264,6 +265,19 @@ bool Application::pxAppInit()
 
     _configWidget = new ConfigWidget(GetAppName(), _languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
+    connect(_configWidget, &ConfigWidget::settingsChanged, [=](){
+        bool autostart = _settings->GetParameter("autostart", "0");
+
+        if ((autostart && _autorun->isInstalled()) || (!autostart && !_autorun->isInstalled()))
+            return;
+
+        else if (autostart && !_autorun->isInstalled())
+            _autorun->install();
+
+        else if (!autostart && _autorun->isInstalled())
+            _autorun->uninstall();
+
+    });
     connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
     _configWidget->init();

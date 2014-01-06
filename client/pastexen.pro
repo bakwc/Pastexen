@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     ../utils/ukeysequence.cpp \
     ../utils/uglobalhotkeys.cpp \
     traywindow.cpp \
-    screenshoteditwidget.cpp
+    screenshoteditwidget.cpp \
+    autorunmanager.cpp
 
 HEADERS  += \
     application.h \
@@ -52,7 +53,8 @@ HEADERS  += \
     ../utils/uglobalhotkeys.h \
     ../utils/udebug.h \
     traywindow.h \
-    screenshoteditwidget.h
+    screenshoteditwidget.h \
+    autorunmanager.h
 
 RESOURCES += \
     resources.qrc
