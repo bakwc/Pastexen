@@ -109,6 +109,7 @@ bool IsFullscreenAndMaximized( HWND hwnd )
 
 Application::Application(int& argc, char *argv[]) :
     QApplication(argc, argv)
+    , autorun(new AutorunManager())
     , _configWidget(0)
     , _trayWindow(0)
     , _trayIcon(0)
@@ -117,7 +118,6 @@ Application::Application(int& argc, char *argv[]) :
     , _settings(0)
     , Sharing(false)
     , _timerId(-1)
-    , autorun(new AutorunManager())
 {
 }
 

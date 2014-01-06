@@ -105,6 +105,7 @@ private:
     void timerEvent(QTimerEvent *);
     void sending();
 private:
+    AutorunManager *autorun;
     ConfigWidget *_configWidget;
     TrayWindow *_trayWindow;
     QSystemTrayIcon *_trayIcon;
@@ -113,7 +114,6 @@ private:
     USettings *_settings;
     QMap<QString, QString> _languages;
     QLocalServer *_localServer;
-    AutorunManager *autorun;
     QTime _lastSended;
     bool Sharing;
     int _timerId;
