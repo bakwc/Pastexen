@@ -14,8 +14,7 @@ class Logger : public QObject
 
 public:
     static bool configure(const QString& path);
-    //static void logger(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-    static void logger(QtMsgType type, const char *msg);
+    static void logger(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     static void log(const QString &ipAddr, int limit);
 
 private:

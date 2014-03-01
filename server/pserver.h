@@ -3,7 +3,6 @@
 #include <QObject>
 #include <QHash>
 #include <QTcpServer>
-#include <QAtomicInt>
 #include "psetting.h"
 
 class pThreadPool;
@@ -26,6 +25,6 @@ private:
 
 private:
     QTcpServer  _server;
-    QHash<QHostAddress, QAtomicInt> _limits;
+    QHash<QHostAddress, long long int> _limits;
     size_t _timeLeft;
 };

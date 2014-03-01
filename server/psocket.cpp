@@ -14,7 +14,7 @@ QTime *dTime = 0;
 const int MAX_DATA_SIZE = 5000000; // 5 Mb for now
 const int MAX_DAY_SIZE = 50 * 1024 * 1024; // 50 Mb 4 day
 
-pSocket::pSocket(QTcpSocket *socket, QThread *thread, QAtomicInt& limit) :
+pSocket::pSocket(QTcpSocket *socket, QThread *thread, long long int& limit) :
     QObject(0), _socket(socket), _packetSize(0), _limit(limit)
 {
     connect(_socket, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
@@ -96,7 +96,7 @@ void pSocket::onDataReceived()
         QByteArray header = data.left(n);
         auto content = data.mid(n+2);
         _buffer = content;
-        _limit.fetchAndAddAcquire(content.size());
+        _limit += content.size();
         _packetSize = getValue(header, "size").toInt();
         _protoVersion   = getValue(header, "version");
         _fileType = getValue(header, "type");
@@ -121,7 +121,7 @@ void pSocket::onDataReceived()
 
     } else {
         _buffer += data;
-        _limit.fetchAndAddAcquire(data.size());
+        _limit += data.size();
     }
 
     if (_buffer.size() > MAX_DATA_SIZE || _limit > MAX_DAY_SIZE) {

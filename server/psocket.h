@@ -13,7 +13,7 @@ class pSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit pSocket(QTcpSocket *socket, QThread* thread, QAtomicInt& limit);
+    explicit pSocket(QTcpSocket *socket, QThread* thread, long long int& limit);
     ~pSocket();
     
 signals:
@@ -33,7 +33,7 @@ private:
     QString     _fileType;
     QString     _uuid;
     QString     _protoVersion;
-    QAtomicInt  &_limit;
+    long long int  &_limit;
 };
 
 
