@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>373</height>
+    <width>269</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,7 @@
    <iconset resource="resources.qrc">
     <normaloff>:/icons/icon.png</normaloff>:/icons/icon.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -166,6 +166,9 @@
       <bool>false</bool>
      </property>
      <layout class="QFormLayout" name="formLayout">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="sizePolicy">
@@ -270,14 +273,14 @@
       <string>General</string>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QCheckBox" name="checkBoxAutorun">
         <property name="text">
          <string>Start on system boot</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="regLabel">
         <property name="text">
          <string notr="true">&lt;a href=&quot;http://pastexen.com/&quot;&gt;Register client&lt;/a&gt;</string>

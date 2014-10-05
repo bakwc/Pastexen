@@ -73,7 +73,7 @@ void ConfigWidget::init()
     }
 
     QString regText = tr("<a href=\"%1\">My account</a>"
-                         " (you need to share file first)")
+                         " (share something first)")
             .arg(Application::GetAccountUrl());
     _ui.regLabel->setText(regText);
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
