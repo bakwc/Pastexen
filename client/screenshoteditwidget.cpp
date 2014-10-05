@@ -41,6 +41,7 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
                                ui->buttonBox->height());
 
     this->setFixedSize(this->size());
+    this->show();
 }
 
 ScreenshotEditWidget::~ScreenshotEditWidget()

@@ -22,6 +22,7 @@ LanguageSelectDialog::LanguageSelectDialog(QMap<QString, QString> &languages, QW
     if (srcIndex != -1) {
         ui->comboLanguageType->setCurrentIndex(srcIndex);
     }
+    this->show();
 }
 
 LanguageSelectDialog::~LanguageSelectDialog()

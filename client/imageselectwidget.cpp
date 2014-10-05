@@ -10,6 +10,7 @@ ImageSelectWidget::ImageSelectWidget(QPixmap *source):
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
     this->setGeometry(0,0,source->width(),source->height());
     this->setCursor(Qt::CrossCursor);
+    this->show();
 }
 
 void ImageSelectWidget::paintEvent(QPaintEvent *event)
