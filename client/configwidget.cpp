@@ -46,9 +46,7 @@ void ConfigWidget::registerActualHotkeys() {
 
 void ConfigWidget::init()
 {
-    this->setWindowTitle(QString("%1 - %2")
-                         .arg(_appName)
-                         .arg(tr("Config")));
+    this->setWindowTitle(_appName);
 
     QString fullHotkey = Application::settings().GetParameter("fullhotkey", DEFAULT_HOTKEY_FULL);
     QString partHotkey = Application::settings().GetParameter("parthotkey", DEFAULT_HOTKEY_PART);

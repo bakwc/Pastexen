@@ -109,12 +109,12 @@
 <context>
     <name>ConfigForm</name>
     <message>
-        <location filename="config.ui" line="304"/>
+        <location filename="config.ui" line="307"/>
         <source>Apply</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="config.ui" line="311"/>
+        <location filename="config.ui" line="314"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -124,27 +124,27 @@
         <translation>Шаринг кода:</translation>
     </message>
     <message>
-        <location filename="config.ui" line="184"/>
+        <location filename="config.ui" line="187"/>
         <source>Code share</source>
         <translation>Шаринг кода</translation>
     </message>
     <message>
-        <location filename="config.ui" line="225"/>
+        <location filename="config.ui" line="228"/>
         <source>Syntax:</source>
         <translation>Синтаксис:</translation>
     </message>
     <message>
-        <location filename="config.ui" line="257"/>
+        <location filename="config.ui" line="260"/>
         <source>Display syntax selection dialog</source>
         <translation>Отображать диалог выбора языка</translation>
     </message>
     <message>
-        <location filename="config.ui" line="270"/>
+        <location filename="config.ui" line="273"/>
         <source>General</source>
         <translation>Основные настройки</translation>
     </message>
     <message>
-        <location filename="config.ui" line="276"/>
+        <location filename="config.ui" line="279"/>
         <source>Start on system boot</source>
         <translation>Запускаться при загрузке системы</translation>
     </message>
@@ -183,7 +183,8 @@
     </message>
     <message>
         <location filename="configwidget.cpp" line="75"/>
-        <source>&lt;a href=&quot;%1&quot;&gt;My account&lt;/a&gt; (you need to share file first)</source>
+        <source>&lt;a href=&quot;%1&quot;&gt;My account&lt;/a&gt; (share something first)</source>
+        <oldsource>&lt;a href=&quot;%1&quot;&gt;My account&lt;/a&gt; (you need to share file first)</oldsource>
         <translation>&lt;a href=&quot;%1&quot;&gt;Мой аккаунт&lt;/a&gt; (вначале что-то отправьте)</translation>
     </message>
 </context>
