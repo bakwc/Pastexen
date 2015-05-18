@@ -30,9 +30,11 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
     if (keySeq.Size() == 0) {
         throw UException("Empty hotkeys");
     }
+    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
     if (Registered.find(id) != Registered.end()) {
         UnregisterHotkey(id);
     }
+    #endif
     #if defined(Q_OS_WIN)
     size_t winMod = 0;
     size_t key = VK_F2;
@@ -62,13 +64,17 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
 }
 
 void UGlobalHotkeys::UnregisterHotkey(size_t id) {
+    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
     Q_ASSERT(Registered.find(id) != Registered.end() && "Unregistered hotkey");
+    #endif
     #if defined(Q_OS_WIN)
     UnregisterHotKey((HWND)winId(), id);
     #elif defined(Q_OS_LINUX)
     unregLinuxHotkey(id);
     #endif
+    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
     Registered.remove(id);
+    #endif
 }
 
 UGlobalHotkeys::~UGlobalHotkeys() {

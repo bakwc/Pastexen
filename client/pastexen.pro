@@ -7,6 +7,8 @@
 CONFIG   -= console
 QT       += core gui network gui-private
 
+CONFIG   += c++11
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
 TEMPLATE = app
@@ -81,6 +83,6 @@ QMAKE_CXXFLAGS += -std=c++0x
 #QMAKE_CXXFLAGS = -std=c++0x -static
 #QMAKE_LFLAGS_RELEASE = -static -static-libgcc -static-libstdc++ -s
 
-unix {
+linux {
     LIBS += -lxcb-keysyms -lX11 -lXtst -lxcb
 }

@@ -29,6 +29,8 @@ public:
     void install(bool forAllUsers=false);
 #elif defined(Q_OS_LINUX)
     void install();
+#elif defined(Q_OS_MAC)
+    void install();
 #endif
     void uninstall();
     AutorunStatus isInstalled() const;

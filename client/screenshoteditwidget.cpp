@@ -7,6 +7,8 @@
 #include "screenshoteditwidget.h"
 #include "ui_screenshoteditwidget.h"
 
+#include <qmath.h>
+
 ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
     QDialog(NULL),
     _selectedTool(ST_CustomDraw),

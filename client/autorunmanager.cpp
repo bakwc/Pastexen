@@ -77,6 +77,21 @@ AutorunStatus AutorunManager::checkInstallation()
         return NotInstalled;
 }
 
+#elif defined(Q_OS_MAC)
+
+AutorunManager::AutorunManager(QObject *parent):
+    QObject(parent)
+{
+}
+
+void AutorunManager::install()
+{
+}
+
+void AutorunManager::uninstall()
+{
+}
+
 #endif
 
 AutorunStatus AutorunManager::isInstalled() const
