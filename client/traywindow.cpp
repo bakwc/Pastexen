@@ -33,9 +33,13 @@ TrayWindow::TrayWindow() :
 
     text.setObjectName("Text");
     bar.setObjectName("ProgressBar");
+    #if defined(Q_OS_MAC)
+    bar.setFixedSize(180, 10);
+    setFixedSize(220, 80);
+    #else
     bar.setFixedSize(130, 14);
-
     setFixedSize(160, 60);
+    #endif
 
     QRect dsktpSize = qApp->screens().at(0)->availableGeometry();
     if (dsktpSize.top() == 0) {
