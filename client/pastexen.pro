@@ -86,3 +86,5 @@ QMAKE_CXXFLAGS += -std=c++0x
 linux {
     LIBS += -lxcb-keysyms -lX11 -lXtst -lxcb
 }
+
+QMAKE_INFO_PLIST=$${PWD}/Info.plist
