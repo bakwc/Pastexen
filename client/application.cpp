@@ -295,8 +295,10 @@ bool Application::pxAppInit()
     setupHotkeys();
 
     _trayIcon = new QSystemTrayIcon(QIcon(":/icons/icon.png"), this);
+    #ifndef Q_OS_MAC
     connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
+    #endif
     _trayIcon->setContextMenu(_trayIconMenu);                                   // Tray icon
 
     _network = new Network(GetHostName(), GetPort(), this);

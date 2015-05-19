@@ -18,10 +18,17 @@ ConfigWidget::ConfigWidget(const QString& appName,
       _hotKeys(new UGlobalHotkeys(parent))
 {
     _ui.setupUi(this);
+    size_t width = this->width();
+    size_t height = this->height();
+
+#if defined(Q_OS_MAC)
+    width = 300;
+    height = 440;
+#endif
 
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                       QDesktopWidget().availableGeometry().center().y() - (this->height() / 2),
-                       this->width(), this->height());
+                       width, height);
     this->setFixedSize(this->size());
 
     connect(_ui.cancelButton, SIGNAL(clicked()), this, SLOT(hide()));
