@@ -44,6 +44,10 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
 
     this->setFixedSize(this->size());
     this->show();
+    #if defined(Q_OS_MAC)
+    this->activateWindow();
+    this->raise();
+    #endif
 }
 
 ScreenshotEditWidget::~ScreenshotEditWidget()

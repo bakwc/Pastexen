@@ -11,6 +11,10 @@ ImageSelectWidget::ImageSelectWidget(QPixmap *source):
     this->setGeometry(0,0,source->width(),source->height());
     this->setCursor(Qt::CrossCursor);
     this->show();
+    #if defined(Q_OS_MAC)
+    this->activateWindow();
+    this->raise();
+    #endif
 }
 
 void ImageSelectWidget::paintEvent(QPaintEvent *event)

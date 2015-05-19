@@ -68,6 +68,10 @@ void TrayWindow::showMessage( QString text, ETrayMessageType type, int interval,
     this->bar.setValue(0);
     startTimer(interval);
     show();
+    #if defined(Q_OS_MAC)
+    this->activateWindow();
+    this->raise();
+    #endif
     QCoreApplication::processEvents();
 }
 

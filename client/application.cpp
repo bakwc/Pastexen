@@ -287,7 +287,8 @@ bool Application::pxAppInit()
     _trayIconMenu->addAction("", this, SLOT(processCodeShare()));
     _trayIconMenu->addAction("", this, SLOT(processScreenshotFull()));
     _trayIconMenu->addAction("", this, SLOT(processScreenshotPart()));
-    _trayIconMenu->addAction(tr("Configure"), _configWidget, SLOT(show()));
+    //_trayIconMenu->addAction(tr("Configure"), _configWidget, SLOT(show()));
+    _trayIconMenu->addAction(tr("Configure"), this, SLOT(showConfigWindow()));
     _trayIconMenu->addAction(tr("My files"), this, SLOT(accountLink()));
     _trayIconMenu->addSeparator();
     _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
@@ -323,6 +324,15 @@ bool Application::pxAppInit()
     }
 
     return true;
+}
+
+void Application::showConfigWindow()
+{
+    _configWidget->show();
+    #if defined(Q_OS_MAC)
+    _configWidget->activateWindow();
+    _configWidget->raise();
+    #endif
 }
 
 void Application::resolved()

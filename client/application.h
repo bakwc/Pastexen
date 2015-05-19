@@ -84,6 +84,7 @@ public slots:
     }
     inline void processScreenshotFull() { processScreenshot(true); }
     inline void processScreenshotPart() { processScreenshot(false); }
+    void showConfigWindow();
     void processCodeShare();
     void accountLink();
 private slots:
