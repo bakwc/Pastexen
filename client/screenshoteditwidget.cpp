@@ -20,10 +20,11 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
     QString new_color = Application::settings().GetParameter("color", DEFAULT_COLOR);
     _color = QColor(new_color);
     ui->setupUi(this);
+    int ratio = qApp->devicePixelRatio();
     this->setGeometry(0, 0,
-                      source->width() + ui->colorDisplayWidget->x() * 2,
-                      ui->screenshotDisplayWidget->y() + source->height() +
-                        ui->colorDisplayWidget->height() + 10);
+                      source->width() / ratio + ui->colorDisplayWidget->x() * 2,
+                      ui->screenshotDisplayWidget->y() + source->height() / ratio +
+                      ui->colorDisplayWidget->height() + 10);
 
     int minWidth = ui->clearButton->x() + ui->clearButton->width() + ui->colorDisplayWidget->x();
 
@@ -31,9 +32,9 @@ ScreenshotEditWidget::ScreenshotEditWidget(QPixmap* source) :
         this->setGeometry(this->x(), this->y(), minWidth, this->height());
     }
 
-    ui->screenshotDisplayWidget->setGeometry(width() / 2 - source->width() / 2,
+    ui->screenshotDisplayWidget->setGeometry(width() / 2 - source->width() / ratio / 2,
                                         ui->screenshotDisplayWidget->y(),
-                                        source->width(), source->height());
+                                        source->width() / ratio, source->height() / ratio);
 
     this->move(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
                QDesktopWidget().availableGeometry().center().y() - (this->height() / 2));
@@ -78,8 +79,7 @@ void ScreenshotEditWidget::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.drawPixmap(ui->screenshotDisplayWidget->x(), ui->screenshotDisplayWidget->y(),
-                       _source->width(), _source->height(), _newPixmap);
+    painter.drawPixmap(ui->screenshotDisplayWidget->x(), ui->screenshotDisplayWidget->y(), _newPixmap);
     painter.fillRect(ui->colorDisplayWidget->x(), ui->colorDisplayWidget->y(),
                      ui->colorDisplayWidget->width(), ui->colorDisplayWidget->height(), _color);
     painter.drawRect(ui->screenshotDisplayWidget->x(), ui->screenshotDisplayWidget->y(),

@@ -231,6 +231,8 @@ bool Application::pxAppInit()
         return false;
     }
 
+    qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     _lastSended.start();
 
     _localServer = new QLocalServer(this);
@@ -366,6 +368,7 @@ void Application::processScreenshot(bool isFullScreen)
     QPixmap pixmap;
 
     pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+    pixmap.setDevicePixelRatio(qApp->devicePixelRatio());
 
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);

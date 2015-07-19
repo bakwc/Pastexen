@@ -2,13 +2,15 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QRect>
+#include <QApplication>
 
 ImageSelectWidget::ImageSelectWidget(QPixmap *source):
     QDialog(0),
     _source(source)
 {
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
-    this->setGeometry(0,0,source->width(),source->height());
+    int ratio = qApp->devicePixelRatio();
+    this->setGeometry(0,0,source->width() / ratio, source->height() / ratio);
     this->setCursor(Qt::CrossCursor);
     this->show();
     #if defined(Q_OS_MAC)
@@ -21,7 +23,7 @@ void ImageSelectWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED( event );
     QPainter painter( this );
-    painter.drawPixmap(0,0,_source->width(),_source->height(),*_source);
+    painter.drawPixmap(0,0, *_source);
     if (_isSelecting)
     {
         QPen pen(Qt::red);
@@ -69,7 +71,8 @@ void ImageSelectWidget::mouseReleaseEvent(QMouseEvent *event)
         w = x1<x2 ? x2-x1 : x1-x2;
         h = y1<y2 ? y2-y1 : y1-y2;
 
-        *_source = _source->copy(x, y, w, h);
+        int ratio = qApp->devicePixelRatio();
+        *_source = _source->copy(x * ratio, y * ratio, w * ratio, h * ratio);
         this->accept();
     }
 }
