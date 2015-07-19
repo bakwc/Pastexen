@@ -424,7 +424,6 @@ void Application::processCodeShare()
     }
 
     sending();
-    _trayWindow->showMessage(tr("Uploading code..."), TMT_None, 60000, true);
 
 #ifdef Q_OS_WIN
     QApplication::processEvents();
@@ -461,7 +460,28 @@ void Application::processCodeShare()
 
     SendInput(4, input, sizeof(INPUT));
 
+    #elif defined(Q_OS_MAC)
+
+    CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
+    CGEventRef event2, event3;
+    event2 = CGEventCreateKeyboardEvent(src, (CGKeyCode)kVK_ANSI_C, true);
+    event3 = CGEventCreateKeyboardEvent(src, (CGKeyCode)kVK_ANSI_C, false);
+
+    CGEventSetFlags(event2, kCGEventFlagMaskCommand);
+    CGEventSetFlags(event3, kCGEventFlagMaskCommand);
+
+    CGEventTapLocation loc = kCGHIDEventTap;
+    CGEventPost(loc, event2);
+    CGEventPost(loc, event3);
+
+    CFRelease(event2);
+    CFRelease(event3);
+
+    CFRelease(src);
+
     #endif
+
+    _trayWindow->showMessage(tr("Uploading code..."), TMT_None, 60000, true);
     _timerId = this->startTimer(200);
 }
 
@@ -577,6 +597,8 @@ void Application::timerEvent(QTimerEvent *) {
     XCloseDisplay(dpy);
     text = getClipboardText();
 #elif defined(Q_OS_WIN)
+    text = QApplication::clipboard()->text();
+#elif defined(Q_OS_MAC)
     text = QApplication::clipboard()->text();
 #endif
 
