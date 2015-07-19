@@ -7,6 +7,8 @@
 #if defined(Q_OS_LINUX)
 #include "xcb/xcb.h"
 #include "xcb/xcb_keysyms.h"
+#elif defined(Q_OS_MAC)
+#include <Carbon/Carbon.h>
 #endif
 
 #include "ukeysequence.h"
@@ -44,6 +46,10 @@ protected:
     void regLinuxHotkey(const UKeySequence& keySeq, size_t id);
     void unregLinuxHotkey(size_t id);
     #endif
+public:
+    #if defined (Q_OS_MAC)
+    void onHotkeyPressed(size_t id);
+    #endif
 signals:
     void Activated(size_t id);
 private:
@@ -54,5 +60,7 @@ private:
     xcb_connection_t* X11Connection;
     xcb_window_t X11Wid;
     xcb_key_symbols_t* X11KeySymbs;
+    #elif defined(Q_OS_MAC)
+    QHash<size_t, EventHotKeyRef> HotkeyRefs;
     #endif
 };

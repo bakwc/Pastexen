@@ -88,3 +88,7 @@ linux {
 }
 
 QMAKE_INFO_PLIST=$${PWD}/Info.plist
+
+mac {
+    LIBS += -framework Carbon
+}
