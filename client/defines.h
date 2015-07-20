@@ -18,9 +18,10 @@ const QString DEFAULT_COLOR = "red";
 const QString APP_RELEASE = "2";
 const QString APP_NAME = "Pastexen v" + APP_RELEASE;
 const QString DEFAULT_MODE = "release";
+const QString MAC_APP_ID = "com.pastexen";
 const bool    DEFAULT_SHOW_SOURCES_CONF_DIALOG = true;
 const bool    DEFAULT_SHOW_EDIT_SCREENSHOT = false;
-const bool    DEFAULT_AUTOSTART = false;
+const bool    DEFAULT_AUTOSTART = true;
 const bool    DEFAULT_SCALE_SCREENSHOT = true;
 
 const size_t HOTKEY_FULL_ID = 100;

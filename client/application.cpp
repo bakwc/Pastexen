@@ -267,18 +267,8 @@ bool Application::pxAppInit()
 
     _configWidget = new ConfigWidget(GetAppName(), _languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
-    connect(_configWidget, &ConfigWidget::settingsChanged, [=](){
-        bool autostart = _settings->GetParameter("autostart", "0");
-
-        if ((autostart && _autorun->isInstalled()) || (!autostart && !_autorun->isInstalled()))
-            return;
-
-        else if (autostart && !_autorun->isInstalled())
-            _autorun->install();
-
-        else if (!autostart && _autorun->isInstalled())
-            _autorun->uninstall();
-
+    connect(_configWidget, &ConfigWidget::settingsChanged, [this] {
+        updateAutostart();
     });
     connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
@@ -324,6 +314,8 @@ bool Application::pxAppInit()
         QString fileName = QApplication::arguments().at(1);
         QMetaObject::invokeMethod(this, "uploadFile", Qt::QueuedConnection, Q_ARG(QString, fileName));
     }
+
+    updateAutostart();
 
     return true;
 }
@@ -582,6 +574,20 @@ bool Application::checkEllapsed()
 void Application::sending()
 {
     _lastSended.restart();
+}
+
+void Application::updateAutostart()
+{
+    bool autostart = _settings->GetParameter("autostart", ToString(DEFAULT_AUTOSTART));
+
+    if ((autostart && _autorun->isInstalled()) || (!autostart && !_autorun->isInstalled()))
+        return;
+
+    else if (autostart && !_autorun->isInstalled())
+        _autorun->install();
+
+    else if (!autostart && _autorun->isInstalled())
+        _autorun->uninstall();
 }
 
 void Application::timerEvent(QTimerEvent *) {

@@ -105,6 +105,7 @@ private:
     bool checkEllapsed();
     void timerEvent(QTimerEvent *);
     void sending();
+    void updateAutostart();
 private:
     AutorunManager *_autorun;
     ConfigWidget *_configWidget;
