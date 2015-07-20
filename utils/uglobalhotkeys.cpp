@@ -92,7 +92,7 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
 
     UKeyData macKey = QtKeyToMac(keySeq);
 
-    RegisterEventHotKey(macKey.key, 0, gMyHotKeyID,
+    RegisterEventHotKey(macKey.key, macKey.mods, gMyHotKeyID,
         GetApplicationEventTarget(), 0, &gMyHotKeyRef);
 
     HotkeyRefs[id] = gMyHotKeyRef;

@@ -122,13 +122,26 @@ static std::unordered_map<uint32_t, uint32_t> KEY_MAP = {
     {Qt::Key_F14, kVK_F14},
 };
 
+static std::unordered_map<uint32_t, uint32_t> MOD_MAP = {
+    {Qt::Key_Shift, shiftKey},
+    {Qt::Key_Alt, optionKey},
+    {Qt::Key_Control, controlKey},
+    {Qt::Key_Option, optionKey},
+};
+
 inline UKeyData QtKeyToMac(const UKeySequence &keySeq) {
     UKeyData data = {0, 0};
     auto key = keySeq.GetSimpleKeys();
-    if (key.size() == 1)
+    auto mods = keySeq.GetModifiers();
+    if (key.size() == 1 && KEY_MAP.find(key[0]) != KEY_MAP.end())
         data.key = KEY_MAP[key[0]];
     else
         throw UException("Invalid hotkey");
+    for (auto&& mod: mods) {
+        if (MOD_MAP.find(mod) == MOD_MAP.end())
+            throw UException("Invalid hotkey");
+        data.mods += MOD_MAP[mod];
+    }
     return data;
 }
 
