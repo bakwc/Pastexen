@@ -23,7 +23,7 @@ ConfigWidget::ConfigWidget(const QString& appName,
 
 #if defined(Q_OS_MAC)
     width = 300;
-    height = 440;
+    height = 460;
 #endif
 
     this->setGeometry(QDesktopWidget().availableGeometry().center().x() - (this->width() / 2),
@@ -66,6 +66,7 @@ void ConfigWidget::init()
     bool showsourcedialog = Application::settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
     bool editScreenshot = Application::settings().GetParameter("showeditscreenshot", ToString(DEFAULT_SHOW_EDIT_SCREENSHOT));
     bool autostart = Application::settings().GetParameter("autostart", ToString(DEFAULT_AUTOSTART));
+    bool scaleScreenshot = Application::settings().GetParameter("scalescreenshot", ToString(DEFAULT_SCALE_SCREENSHOT));
 
     int imgIndex = _ui.comboImageType->findData(imagetype);
     if (imgIndex != -1) {
@@ -84,6 +85,7 @@ void ConfigWidget::init()
     _ui.checkBoxLangDialogShow->setChecked(showsourcedialog);
     _ui.checkBoxEditScreenshots->setChecked(editScreenshot);
     _ui.checkBoxAutorun->setChecked(autostart);
+    _ui.checkBoxScale->setChecked(scaleScreenshot);
 }
 
 void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString textHotkey)
@@ -128,6 +130,7 @@ void ConfigWidget::applyChanges()
     Application::settings().SetParameter("showsourcedialog", ToString(_ui.checkBoxLangDialogShow->isChecked()));
     Application::settings().SetParameter("showeditscreenshot", ToString(_ui.checkBoxEditScreenshots->isChecked()));
     Application::settings().SetParameter("autostart", ToString(_ui.checkBoxAutorun->isChecked()));
+    Application::settings().SetParameter("scalescreenshot", ToString(_ui.checkBoxScale->isChecked()));
     Application::settings().Save();
     emit settingsChanged();
     this->hide();

@@ -391,12 +391,21 @@ void Application::processScreenshot(bool isFullScreen)
 
     _trayWindow->showMessage(tr("Uploading image..."), TMT_None, 60000, true);
 
+    bool scaleScreenshot = Application::settings().GetParameter("scalescreenshot", ToString(DEFAULT_SCALE_SCREENSHOT));
+
+    if (scaleScreenshot) {
+        qreal scaleRatio = qApp->devicePixelRatio();
+        pixmap = pixmap.scaled(qreal(pixmap.width()) / scaleRatio,
+                               qreal(pixmap.height()) / scaleRatio,
+                               Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    }
+
     QString imagetype = settings().GetParameter("imagetype", DEFAULT_IMAGE_TYPE);
 
     QByteArray imageBytes;
     QBuffer buffer(&imageBytes);
     buffer.open(QFile::WriteOnly);
-    pixmap.save(&buffer, imagetype.toLocal8Bit().constData());
+    pixmap.save(&buffer, imagetype.toLocal8Bit().constData(), 90);
     buffer.close();
     try {
         sending();
