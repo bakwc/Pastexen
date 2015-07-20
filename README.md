@@ -4,8 +4,8 @@ Pastexen
 Утилита для быстрой загрузки скриншотов и исходного кода на сервер. По нажатию хоткея (F11) делается скриншот, загружается на сервер, публикуется, в буфер обмена копируется ссылка.
 
 ### Информация
+* Скачать для [Windows](https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_v2_win32_installer.exe), [MacOS](https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_v2_mac_beta_2.tar.gz) или [Linux](https://github.com/bakwc/Pastexen/raw/master/builds/pastexen_v2_i386.deb) (deb)
 * Описание архитектуры: [читать](https://github.com/bakwc/Pastexen/wiki)
-* Beta версия для Windows: [скачать](https://github.com/downloads/bakwc/Pastexen/pastexen-0.2-wind32.zip)
 * Исходники: [скачать](https://github.com/bakwc/Pastexen/zipball/master)
 
 ### Использование
