@@ -416,14 +416,6 @@ void Application::processCodeShare()
         return;
     }
 
-    bool showsourcedialog = settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
-    if (showsourcedialog) {
-        LanguageSelectDialog dialog(_languages);
-        if (!dialog.exec()) {
-            return;
-        }
-    }
-
     sending();
 
 #ifdef Q_OS_WIN
@@ -597,8 +589,6 @@ void Application::timerEvent(QTimerEvent *) {
     this->killTimer(_timerId);
     _timerId = -1;
 
-    QString sourcestype = settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
-
     QString text;
 
 #ifdef Q_OS_LINUX
@@ -621,6 +611,16 @@ void Application::timerEvent(QTimerEvent *) {
         trayMessage(tr("No text found in clipboard"), TMT_Error);
         return;
     }
+
+    bool showsourcedialog = settings().GetParameter("showsourcedialog", ToString(DEFAULT_SHOW_SOURCES_CONF_DIALOG));
+    if (showsourcedialog) {
+        LanguageSelectDialog dialog(_languages);
+        if (!dialog.exec()) {
+            return;
+        }
+    }
+
+    QString sourcestype = settings().GetParameter("sourcetype", DEFAULT_SOURCES_TYPE);
 
     try {
         _network->upload(text.toUtf8(), sourcestype);
