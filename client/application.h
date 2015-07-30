@@ -52,6 +52,8 @@ public:
         QString mode = settings().GetParameter("mode", DEFAULT_MODE);
         if (mode == "dev") {
             return "dev.pastexen.com";
+        } else if (mode == "localhost") {
+            return "localhost";
         }
         return "pastexen.com";
     }

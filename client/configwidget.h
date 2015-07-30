@@ -27,6 +27,9 @@ signals:
 public slots:
     void applyChanges();
     void changeHotkey();
+private slots:
+    void on_pushButton_clicked();
+
 private:
     void showTypes(QString fullHotkey, QString partHotkey, QString textHotkey);
     void registerActualHotkeys();

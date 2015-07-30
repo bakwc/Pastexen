@@ -18,5 +18,6 @@ int main(int argc, char *argv[])
     if (!app->pxAppInit()) {
         return 0;
     }
+
     return app->exec();
 }

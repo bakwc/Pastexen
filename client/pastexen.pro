@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 CONFIG   -= console
-QT       += core gui network gui-private
+QT       += core gui network gui-private qml
 
 CONFIG   += c++11
 
@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     ../utils/uglobalhotkeys.cpp \
     traywindow.cpp \
     screenshoteditwidget.cpp \
-    autorunmanager.cpp
+    autorunmanager.cpp \
+    qmlnotify.cpp
 
 HEADERS  += \
     application.h \
@@ -56,7 +57,8 @@ HEADERS  += \
     ../utils/udebug.h \
     traywindow.h \
     screenshoteditwidget.h \
-    autorunmanager.h
+    autorunmanager.h \
+    qmlnotify.h
 
 RESOURCES += \
     resources.qrc

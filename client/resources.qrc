@@ -9,5 +9,6 @@
     </qresource>
     <qresource prefix="/">
         <file>pastexen_ru.qm</file>
+        <file>main.qml</file>
     </qresource>
 </RCC>

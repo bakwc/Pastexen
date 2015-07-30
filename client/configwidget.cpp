@@ -9,6 +9,8 @@
 #include "scanhotkeydialog.h"
 #include "defines.h"
 
+#include "qmlnotify.h"
+
 ConfigWidget::ConfigWidget(const QString& appName,
                            QMap<QString, QString> &languages,
                            QWidget *parent)
@@ -152,4 +154,10 @@ void ConfigWidget::changeHotkey()
             registerActualHotkeys();
         }
     }
+}
+
+void ConfigWidget::on_pushButton_clicked()
+{
+    QmlNotify qmlNotify;
+    qDebug() << Q_FUNC_INFO;
 }

@@ -50,7 +50,7 @@ TrayWindow::TrayWindow() :
         move(dsktpSize.width() - width(), dsktpSize.top());
     }
 
-    setStyleSheet(STYLESHEET);
+//    setStyleSheet(STYLESHEET);
 }
 
 void TrayWindow::showMessage( QString text, ETrayMessageType type, int interval, bool showProgressBar)
