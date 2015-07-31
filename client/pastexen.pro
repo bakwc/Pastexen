@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 CONFIG   -= console
-QT       += core gui network gui-private qml
+QT       += core gui network gui-private qml quick
 
 CONFIG   += c++11
 

@@ -1,31 +1,33 @@
-﻿#include "qmlnotify.h"
+#include "qmlnotify.h"
 
 #include <QQmlEngine>
 #include <QQmlComponent>
-#include <QtQuickWidgets/QQuickWidget>
-#include <QtQuick/QQuickWindow>
+#include <QQmlContext>
+#include <QQuickWindow>
 #include <QSurfaceFormat>
-
-#include <iostream>
+#include <QDebug>
 
 QmlNotify::QmlNotify()
 {
     init();
 }
 
+void QmlNotify::show(QString title, QString message, int duration)
+{
+    qmlObject->show();
+}
+
 void QmlNotify::init()
 {
-    QQmlComponent *qmlComponent = new QQmlComponent(new QQmlEngine());
+    QQmlEngine *qmlEngine = new QQmlEngine();
+    qmlEngine->rootContext()->setContextProperty("qmlObject", this);
+    QQmlComponent *qmlComponent = new QQmlComponent(qmlEngine);
     qmlComponent->loadUrl(QUrl("qrc:/main.qml"));
 
     if (!qmlComponent->isReady()) {
-        std::cout << Q_FUNC_INFO << " QmlComponent is not ready: " << qmlComponent->errorString().toStdString() << std::flush;
+        qWarning() << Q_FUNC_INFO << " QmlComponent is not ready: " << qmlComponent->errorString();
         return;
     }
 
-    QQuickWindow *qWindow = (QQuickWindow *)(qmlComponent->create());
-
-    QSurfaceFormat surfaceFormat = qWindow->requestedFormat();
-    qWindow->setFormat(surfaceFormat);
-    qWindow->show();
+    qmlObject = qobject_cast<QQuickWindow*>(qmlComponent->create());
 }

@@ -1,8 +1,8 @@
-#ifndef QMLNOTIFY_H
-#define QMLNOTIFY_H
+#pragma once
 
 #include <QObject>
 
+class QQuickWindow;
 
 class QmlNotify : public QObject
 {
@@ -10,9 +10,11 @@ class QmlNotify : public QObject
 public:
     QmlNotify();
 
+public slots:
+    void show(QString title = "", QString message = "", int duration = 2000);
 
 private:
     void init();
-};
 
-#endif // QMLNOTIFY_H
+    QQuickWindow* qmlObject;
+};

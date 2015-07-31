@@ -158,6 +158,6 @@ void ConfigWidget::changeHotkey()
 
 void ConfigWidget::on_pushButton_clicked()
 {
-    QmlNotify qmlNotify;
-    qDebug() << Q_FUNC_INFO;
+    QmlNotify *qmlNotify = new QmlNotify();
+    qmlNotify->show();
 }
