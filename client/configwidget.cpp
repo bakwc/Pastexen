@@ -37,7 +37,7 @@ ConfigWidget::ConfigWidget(const QString& appName,
     connect(_ui.fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_hotKeys, SIGNAL(Activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
+    connect(_hotKeys, SIGNAL(activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
     registerActualHotkeys();
 }
 
@@ -46,9 +46,9 @@ void ConfigWidget::registerActualHotkeys() {
     QString partHotkey = Application::settings().GetParameter("parthotkey", DEFAULT_HOTKEY_PART);
     QString codeHotkey = Application::settings().GetParameter("texthotkey", DEFAULT_HOTKEY_CODE);
 
-    _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
-    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
-    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
+    _hotKeys->registerHotkey(partHotkey, HOTKEY_PART_ID);
+    _hotKeys->registerHotkey(fullHotkey, HOTKEY_FULL_ID);
+    _hotKeys->registerHotkey(codeHotkey, HOTKEY_CODE_ID);
 }
 
 void ConfigWidget::init()

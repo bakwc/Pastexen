@@ -23,8 +23,8 @@ UGlobalHotkeys::UGlobalHotkeys(QWidget *parent)
     #endif
 }
 
-void UGlobalHotkeys::RegisterHotkey(const QString& keySeq, size_t id) {
-    RegisterHotkey(UKeySequence(keySeq), id);
+void UGlobalHotkeys::registerHotkey(const QString& keySeq, size_t id) {
+    registerHotkey(UKeySequence(keySeq), id);
 }
 
 #if defined(Q_OS_MAC)
@@ -41,13 +41,13 @@ OSStatus macHotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, vo
 }
 #endif
 
-void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
+void UGlobalHotkeys::registerHotkey(const UKeySequence& keySeq, size_t id) {
     if (keySeq.Size() == 0) {
         throw UException("Empty hotkeys");
     }
-    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
+    #if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
     if (Registered.find(id) != Registered.end()) {
-        UnregisterHotkey(id);
+        unregisterHotkey(id);
     }
     #endif
     #if defined(Q_OS_WIN)
@@ -77,7 +77,7 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
     regLinuxHotkey(keySeq, id);
     #endif
     #if defined(Q_OS_MAC)
-    UnregisterHotkey(id);
+    unregisterHotkey(id);
 
     EventHotKeyRef gMyHotKeyRef;
     EventHotKeyID gMyHotKeyID;
@@ -100,8 +100,8 @@ void UGlobalHotkeys::RegisterHotkey(const UKeySequence& keySeq, size_t id) {
     #endif
 }
 
-void UGlobalHotkeys::UnregisterHotkey(size_t id) {
-    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
+void UGlobalHotkeys::unregisterHotkey(size_t id) {
+    #if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
     Q_ASSERT(Registered.find(id) != Registered.end() && "Unregistered hotkey");
     #endif
     #if defined(Q_OS_WIN)
@@ -109,7 +109,7 @@ void UGlobalHotkeys::UnregisterHotkey(size_t id) {
     #elif defined(Q_OS_LINUX)
     unregLinuxHotkey(id);
     #endif
-    #if defined(Q_OS_WIN) or defined(Q_OS_LINUX)
+    #if defined(Q_OS_WIN) || defined(Q_OS_LINUX)
     Registered.remove(id);
     #endif
     #if defined(Q_OS_MAC)
@@ -117,6 +117,17 @@ void UGlobalHotkeys::UnregisterHotkey(size_t id) {
         UnregisterEventHotKey(HotkeyRefs[id]);
     }
     #endif
+}
+
+void UGlobalHotkeys::unregisterAllHotkeys()
+{
+#ifdef Q_OS_WIN
+    for (size_t id : Registered)
+        this->unregisterHotkey(id);
+#elif defined(Q_OS_LINUX)
+    for (size_t id :Registered.keys())
+        this->unregisterHotkey(id);
+#endif
 }
 
 UGlobalHotkeys::~UGlobalHotkeys() {
@@ -131,7 +142,7 @@ UGlobalHotkeys::~UGlobalHotkeys() {
 
 #if defined(Q_OS_MAC)
 void UGlobalHotkeys::onHotkeyPressed(size_t id) {
-    emit Activated(id);
+    emit activated(id);
 }
 #endif
 
@@ -141,7 +152,7 @@ bool UGlobalHotkeys::winEvent(MSG * message, long * result) {
     if (message->message == WM_HOTKEY) {
         size_t id = message->wParam;
         Q_ASSERT(Registered.find(id) != Registered.end() && "Unregistered hotkey");
-        emit Activated(id);
+        emit activated(id);
     }
     return false;
 }
@@ -170,7 +181,7 @@ bool UGlobalHotkeys::linuxEvent(xcb_generic_event_t *message)
         if (ind == 0) // this is not hotkeys
             return false;
 
-        emit Activated(ind);
+        emit activated(ind);
         return true;
     }
     return false;

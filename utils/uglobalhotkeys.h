@@ -13,6 +13,7 @@
 
 #include "ukeysequence.h"
 #include "uexception.h"
+#include "uglobal.h"
 
 #if defined(Q_OS_LINUX)
 struct UHotkeyData {
@@ -24,7 +25,7 @@ struct UHotkeyData {
 };
 #endif
 
-class UGlobalHotkeys : public QWidget
+class UGLOBALHOTKEY_EXPORT UGlobalHotkeys : public QWidget
         #if defined(Q_OS_LINUX)
         , public QAbstractNativeEventFilter
         #endif
@@ -32,9 +33,10 @@ class UGlobalHotkeys : public QWidget
     Q_OBJECT
 public:
     explicit UGlobalHotkeys(QWidget *parent = 0);
-    void RegisterHotkey(const QString& keySeq, size_t id = 1);
-    void RegisterHotkey(const UKeySequence& keySeq, size_t id = 1);
-    void UnregisterHotkey(size_t id = 1);
+    void registerHotkey(const QString& keySeq, size_t id = 1);
+    void registerHotkey(const UKeySequence& keySeq, size_t id = 1);
+    void unregisterHotkey(size_t id = 1);
+    void unregisterAllHotkeys();
     ~UGlobalHotkeys();
 protected:
     #if defined(Q_OS_WIN)
@@ -51,7 +53,7 @@ public:
     void onHotkeyPressed(size_t id);
     #endif
 signals:
-    void Activated(size_t id);
+    void activated(size_t id);
 private:
     #if defined(Q_OS_WIN)
     QSet<size_t> Registered;
