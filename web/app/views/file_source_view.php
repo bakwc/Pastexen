@@ -23,7 +23,7 @@
 	}
 	
 	$pageTitle = $file->getName();
-	$jsIncludes = array('/app/static/javascript/google-prettify.js');
+	$jsIncludes = array('/app/static/javascript/google-prettify.js', '/app/static/javascript/text-copy.js');
 	$cssIncludes = array('/app/static/styles/prettify-tomorrow' . ($isDarkColorScheme ? '-night-bright' : '') . '.css');
 	if($file->getProgrammingLanguage() != 'text')
 		$bodyTagParameters = 'onload="prettyPrint()"';
@@ -32,7 +32,14 @@
 
 <h1 class="pull-left"><?php echo $file->getName() . '.' . $file->getExtension(); ?></h1>
 <div class="btn-group pull-right">
-	<a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
+    <script type="text/javascript">
+    function doCopy() {
+        var textData = <?php echo json_encode($fileData); ?>;
+        copyTextToClipboard(textData);
+    }
+    </script>
+    <a nonhref class="btn btn-success" onclick="doCopy()"><?php echo $this->l('action_copy');  ?></a>
+    <a class="btn btn-success" href="<?php echo htmlspecialchars($url); ?>&download"><?php echo $this->l('action_download'); ?></a>
 	<a class="btn" href="<?php echo htmlspecialchars($url); ?>&raw"><?php echo $this->l('action_open_raw'); ?></a>
 	<?php
 		if($isDarkColorScheme)

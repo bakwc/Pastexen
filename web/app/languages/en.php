@@ -27,7 +27,8 @@
 		'date_format'						=> 'n/j/Y g:iA',
 	
 		'menu_index'						=> 'Home',
-		'action_download'					=> 'Download',
+        'action_download'					=> 'Download',
+        'action_copy'                       => 'Copy',
 		'action_open_raw'					=> 'Raw',
 		'action_edit'						=> 'Edit',
 		'action_save'						=> 'Save',
