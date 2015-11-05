@@ -27,7 +27,8 @@
 		'date_format'						=> 'd.m.Y H:i:s',
 	
 		'menu_index'						=> 'Главная',
-		'action_download'					=> 'Скачать',
+        'action_download'					=> 'Скачать',
+        'action_copy'                       => 'Копировать',
 		'action_open_raw'					=> 'Необработанный текст',
 		'action_edit'						=> 'Редактировать',
 		'action_save'						=> 'Сохранить',
