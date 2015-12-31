@@ -76,36 +76,6 @@ QString getClipboardText() {
 #endif
 
 
-#ifdef Q_OS_WIN
-bool IsTopMost( HWND hwnd )
-{
-  WINDOWINFO info;
-  GetWindowInfo( hwnd, &info );
-  return ( info.dwExStyle & WS_EX_TOPMOST ) ? true : false;
-}
-
-bool IsFullScreenSize( HWND hwnd, const int cx, const int cy )
-{
-  RECT r;
-  ::GetWindowRect( hwnd, &r );
-  return r.right - r.left == cx && r.bottom - r.top == cy;
-}
-
-bool IsFullscreenAndMaximized( HWND hwnd )
-{
-  if( IsTopMost( hwnd ) )
-  {
-    const int cx = GetSystemMetrics( SM_CXSCREEN );
-    const int cy = GetSystemMetrics( SM_CYSCREEN );
-    if( IsFullScreenSize( hwnd, cx, cy ) )
-      return true;
-  }
-  return false;
-}
-
-#endif
-
-
 
 Application::Application(int& argc, char *argv[]) :
     QApplication(argc, argv)
