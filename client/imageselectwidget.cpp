@@ -3,27 +3,29 @@
 #include <QMouseEvent>
 #include <QRect>
 #include <QApplication>
+#include <QDesktopWidget>
 
 ImageSelectWidget::ImageSelectWidget(QPixmap *source):
     QDialog(0),
     _source(source)
 {
+    QRect screenSize = QApplication::desktop()->screenGeometry();
+    _scaledSource = _source->scaled(screenSize.width(), screenSize.height());
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
     int ratio = qApp->devicePixelRatio();
-    this->setGeometry(0,0,source->width() / ratio, source->height() / ratio);
+    this->setGeometry(0,0,_scaledSource.width() / ratio, _scaledSource.height() / ratio);
     this->setCursor(Qt::CrossCursor);
     this->show();
-    #if defined(Q_OS_MAC)
     this->activateWindow();
     this->raise();
-    #endif
+    startTimer(300);
 }
 
 void ImageSelectWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED( event );
     QPainter painter( this );
-    painter.drawPixmap(0,0, *_source);
+    painter.drawPixmap(0,0, _scaledSource);
     if (_isSelecting)
     {
         QPen pen(Qt::red);
@@ -71,8 +73,22 @@ void ImageSelectWidget::mouseReleaseEvent(QMouseEvent *event)
         w = x1<x2 ? x2-x1 : x1-x2;
         h = y1<y2 ? y2-y1 : y1-y2;
 
-        int ratio = qApp->devicePixelRatio();
-        *_source = _source->copy(x * ratio, y * ratio, w * ratio, h * ratio);
+        double ratio = qApp->devicePixelRatio();
+        double ratioX = double(_source->width()) / double(_scaledSource.width());
+        double ratioY = double(_source->height()) / double(_scaledSource.height());
+        *_source = _source->copy(x * ratio * ratioX, y * ratio * ratioY, w * ratio * ratioX, h * ratio * ratioY);
         this->accept();
+    }
+}
+
+void ImageSelectWidget::timerEvent(QTimerEvent *) {
+    QRect screenSize = QApplication::desktop()->screenGeometry();
+    if (screenSize.width() != _scaledSource.width() ||
+        screenSize.height() != _scaledSource.height())
+    {
+        _scaledSource = _source->scaled(screenSize.width(), screenSize.height(),
+                                        Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        int ratio = qApp->devicePixelRatio();
+        this->setGeometry(0,0,_scaledSource.width() / ratio, _scaledSource.height() / ratio);
     }
 }
