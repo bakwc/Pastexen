@@ -10,9 +10,9 @@ ImageSelectWidget::ImageSelectWidget(QPixmap *source):
     _source(source)
 {
     QRect screenSize = QApplication::desktop()->screenGeometry();
-    _scaledSource = _source->scaled(screenSize.width(), screenSize.height());
+    double ratio = qApp->devicePixelRatio();
+    _scaledSource = _source->scaled(screenSize.width() * ratio, screenSize.height() * ratio);
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
-    int ratio = qApp->devicePixelRatio();
     this->setGeometry(0,0,_scaledSource.width() / ratio, _scaledSource.height() / ratio);
     this->setCursor(Qt::CrossCursor);
     this->show();
@@ -83,12 +83,13 @@ void ImageSelectWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void ImageSelectWidget::timerEvent(QTimerEvent *) {
     QRect screenSize = QApplication::desktop()->screenGeometry();
-    if (screenSize.width() != _scaledSource.width() ||
-        screenSize.height() != _scaledSource.height())
+    double ratio = qApp->devicePixelRatio();
+
+    if (screenSize.width() * ratio != _scaledSource.width() ||
+        screenSize.height() * ratio != _scaledSource.height())
     {
-        _scaledSource = _source->scaled(screenSize.width(), screenSize.height(),
+        _scaledSource = _source->scaled(screenSize.width() * ratio, screenSize.height() * ratio,
                                         Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        int ratio = qApp->devicePixelRatio();
         this->setGeometry(0,0,_scaledSource.width() / ratio, _scaledSource.height() / ratio);
     }
 }
