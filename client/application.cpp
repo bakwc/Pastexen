@@ -244,6 +244,15 @@ bool Application::pxAppInit()
 
     connect(_localServer, SIGNAL(newConnection()), SLOT(newLocalSocketConnection()));
 
+#ifdef WITH_LIBQTSCREEN
+    connect(&FullScreenMaker, &NQtScreen::TScreenShotMaker::OnScreenshotReady, [this]() {
+        this->processScreenshotNext(MakingFullScreen, true);
+    });
+    connect(&FullScreenMaker, &NQtScreen::TScreenShotMaker::OnFailed, [this]() {
+        this->processScreenshotNext(MakingFullScreen, false);
+    });
+#endif
+
     const QString& settingsFile = QDir::homePath() + "/" + SETTINGS_FILE;
     _settings = new USettings();
     try {
@@ -348,8 +357,7 @@ void Application::trayMessage(const QString& text, ETrayMessageType type)
     _trayWindow->showMessage(text, type);
 }
 
-void Application::processScreenshot(bool isFullScreen)
-{
+void Application::processScreenshot(bool isFullScreen) {
     if (Sharing) {
         return;
     }
@@ -357,10 +365,30 @@ void Application::processScreenshot(bool isFullScreen)
         return;
     }
     Sharing = true;
+
+#ifdef WITH_LIBQTSCREEN
+    MakingFullScreen = isFullScreen;
+    FullScreenMaker.MakeScreenshot();
+#else
+    processScreenshotNext(isFullScreen, false);
+#endif
+}
+
+void Application::processScreenshotNext(bool isFullScreen, bool useFullScreenMaker)
+{
     QPixmap pixmap;
 
+#ifdef WITH_LIBQTSCREEN
+    if (useFullScreenMaker) {
+        pixmap = QPixmap::fromImage(FullScreenMaker.GetLastScreenshot());
+    } else {
+        pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
+        pixmap.setDevicePixelRatio(qApp->devicePixelRatio());
+    }
+#else
     pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     pixmap.setDevicePixelRatio(qApp->devicePixelRatio());
+#endif
 
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);

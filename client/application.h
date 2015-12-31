@@ -27,6 +27,9 @@
 #define KEYCODE_C 54
 #endif
 
+#ifdef WITH_LIBQTSCREEN
+#include "../LibQtScreen/libqtscreen/screenshot_maker.h"
+#endif
 
 class Application : public QApplication
 {
@@ -101,6 +104,7 @@ private:
     Q_INVOKABLE void uploadFile(QString request); // upload file to server and return link
 
     void processScreenshot(bool isFullScreen);
+    void processScreenshotNext(bool isFullScreen, bool useFullScreenMaker);
     void initLanguages();
     bool checkEllapsed();
     void timerEvent(QTimerEvent *);
@@ -118,5 +122,9 @@ private:
     QLocalServer *_localServer;
     QTime _lastSended;
     bool Sharing;
+    bool MakingFullScreen;
     int _timerId;
+#ifdef WITH_LIBQTSCREEN
+    NQtScreen::TScreenShotMaker FullScreenMaker;
+#endif
 };

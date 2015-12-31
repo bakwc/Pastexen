@@ -94,3 +94,8 @@ mac {
 }
 
 DEFINES += UGLOBALHOTKEY_NOEXPORT
+
+windows {
+    DEFINES += WITH_LIBQTSCREEN=1
+    include(../LibQtScreen/libqtscreen/libqtscreen.pri)
+}
